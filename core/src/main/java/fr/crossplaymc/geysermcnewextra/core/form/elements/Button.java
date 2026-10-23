@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.form.elements;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.form.FormComponentType;
 import fr.crossplaymc.geysermcnewextra.core.form.FormElement;
 import org.geysermc.cumulus.component.ButtonComponent;
@@ -48,7 +49,7 @@ public class Button extends FormElement {
 
     @Override
     public Component getComponent() {
-        SERVER.warn("Buttons cannot be used in BedrockForm's! Returning a label.");
+        SERVER.warn(Lang.console("gmne.console.form_button_in_custom"));
         return new Label(this.text).getComponent();
     }
 }

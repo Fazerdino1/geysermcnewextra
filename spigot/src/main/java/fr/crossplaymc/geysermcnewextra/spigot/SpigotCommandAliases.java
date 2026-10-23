@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.spigot;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.commands.CommandExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -51,7 +52,7 @@ public final class SpigotCommandAliases {
                             break;
                         }
                     }
-                    SERVER.log("Command alias /" + alias + " disabled.");
+                    SERVER.log(Lang.console("gmne.console.alias_disabled", alias));
                 }
             }
             // Let clients see the new command tree (CraftServer#syncCommands, when available)
@@ -61,7 +62,7 @@ public final class SpigotCommandAliases {
                 // Older servers resend the tree on their own
             }
         } catch (ReflectiveOperationException | RuntimeException e) {
-            SERVER.warn("Could not disable command aliases " + aliases + ": " + e);
+            SERVER.warn(Lang.console("gmne.console.alias_disable_failed", aliases, e));
         }
     }
 }

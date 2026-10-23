@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.version;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
@@ -46,12 +47,12 @@ public class PluginVersion {
         Thread thread = new Thread(() -> {
             try {
                 checkForUpdate().ifPresentOrElse(release -> {
-                    SERVER.warn("A new version of " + DISPLAY_NAME + " is available: " + release.version() + " (you are on " + GE_VERSION + ").");
-                    SERVER.warn("Download & changelog: " + release.url());
-                }, () -> SERVER.log(DISPLAY_NAME + " is up to date (" + GE_VERSION + ")."));
+                    SERVER.warn(Lang.console("gmne.console.update_available", release.version(), GE_VERSION));
+                    SERVER.warn(Lang.console("gmne.console.update_download", release.url()));
+                }, () -> SERVER.log(Lang.console("gmne.console.update_up_to_date", GE_VERSION)));
             } catch (IOException | RuntimeException e) {
                 // Offline servers or GitHub rate limits must not look like "up to date"
-                SERVER.log("Could not check for " + DISPLAY_NAME + " updates: " + e.getMessage());
+                SERVER.log(Lang.console("gmne.console.update_check_failed", e.getMessage()));
             }
         }, DISPLAY_NAME + " update checker");
         thread.setDaemon(true);

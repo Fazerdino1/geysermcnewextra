@@ -23,52 +23,52 @@ public class DebugSection extends Section {
         for (Menus menuOption : Menus.values()) {
             menuNames.put(menuOption.name(), menuOption);
         }
-        menu.add(new Dropdown("Settings Menu Form:",
+        menu.add(new Dropdown(player.lang("gmne.debug.settings_menu_form"),
                 new ArrayList<>(menuNames.keySet()),
                 player.getPreferences().getSettingsMenuForm().name(),
                 (str) -> player.getPreferences().setSettingsMenuForm(Menus.valueOf(str))
         ));
         BedrockClientData data = session.getClientData();
-        menu.add(new SubSectionLabel("Client Data"));
-        menu.add(new Label("Game Version: " + data.getGameVersion()));
-        menu.add(new Label("Username: " + data.getUsername()));
-        menu.add(new Label("Offline ID: " + data.getPlatformOfflineId()));
-        menu.add(new Label("Online ID: " + data.getPlatformOnlineId()));
-        menu.add(new Label("Playfab ID: " + session.playFabId()));
-        menu.add(new Label("Device ID: " + data.getDeviceId()));
-        menu.add(new Label("Device Model: " + data.getDeviceModel()));
-        menu.add(new Label("GUI Scale: " + data.getGuiScale()));
-        menu.add(new Label("Joined Address: " + data.getServerAddress()));
-        menu.add(new Label("Language Code: " + data.getLanguageCode()));
+        menu.add(new SubSectionLabel(player.lang("gmne.debug.client_data")));
+        menu.add(new Label(player.lang("gmne.debug.game_version", data.getGameVersion())));
+        menu.add(new Label(player.lang("gmne.debug.username", data.getUsername())));
+        menu.add(new Label(player.lang("gmne.debug.offline_id", data.getPlatformOfflineId())));
+        menu.add(new Label(player.lang("gmne.debug.online_id", data.getPlatformOnlineId())));
+        menu.add(new Label(player.lang("gmne.debug.playfab_id", session.playFabId())));
+        menu.add(new Label(player.lang("gmne.debug.device_id", data.getDeviceId())));
+        menu.add(new Label(player.lang("gmne.debug.device_model", data.getDeviceModel())));
+        menu.add(new Label(player.lang("gmne.debug.gui_scale", data.getGuiScale())));
+        menu.add(new Label(player.lang("gmne.debug.joined_address", data.getServerAddress())));
+        menu.add(new Label(player.lang("gmne.debug.language_code", data.getLanguageCode())));
 
         // Cape ID is appended to the Skin ID
-        menu.add(new Label("Skin ID: " + data.getSkinId().replace(data.getCapeId(), "")));
-        menu.add(new Label("Skin Color: " + data.getSkinColor()));
-        menu.add(new Label("Skin Arm Size: " + data.getArmSize()));
-        menu.add(new Label("Cape ID: " + data.getCapeId()));
-        menu.add(new Label("Is Cape on Classic Skin? " + data.isCapeOnClassicSkin()));
-        menu.add(new Label("Is Persona Skin? " + data.isPersonaSkin()));
-        menu.add(new Label("Is Premium Skin? " + data.isPremiumSkin()));
+        menu.add(new Label(player.lang("gmne.debug.skin_id", data.getSkinId().replace(data.getCapeId(), ""))));
+        menu.add(new Label(player.lang("gmne.debug.skin_color", data.getSkinColor())));
+        menu.add(new Label(player.lang("gmne.debug.arm_size", data.getArmSize())));
+        menu.add(new Label(player.lang("gmne.debug.cape_id", data.getCapeId())));
+        menu.add(new Label(player.lang("gmne.debug.cape_on_classic", data.isCapeOnClassicSkin())));
+        menu.add(new Label(player.lang("gmne.debug.persona_skin", data.isPersonaSkin())));
+        menu.add(new Label(player.lang("gmne.debug.premium_skin", data.isPremiumSkin())));
 
-        menu.add(new SubSectionLabel("Player Data"));
-        menu.add(new Label("Average Ping: " + player.getAveragePing()));
-        menu.add(new Label("Average Ping (Ticks): " + (player.getAveragePing() / 50)));
+        menu.add(new SubSectionLabel(player.lang("gmne.debug.player_data")));
+        menu.add(new Label(player.lang("gmne.debug.average_ping", player.getAveragePing())));
+        menu.add(new Label(player.lang("gmne.debug.average_ping_ticks", (player.getAveragePing() / 50))));
 
-        menu.add(new Label("Last Ping: " + player.getLastPing()));
-        menu.add(new Label("Ping Sample: " + player.getPingSample()));
-        menu.add(new Label("Ping Sample Size: " + player.getPingSampleSize()));
+        menu.add(new Label(player.lang("gmne.debug.last_ping", player.getLastPing())));
+        menu.add(new Label(player.lang("gmne.debug.ping_sample", player.getPingSample())));
+        menu.add(new Label(player.lang("gmne.debug.ping_sample_size", player.getPingSampleSize())));
 
-        menu.add(new SubSectionLabel(PluginVersion.DISPLAY_NAME + " Info"));
-        menu.add(new Label("Version: " + PluginVersion.GE_VERSION));
-        menu.add(new Label("Server Type: " + ServerType.get()));
-        menu.add(new Label("Floodgate installed: " + (IsAvailable.floodgate() ? "Yes" : "No")));
+        menu.add(new SubSectionLabel(player.lang("gmne.debug.plugin_info")));
+        menu.add(new Label(player.lang("gmne.debug.version", PluginVersion.GE_VERSION)));
+        menu.add(new Label(player.lang("gmne.debug.server_type", ServerType.get())));
+        menu.add(new Label(player.lang("gmne.debug.floodgate_installed", player.lang(IsAvailable.floodgate() ? "gmne.console.yes" : "gmne.console.no"))));
 
     }
 
     @Override
     public List<String> getHeader(ExtrasPlayer player) {
         return List.of(BedrockLocale.OPTIONS.DEBUG,
-                player.translateGE("ge.settings.debug.header"));
+                player.lang("gmne.settings.debug.header"));
     }
 
     @Override

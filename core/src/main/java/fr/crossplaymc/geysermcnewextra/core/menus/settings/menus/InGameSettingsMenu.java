@@ -14,11 +14,11 @@ import java.util.List;
 public class InGameSettingsMenu extends BedrockForm {
     @Override
     public CustomForm.Builder create(ExtrasPlayer player) {
-        setTitle(player.translateGE("ge.settings"));
+        setTitle(player.lang("gmne.settings"));
         GeyserSession session = player.getSession();
         List<Section> sections = Settings.list();
 
-        add(new Label(player.translateGE("ge.settings.reset.ingame")));
+        add(new Label(player.lang("gmne.settings.reset.ingame")));
 
         for (Section section : sections) {
             section.create(this, session, player, true);

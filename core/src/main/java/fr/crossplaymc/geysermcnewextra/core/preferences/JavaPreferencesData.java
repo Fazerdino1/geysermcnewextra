@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.preferences;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class JavaPreferencesData {
 
                 this.copyFrom(JSON_MAPPER.convertValue(JSON_MAPPER.readTree(data.readAllBytes()), JavaPreferencesData.class));
             } catch (Exception e) {
-                SERVER.warn("Could not load data for player " + javaUUID + ", restoring to default for them.\n" + e.getLocalizedMessage());
+                SERVER.warn(Lang.console("gmne.console.prefs_load_failed", javaUUID, e.getLocalizedMessage()));
 
                 this.copyFrom(DEFAULT);
             }
@@ -63,7 +64,7 @@ public class JavaPreferencesData {
             }
             JSON_MAPPER.writeValue(defaultPath.toFile(), DEFAULT);
         } catch (Exception e) {
-            SERVER.warn("Could not load custom default Java player settings, new players will recieve factory\ndefault's, no changes have been made to default.json.\n" + e.getLocalizedMessage());
+            SERVER.warn(Lang.console("gmne.console.prefs_default_load_failed", e.getLocalizedMessage(), "java/default.json"));
         }
     }
 
@@ -80,9 +81,9 @@ public class JavaPreferencesData {
             String json = JSON_MAPPER.writeValueAsString(this);
             String content = json.equals(JSON_MAPPER.writeValueAsString(DEFAULT)) ? null : json;
             PreferencesIO.submit(saveFile.toPath(), content, e ->
-                    SERVER.warn("Could not save data for player " + javaUUID + ": " + e));
+                    SERVER.warn(Lang.console("gmne.console.prefs_save_failed", javaUUID, e)));
         } catch (IOException e) {
-            SERVER.warn("Could not save data for player " + javaUUID + ": " + e);
+            SERVER.warn(Lang.console("gmne.console.prefs_save_failed", javaUUID, e));
         }
     }
 }

@@ -17,11 +17,11 @@ public enum PlayerPlatforms {
     private final String langID;
 
     PlayerPlatforms() {
-        this.langID = "ge.platform." + this.name().toLowerCase();
+        this.langID = "gmne.platform." + this.name().toLowerCase();
     }
 
     public String translate(ExtrasPlayer player) {
-        return player.translateGE(langID);
+        return player.lang(langID);
     }
 
     public static PlayerPlatforms fromGeyser(BedrockPlatform platform) {

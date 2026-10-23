@@ -14,6 +14,8 @@ import java.util.List;
 
 // TODO make wiki page/s to explain stuff better
 public final class GeyserMCNewExtraConfig {
+    public static final String DEFAULT_LOCALE = "fr_FR";
+
     @Comment("""
             Enable the GeyserMCNewExtra menu, which can be opened by players by
             double-tapping inventory, or typing `/ge`.
@@ -80,9 +82,11 @@ public final class GeyserMCNewExtraConfig {
             """
             The language that Java Edition players read when using a GeyserMCNewExtra command (e.g, `/muteemotechat`).
             This is automatically set on Bedrock Edition from the player's settings.
-            The available locale codes are listed in `cache/langs/language_names.json`.
+            The available languages are the files in `lang/` (e.g. fr_FR, en_US); every text can be edited there.
+            Bedrock players get their own client language when a file exists for it, otherwise this one.
+            This language is also used for console messages.
             """)
-    private String defaultLocale = "en_US";
+    private String defaultLocale = DEFAULT_LOCALE;
 
     @Comment("""
             Enables downloading of Bedrock Player skins.

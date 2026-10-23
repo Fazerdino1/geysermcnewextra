@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.parity.bedrock;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -25,10 +26,10 @@ public class EmoteUtils {
                 String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
                 emotes = JsonParser.parseString(json).getAsJsonObject();
             } catch (IOException e) {
-                SERVER.warn("Could not load emotes!");
+                SERVER.warn(Lang.console("gmne.console.emotes_load_failed"));
             }
         } else {
-            SERVER.warn("Could not load emotes!");
+            SERVER.warn(Lang.console("gmne.console.emotes_load_failed"));
         }
     }
 

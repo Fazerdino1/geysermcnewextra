@@ -1,7 +1,7 @@
 package fr.crossplaymc.geysermcnewextra.core.commands;
 
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
-import fr.crossplaymc.geysermcnewextra.core.locale.GELocale;
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.preferences.JavaPreferencesData;
 
 import java.util.List;
@@ -31,6 +31,6 @@ public class EmoteChatCommand implements BedrockCommand {
             data.muteEmoteChat = !data.muteEmoteChat;
         }
         data.save();
-        SERVER.sendRawMessage(playerUUID, GELocale.translate("ge.settings.java.emotechat." + (data.muteEmoteChat ? "muted" : "unmuted"), GE.getConfig().getDefaultLocale()));
+        SERVER.sendRawMessage(playerUUID, Lang.console("gmne.settings.java.emotechat." + (data.muteEmoteChat ? "muted" : "unmuted")));
     }
 }

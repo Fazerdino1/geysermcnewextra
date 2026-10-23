@@ -12,11 +12,11 @@ import java.util.List;
 public class MenuSection extends Section {
     @Override
     public void build(BedrockForm menu, GeyserSession session, ExtrasPlayer player) {
-        menu.add(new Toggle(player.translateGE("ge.settings.menu.doubleClickInventoryShortcut"), player.getPreferences().isEnableDoubleClickShortcut(), (b) -> {
+        menu.add(new Toggle(player.lang("gmne.settings.menu.doubleClickInventoryShortcut"), player.getPreferences().isEnableDoubleClickShortcut(), (b) -> {
             player.getPreferences().setEnableDoubleClickShortcut(b);
         }));
 
-        menu.add(new Slider(player.translateGE("ge.settings.menu.doubleClickTime"), 150, 350, 10, player.getPreferences().getDoubleClickMS(),
+        menu.add(new Slider(player.lang("gmne.settings.menu.doubleClickTime"), 150, 350, 10, player.getPreferences().getDoubleClickMS(),
                 (i) -> {
                     player.getPreferences().setDoubleClickMS(Math.round(i));
                 }));
@@ -25,14 +25,14 @@ public class MenuSection extends Section {
             player.getPreferences().setPromptOnLinks(b);
         }));
 
-        menu.add(new Toggle(player.translateGE("ge.settings.menu.sendSystemToasts"), player.getPreferences().isSendSystemToasts(), (b) -> {
+        menu.add(new Toggle(player.lang("gmne.settings.menu.sendSystemToasts"), player.getPreferences().isSendSystemToasts(), (b) -> {
             player.getPreferences().setSendSystemToasts(b);
         }));
     }
 
     @Override
     public List<String> getHeader(ExtrasPlayer player) {
-        return List.of(player.translateGE("ge.settings.menu.title"), "");
+        return List.of(player.lang("gmne.settings.menu.title"), "");
     }
 
     @Override

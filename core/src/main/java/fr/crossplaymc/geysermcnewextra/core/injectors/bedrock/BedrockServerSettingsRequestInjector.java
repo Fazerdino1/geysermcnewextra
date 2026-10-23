@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.injectors.bedrock;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
 import fr.crossplaymc.geysermcnewextra.core.injectors.GeyserHandler;
 import fr.crossplaymc.geysermcnewextra.core.preferences.bindings.Remappable;
@@ -48,8 +49,7 @@ public class BedrockServerSettingsRequestInjector extends BedrockServerSettingsR
             jsonData = FormDefinitions.instance().codecFor(form).jsonData(form);
         } catch (LinkageError e) {
             settingsFormSupported = false;
-            SERVER.warn("GeyserMCNewExtra settings cannot be shown in the Bedrock settings screen on this server ("
-                    + e + "); players will be told to double tap inventory instead.");
+            SERVER.warn(Lang.console("gmne.console.settings_screen_unavailable", e));
             sendFallback(session, packet, player);
             return;
         }
@@ -65,7 +65,7 @@ public class BedrockServerSettingsRequestInjector extends BedrockServerSettingsR
     }
 
     private void sendFallback(GeyserSession session, ServerSettingsRequestPacket packet, ExtrasPlayer player) {
-        player.sendSystemToast(player.translateGE("ge.form_error_toast.line1"), player.translateGE("ge.form_error_toast.line2"));
+        player.sendSystemToast(player.lang("gmne.form_error_toast.line1"), player.lang("gmne.form_error_toast.line2"));
         super.translate(session, packet);
     }
 }

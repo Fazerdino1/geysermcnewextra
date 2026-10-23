@@ -35,7 +35,7 @@ public class PackSettingsMenu extends BedrockForm {
 
     @Override
     public CustomForm.Builder create(ExtrasPlayer player) {
-        setTitle(this.pack.manifest().header().name() + " " + "Settings");
+        setTitle(player.lang("gmne.packs.settings_title", this.pack.manifest().header().name()));
         ArrayList<String> packNames = getSubpackNames(pack);
 
         String defaultPack = packNames.get(packNames.size() - 1);
@@ -44,7 +44,7 @@ public class PackSettingsMenu extends BedrockForm {
             defaultPack = packNames.contains(pref) ? pref : defaultPack;
         }
 
-        add(new StepSlider("Resolution", packNames, defaultPack, (str) -> {
+        add(new StepSlider(player.lang("gmne.packs.resolution"), packNames, defaultPack, (str) -> {
             player.getPreferences().getSelectedSubpacks().put(packID, str);
         }));
         for (ResourcePackManifest.Setting setting : pack.manifest().settings()) {

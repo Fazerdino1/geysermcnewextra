@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.features.skinsaver;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
 import org.geysermc.geyser.session.auth.BedrockClientData;
 
@@ -26,7 +27,7 @@ public class SkinSaver {
             Path skinsFolder = createFolder(SERVER.getPluginFolder().resolve("skins"),
                     SkinFiles.safeFolderName(data.getSkinId().replace(data.getCapeId(), "")));
             if (skinsFolder == null) {
-                SERVER.warn("Not saving skin of player " + player.getBedrockXUID() + ": invalid skin id");
+                SERVER.warn(Lang.console("gmne.console.skin_invalid_id", player.getBedrockXUID()));
                 return;
             }
 
@@ -36,8 +37,8 @@ public class SkinSaver {
                 File skinFile = skinsFolder.resolve("skin.png").toFile();
                 ImageIO.write(getFromSkinData(data.getSkinImageWidth(), data.getSkinImageHeight(), skinBytes), "png", skinFile);
             } else {
-                SERVER.warn("Not saving skin image of player " + player.getBedrockXUID() + ": unexpected size "
-                        + data.getSkinImageWidth() + "x" + data.getSkinImageHeight() + " for " + skinBytes.length + " bytes");
+                SERVER.warn(Lang.console("gmne.console.skin_bad_image", player.getBedrockXUID(),
+                        data.getSkinImageWidth(), data.getSkinImageHeight(), skinBytes.length));
             }
 
             String rawAnimData = data.getSkinAnimationData();
@@ -58,12 +59,12 @@ public class SkinSaver {
                     File capeFile = capesFolder.resolve("cape.png").toFile();
                     ImageIO.write(getFromSkinData(data.getCapeImageWidth(), data.getCapeImageHeight(), capeBytes), "png", capeFile);
                 } else {
-                    SERVER.warn("Not saving cape of player " + player.getBedrockXUID() + ": invalid cape id or image");
+                    SERVER.warn(Lang.console("gmne.console.cape_invalid", player.getBedrockXUID()));
                 }
             }
 
         } catch (IOException | RuntimeException e) {
-            SERVER.warn("Could not save skin data for player " + player.getBedrockXUID() + ", " + e);
+            SERVER.warn(Lang.console("gmne.console.skin_save_failed", player.getBedrockXUID(), e));
         }
     }
 
@@ -75,7 +76,7 @@ public class SkinSaver {
     private static void writeText(ExtrasPlayer player, Path file, String text) throws IOException {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         if (bytes.length > MAX_TEXT_BYTES) {
-            SERVER.warn("Not saving " + file.getFileName() + " of player " + player.getBedrockXUID() + ": " + bytes.length + " bytes");
+            SERVER.warn(Lang.console("gmne.console.skin_file_too_big", file.getFileName(), player.getBedrockXUID(), bytes.length));
             return;
         }
         Files.write(file, bytes);

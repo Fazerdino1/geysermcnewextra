@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.config;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.ServerType;
 import fr.crossplaymc.geysermcnewextra.core.utils.IsAvailable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -19,7 +20,7 @@ import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.SERVER;
 
 public class ConfigLoader {
 
-    public static final int LATEST_VERSION = 8;
+    public static final int LATEST_VERSION = 9;
     private static final String HEADER = """
             GeyserMCNewExtra
             If Geyser is detected, all required config changes will be automatically applied.
@@ -34,6 +35,7 @@ public class ConfigLoader {
             .addVersion(6, fiveToSix())
             .addVersion(7, sixToSeven())
             .addVersion(8, sevenToEight())
+            .addVersion(9, eightToNine())
 
             .build();
 
@@ -45,7 +47,7 @@ public class ConfigLoader {
             // Ensure the data folder exists
             if (!SERVER.getPluginFolder().toFile().exists()) {
                 if (!SERVER.getPluginFolder().toFile().mkdirs()) {
-                    SERVER.warn("Failed to create data folder");
+                    SERVER.warn(Lang.console("gmne.console.data_folder_failed"));
                 }
             }
         }
@@ -80,7 +82,7 @@ public class ConfigLoader {
             GE.setConfig(config);
         } catch (ConfigurateException e) {
             // todo logging?
-            SERVER.warn("Failed to load config! Using defaults.\n" + e.getMessage());
+            SERVER.warn(Lang.console("gmne.console.config_load_failed", e.getMessage()));
             GE.setConfig(new GeyserMCNewExtraConfig());
         }
 
@@ -157,6 +159,18 @@ public class ConfigLoader {
         return ConfigurationTransformation.builder()
                 .addAction(NodePath.path("enable-geyser-extras-menu"), TransformAction.rename("enable-menu"))
                 .addAction(NodePath.path("geyser-extras-pack-priority"), TransformAction.rename("resource-pack-priority"))
+                .build();
+    }
+
+    // French became the default language: switch configs still on the old default (en_US)
+    private static ConfigurationTransformation eightToNine() {
+        return ConfigurationTransformation.builder()
+                .addAction(NodePath.path("default-locale"), (path, value) -> {
+                    if ("en_US".equals(value.getString())) {
+                        value.raw(GeyserMCNewExtraConfig.DEFAULT_LOCALE);
+                    }
+                    return null;
+                })
                 .build();
     }
 }

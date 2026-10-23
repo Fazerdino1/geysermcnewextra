@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.protocol;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 
 import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemProfile;
 import com.github.retrooper.packetevents.resources.ResourceLocation;
@@ -61,10 +62,10 @@ public class CapeLoader {
                     String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
                     UUID_TO_JAVA_PROFILE.put(cape.bedrockId, JsonParser.parseString(json).getAsJsonObject());
                 } catch (IOException e) {
-                    SERVER.warn("Could not load cape: " + cape.name());
+                    SERVER.warn(Lang.console("gmne.console.cape_load_failed", cape.name()));
                 }
             } else {
-                SERVER.warn("Could not load cape: " + cape.name());
+                SERVER.warn(Lang.console("gmne.console.cape_load_failed", cape.name()));
 
             }
         }

@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.cache;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import com.fasterxml.jackson.databind.JsonNode;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
 import fr.crossplaymc.geysermcnewextra.core.parity.java.menus.packs.PackLoader;
@@ -36,38 +37,38 @@ public class PackCacheUtils {
     public static void initialize() {
         PACKS_FOLDER = Cache.CACHE_FOLDER.resolve("packs/");
         EXTRAS_PACK_FILE = PACKS_FOLDER.resolve("extras-pack.mcpack");
-        SERVER.log("Checking for pack updates...");
+        SERVER.log(Lang.console("gmne.console.pack_checking"));
         try {
             Files.createDirectories(PACKS_FOLDER);
             boolean extrasPackNeedsUpdate = checkExtrasPack();
             if (extrasPackNeedsUpdate) {
                 Cache.saveCacheDates();
 
-                SERVER.log("Downloading extras resource pack...");
+                SERVER.log(Lang.console("gmne.console.pack_downloading"));
                 InputStream in = HTTP.request(UpstreamResources.PACK_URL);
                 Files.copy(in, EXTRAS_PACK_FILE, StandardCopyOption.REPLACE_EXISTING);
-                SERVER.log("extras resource pack downloaded!");
+                SERVER.log(Lang.console("gmne.console.pack_downloaded"));
             }
         } catch (Exception e) {
             throw new RuntimeException("Error while downloading resources!", e);
         }
-        SERVER.log("Loading resources...");
+        SERVER.log(Lang.console("gmne.console.loading_resources"));
         RP_EXTRAS_PACK = ResourcePack.create(PackCodec.path(EXTRAS_PACK_FILE));
 
         // Geyser's packs folder belongs to the admin: only warn about packs that are now redundant,
         // never delete them (based on h4-hub/GeyserMCNewExtra@a352538, MIT)
         Path geyserMCPacks = GE.geyserApi.packDirectory();
         if (geyserMCPacks.resolve(UpstreamResources.LEGACY_PACK_FILE_NAME).toFile().exists()) {
-            SERVER.warn(UpstreamResources.LEGACY_PACK_FILE_NAME + " is in Geyser's packs folder; GeyserMCNewExtra already sends it, you can remove that copy.");
+            SERVER.warn(Lang.console("gmne.console.legacy_pack_in_geyser", UpstreamResources.LEGACY_PACK_FILE_NAME));
         }
         if (geyserMCPacks.resolve("GeyserOptionalPack.mcpack").toFile().exists()) {
-            SERVER.warn("GeyserOptionalPack.mcpack is in Geyser's packs folder; it is deprecated (Geyser now ships the GeyserIntegratedPack) and may conflict with it.");
+            SERVER.warn(Lang.console("gmne.console.optional_pack_in_geyser"));
         }
         // delete old GeyserOptionalPack from cache folder if it exists
         File oldOptionalPack = PACKS_FOLDER.resolve("GeyserOptionalPack.mcpack").toFile();
         if (oldOptionalPack.exists()) {
             if (oldOptionalPack.delete()) {
-                SERVER.log("Removed deprecated GeyserOptionalPack.mcpack from cache");
+                SERVER.log(Lang.console("gmne.console.legacy_optional_pack_removed"));
             }
         }
     }
@@ -118,16 +119,16 @@ public class PackCacheUtils {
             if (existingPack != null) {
                 // pack already registered - check if it's via CDN
                 if (existingPack.codec() instanceof UrlPackCodec) {
-                    SERVER.log("extras resource pack detected via CDN (UrlPackCodec), skipping local registration.");
+                    SERVER.log(Lang.console("gmne.console.pack_via_cdn"));
                 } else {
-                    SERVER.log("extras resource pack already registered, skipping.");
+                    SERVER.log(Lang.console("gmne.console.pack_already_registered"));
                 }
             } else {
                 // register local copy of the extras resource pack
                 int priority = GE.getConfig().getResourcePackPriority();
                 // Geyser requires priority to be between -100 and 100
                 if (priority < -100 || priority > 100) {
-                    SERVER.warn("extras resource pack priority " + priority + " is out of valid range (-100 to 100). Using default value of 100.");
+                    SERVER.warn(Lang.console("gmne.console.pack_priority_invalid", priority));
                     priority = 100;
                 }
                 ev.register(RP_EXTRAS_PACK, PriorityOption.priority(priority));

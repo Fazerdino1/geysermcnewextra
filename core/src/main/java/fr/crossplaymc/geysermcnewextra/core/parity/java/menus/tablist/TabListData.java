@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.parity.java.menus.tablist;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
 import fr.crossplaymc.geysermcnewextra.core.utils.IdUtils;
 import lombok.Getter;
@@ -43,8 +44,7 @@ public class TabListData {
     public static void disableTracking(Throwable cause) {
         if (trackingAvailable) {
             trackingAvailable = false;
-            SERVER.warn("Player list menu disabled: this GeyserMCNewExtra jar does not match this Geyser build (" + cause
-                    + "). On Paper/Spigot use GeyserMCNewExtra-Spigot.jar in plugins/, not the extension jar.");
+            SERVER.warn(Lang.console("gmne.console.player_list_disabled", cause));
         }
     }
 

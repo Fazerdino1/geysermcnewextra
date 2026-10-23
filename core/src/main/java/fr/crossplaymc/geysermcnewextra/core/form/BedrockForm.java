@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.form;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
 import fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra;
 import lombok.Setter;
@@ -66,7 +67,7 @@ public class BedrockForm {
                 }
             } catch (RuntimeException e) {
                 // Without this, a failing element silently dropped the whole response
-                SERVER.warn("Could not apply the response to form '" + this.title + "' at element " + i + " from " + player.getBedrockXUID() + ": " + e);
+                SERVER.warn(Lang.console("gmne.console.form_response_failed", this.title, i, player.getBedrockXUID(), e));
                 if (GeyserMCNewExtra.GE.getConfig().isDebugMode()) {
                     e.printStackTrace();
                 }
@@ -78,7 +79,7 @@ public class BedrockForm {
             onClose(player);
         });
         customForm.invalidResultHandler(() -> {
-            SERVER.warn("ERROR: FORM RESPONSE BY " + player.getSession().getClientData().getUsername() + " WAS INVALID!");
+            SERVER.warn(Lang.console("gmne.console.form_response_invalid", player.getSession().getClientData().getUsername()));
         });
         return customForm;
     }

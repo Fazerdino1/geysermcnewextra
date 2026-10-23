@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.preferences;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
 import fr.crossplaymc.geysermcnewextra.core.menus.Menus;
 import fr.crossplaymc.geysermcnewextra.core.preferences.bindings.Action;
@@ -105,7 +106,7 @@ public class PreferencesData {
                 DEFAULT.copyFrom(GSON.fromJson(reader, PreferencesData.class));
                 writeDefaults();
             } catch (Exception e) {
-                SERVER.warn("Could not load custom default settings, new players will recieve factory\ndefault's, no changes have been made to default.json.\n" + e.getLocalizedMessage());
+                SERVER.warn(Lang.console("gmne.console.prefs_default_load_failed", e.getLocalizedMessage(), "default.json"));
             }
         } else {
             writeDefaults();
@@ -119,7 +120,7 @@ public class PreferencesData {
         try (FileWriter write = new FileWriter(defaultPath.toFile())) {
             GSON.toJson(DEFAULT, write);
         } catch (IOException e) {
-            SERVER.warn("Could not create default preferences file.\n" + e.getLocalizedMessage());
+            SERVER.warn(Lang.console("gmne.console.prefs_default_write_failed", e.getLocalizedMessage()));
         }
     }
 
@@ -158,7 +159,7 @@ public class PreferencesData {
             String json = GSON.toJson(this);
             String content = json.equals(GSON.toJson(DEFAULT)) ? null : json;
             PreferencesIO.submit(player.getUserPrefs().toPath(), content, e ->
-                    SERVER.warn("Could not save data for player " + player.getBedrockXUID() + ": " + e));
+                    SERVER.warn(Lang.console("gmne.console.prefs_save_failed", player.getBedrockXUID(), e)));
         }
     }
 
@@ -168,7 +169,7 @@ public class PreferencesData {
                 // Copy from because session would be null
                 this.copyFrom(GSON.fromJson(reader, PreferencesData.class));
             } catch (Exception e) {
-                SERVER.warn("Could not load data for player " + player.getBedrockXUID() + ", restoring to default for them.\n" + e.getLocalizedMessage());
+                SERVER.warn(Lang.console("gmne.console.prefs_load_failed", player.getBedrockXUID(), e.getLocalizedMessage()));
 
                 this.copyFrom(DEFAULT);
             }

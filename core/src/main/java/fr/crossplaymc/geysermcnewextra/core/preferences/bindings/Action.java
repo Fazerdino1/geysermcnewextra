@@ -95,7 +95,7 @@ public enum Action {
                 return player.translate("key.swapOffhand");
             }
             case RECONNECT -> {
-                return player.translateOtherwiseGE("ge.reconnect", BedrockLocale.RELOAD);
+                return player.langOrElse("gmne.reconnect", BedrockLocale.RELOAD);
             }
             case TOGGLE_TOOLTIPS -> {
                 GeyserSession session = player.getSession();
@@ -112,7 +112,7 @@ public enum Action {
                 return BedrockLocale.KEY.PLAYER_LIST;
             }
             case NEXT_LOCKED_PERSPECTIVE, PLATFORM_LIST, OPEN_GE_MENU -> {
-                return player.translateGE("ge.settings.bindings.actions." + this.name().toLowerCase());
+                return player.lang("gmne.settings.bindings.actions." + this.name().toLowerCase());
             }
             case OPEN_INVENTORY -> {
                 return BedrockLocale.KEY.OPEN_INVENTORY;

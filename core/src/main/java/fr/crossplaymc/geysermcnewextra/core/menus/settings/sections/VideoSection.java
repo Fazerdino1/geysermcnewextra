@@ -47,7 +47,7 @@ public class VideoSection extends Section {
                 session.getPreferencesCache().setCooldownPreference(cooldownTypes.get(str));
             }));
         }
-        menu.add(new MappedDropdown<>(player.translateGE("ge.settings.video.lockedCameraPerspective"),
+        menu.add(new MappedDropdown<>(player.lang("gmne.settings.video.lockedCameraPerspective"),
                 Perspectives.buildTranslations(session),
                 player.getPreferences().getLockedPerspective(),
                 (pov) -> player.getPreferences().setLockedPerspective(pov)
@@ -61,7 +61,7 @@ public class VideoSection extends Section {
         }
 
         if (player.getDiagnostics() != null) {
-            menu.add(new Toggle(player.translateGE("ge.settings.video.showFPS"), player.getPreferences().isShowFPS(), (b) -> {
+            menu.add(new Toggle(player.lang("gmne.settings.video.showFPS"), player.getPreferences().isShowFPS(), (b) -> {
                 player.getPreferences().setShowFPS(b);
                 if (!b && player.getFpsBossBar() != null){
                     player.getFpsBossBar().removeBossBar();
@@ -70,7 +70,7 @@ public class VideoSection extends Section {
             }));
         }
 
-        menu.add(new Toggle(player.translateGE("ge.settings.video.advancedTooltips"), session.isAdvancedTooltips(), (b) -> {
+        menu.add(new Toggle(player.lang("gmne.settings.video.advancedTooltips"), session.isAdvancedTooltips(), (b) -> {
             if (b != session.isAdvancedTooltips()) {
                 session.setAdvancedTooltips(b);
                 String onOrOff = session.isAdvancedTooltips() ? "on" : "off";

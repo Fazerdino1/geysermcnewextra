@@ -4,7 +4,7 @@ import fr.crossplaymc.geysermcnewextra.core.features.skinsaver.SkinSaver;
 import fr.crossplaymc.geysermcnewextra.core.form.BedrockForm;
 import fr.crossplaymc.geysermcnewextra.core.form.BedrockMenu;
 import fr.crossplaymc.geysermcnewextra.core.form.BedrockModal;
-import fr.crossplaymc.geysermcnewextra.core.locale.GELocale;
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.parity.bedrock.EmoteUtils;
 import fr.crossplaymc.geysermcnewextra.core.parity.java.menus.serverlinks.ServerLinksData;
 import fr.crossplaymc.geysermcnewextra.core.parity.java.menus.tablist.TabListData;
@@ -122,7 +122,7 @@ public class ExtrasPlayer {
         loggedIn = true;
         SERVER.debug("startGame xuid=" + bedrockXUID + " javaUuid=" + session.javaUuid());
 
-        sendSystemToast(translateGE("ge.welcome_toast.line1"), translateGE("ge.welcome_toast.line2"));
+        sendSystemToast(lang("gmne.welcome_toast.line1"), lang("gmne.welcome_toast.line2"));
 
         if (GE.getConfig().isEnableSkinSaving()) {
             SkinSaver.save(this);
@@ -142,7 +142,7 @@ public class ExtrasPlayer {
     }
 
     public String getBossBarText() {
-        return diagnostics != null ? "FPS: " + Math.round(diagnostics.getAvgFps()) : "";
+        return diagnostics != null ? lang("gmne.fps", Math.round(diagnostics.getAvgFps())) : "";
     }
 
     public void onDisconnect() {
@@ -177,7 +177,7 @@ public class ExtrasPlayer {
             EmoteBindings.link(preferences.emoteLinks, toLink, uuid);
             preferences.save();
             String emoteName = EmoteUtils.getName(uuid);
-            sendMessage(String.format(translateGE("gmne.emote_link.done"), toLink.translate(this), emoteName != null ? emoteName : uuid.toString()));
+            sendMessage(lang("gmne.emote_link.done", toLink.translate(this), emoteName != null ? emoteName : uuid.toString()));
             return;
         }
 
@@ -203,7 +203,7 @@ public class ExtrasPlayer {
     public void queueEmoteLink(Remappable binding) {
         emoteLinkQueue.add(binding);
         SERVER.debug("Emote link queued for " + binding + " xuid=" + bedrockXUID);
-        sendMessage(String.format(translateGE("gmne.emote_link.prompt"), binding.translate(this)));
+        sendMessage(lang("gmne.emote_link.prompt", binding.translate(this)));
     }
 
     private volatile boolean disconnected = false;
@@ -224,7 +224,7 @@ public class ExtrasPlayer {
         } catch (RuntimeException e) {
             // Log the first failure only: the same error would otherwise repeat every tick (upstream #67)
             if (tickFailures++ == 0) {
-                SERVER.warn("Tick failed for player " + bedrockXUID + " (further failures are not logged): " + e);
+                SERVER.warn(Lang.console("gmne.console.tick_failed", bedrockXUID, e));
                 if (GE.getConfig().isDebugMode()) {
                     e.printStackTrace();
                 }
@@ -352,11 +352,15 @@ public class ExtrasPlayer {
         return MinecraftLocale.getLocaleString(lang, session.locale());
     }
 
-    public String translateGE(String lang) {
-        return GELocale.translate(lang, session.locale());
+    /**
+     * A text in this player's language (their Bedrock client locale), see {@link Lang}.
+     */
+    public String lang(String key, Object... args) {
+        return Lang.get(key, session.locale(), args);
     }
-    public String translateOtherwiseGE(String lang, String otherwise) {
-        return GELocale.translateOtherwise(lang, otherwise, session.locale());
+
+    public String langOrElse(String key, String otherwise) {
+        return Lang.has(key) ? lang(key) : otherwise;
     }
 
     @Nullable

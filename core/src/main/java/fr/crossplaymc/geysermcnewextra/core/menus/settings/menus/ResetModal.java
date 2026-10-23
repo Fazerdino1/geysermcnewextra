@@ -9,7 +9,7 @@ public class ResetModal extends BedrockModal {
     @Override
 
     public ModalForm create(ExtrasPlayer player) {
-        setContent(player.translateGE("ge.settings.reset.reconnect")
+        setContent(player.lang("gmne.settings.reset.reconnect")
                 + "\n\n" +
                 player.translate("mco.configure.world.leave.question.line2"));
 

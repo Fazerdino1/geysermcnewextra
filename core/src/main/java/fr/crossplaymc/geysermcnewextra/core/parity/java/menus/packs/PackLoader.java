@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.core.parity.java.menus.packs;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import org.geysermc.geyser.GeyserImpl;
 import org.geysermc.geyser.api.GeyserApi;
 import org.geysermc.geyser.api.pack.PackCodec;
@@ -42,10 +43,10 @@ public class PackLoader {
                 // One broken pack must not prevent the others (or GeyserMCNewExtra) from loading
                 try {
                     ResourcePack mcpack = ResourcePack.create(PackCodec.path(pack.toPath()));
-                    SERVER.log(mcpack.manifest().header().name() + " loaded!");
+                    SERVER.log(Lang.console("gmne.console.optional_pack_loaded", mcpack.manifest().header().name()));
                     PACKS.put(mcpack.manifest().header().uuid(), mcpack);
                 } catch (Exception e) {
-                    SERVER.warn("Skipping optional pack " + pack.getName() + ": " + e);
+                    SERVER.warn(Lang.console("gmne.console.optional_pack_skipped", pack.getName(), e));
                 }
             }
         }

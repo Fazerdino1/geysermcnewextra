@@ -46,9 +46,9 @@ public class BindingsSection extends Section {
         if (linked != null && linkedName == null) {
             linkedName = linked.toString();
         }
-        menu.add(new Label(String.format(player.translateGE("gmne.emote_link.current"),
-                linkedName != null ? linkedName : player.translateGE("gmne.emote_link.none"))));
-        menu.add(new Toggle(String.format(player.translateGE("gmne.emote_link.toggle"), binding.translate(player)), false, (link) -> {
+        menu.add(new Label(player.lang("gmne.emote_link.current",
+                linkedName != null ? linkedName : player.lang("gmne.emote_link.none"))));
+        menu.add(new Toggle(player.lang("gmne.emote_link.toggle", binding.translate(player)), false, (link) -> {
             if (link) {
                 player.queueEmoteLink(binding);
             }

@@ -40,14 +40,14 @@ public enum GUIElements {
     }
 
     public String translateOptions(ExtrasPlayer player) {
-        String hide = player.translateGE("ge.settings.hud.hide");
+        String hide = player.lang("gmne.settings.hud.hide");
         switch (this) {
             // lololol ez translation
             case PAPER_DOLL -> {
                 return BedrockLocale.OPTIONS.HIDE_PAPER_DOLL;
             }
             default -> {
-                return hide.replace("%s", player.translateGE("ge.settings.hud." + this.name().toLowerCase()));
+                return hide.replace("%s", player.lang("gmne.settings.hud." + this.name().toLowerCase()));
             }
         }
     }

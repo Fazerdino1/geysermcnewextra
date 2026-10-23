@@ -14,7 +14,7 @@ public class CreditsSection extends Section {
     @Override
     public void build(BedrockForm menu, GeyserSession session, ExtrasPlayer player) {
         // Our credits first (bundled, translated), then the original project's credits (downloaded)
-        menu.add(new Label(player.translateGE("gmne.credits")));
+        menu.add(new Label(player.lang("gmne.credits")));
         menu.add(new Label(Cache.CREDITS_TEXT));
     }
 

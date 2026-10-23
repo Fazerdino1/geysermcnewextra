@@ -9,6 +9,8 @@ import fr.crossplaymc.geysermcnewextra.core.cache.UpstreamResources;
 import fr.crossplaymc.geysermcnewextra.core.config.ConfigLoader;
 import fr.crossplaymc.geysermcnewextra.core.config.DataFolderMigration;
 import fr.crossplaymc.geysermcnewextra.core.config.GeyserMCNewExtraConfig;
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
+import fr.crossplaymc.geysermcnewextra.core.config.GeyserMCNewExtraConfig;
 import fr.crossplaymc.geysermcnewextra.core.injectors.GeyserHandler;
 import fr.crossplaymc.geysermcnewextra.core.parity.bedrock.EmoteUtils;
 import fr.crossplaymc.geysermcnewextra.core.parity.java.blockdisplay.BlockDisplayEntity;
@@ -58,11 +60,14 @@ public class GeyserMCNewExtra implements EventRegistrar {
 
         IsAvailable.preload();
 
+        // Bundled texts until the config (and so the server language) is loaded
+        Lang.loadBundled(GeyserMCNewExtraConfig.DEFAULT_LOCALE);
+
         InitializeLogger.start();
 
         if (!IsAvailable.cloudburst()) {
-            SERVER.warn("!ERROR! GeyserMCNewExtra currently does not support running as an extension on modded platforms. !ERROR!");
-            SERVER.warn("Please use Geyser-Standalone!");
+            SERVER.warn(Lang.console("gmne.console.modded_unsupported"));
+            SERVER.warn(Lang.console("gmne.console.use_standalone"));
             InitializeLogger.endNoDone();
             return;
         }
@@ -73,22 +78,23 @@ public class GeyserMCNewExtra implements EventRegistrar {
 
         migrateLegacyDataFolder();
 
-        SERVER.log("Loading config...");
+        SERVER.log(Lang.console("gmne.console.loading_config"));
         ConfigLoader.load();
         SERVER.onConfigLoad();
+        loadLanguages();
 
         if (ServerType.isExtension()) {
             GeyserHandler.register();
 
-            SERVER.log("Initializing cache...");
+            SERVER.log(Lang.console("gmne.console.initializing_cache"));
             Cache.initialize();
-            SERVER.log("Loading Emote Data...");
+            SERVER.log(Lang.console("gmne.console.loading_emotes"));
             EmoteUtils.initialize();
         }
 
         PreferencesData.init();
 
-        SERVER.log("Registering events...");
+        SERVER.log(Lang.console("gmne.console.registering_events"));
         geyserApi.eventBus().register(this, this);
         geyserApi.eventBus().subscribe(this, GeyserPostInitializeEvent.class, this::onGeyserInitialize);
         // Custom entity types must be registered here: Geyser freezes its entity registry right after this event
@@ -132,12 +138,30 @@ public class GeyserMCNewExtra implements EventRegistrar {
     public void onGeyserInitialize(GeyserPostInitializeEvent init) {
         if (!ServerType.isExtension()) {
             GeyserHandler.register();
-            SERVER.log("Initializing cache...");
+            SERVER.log(Lang.console("gmne.console.initializing_cache"));
             Cache.initialize();
-            SERVER.log("Loading Emote Data...");
+            SERVER.log(Lang.console("gmne.console.loading_emotes"));
             EmoteUtils.initialize();
             InitializeLogger.end();
         }
+    }
+
+    /**
+     * Extracts/completes {@code lang/*.yml} and loads them with the configured server language.
+     */
+    public void loadLanguages() {
+        Path folder = SERVER.getPluginFolder().resolve("lang");
+        java.util.Map<String, Integer> changes = new java.util.LinkedHashMap<>();
+        try {
+            Lang.load(folder, getConfig().getDefaultLocale(), changes::put);
+        } catch (IOException e) {
+            Lang.loadBundled(getConfig().getDefaultLocale());
+            SERVER.warn(Lang.console("gmne.console.lang_folder_failed", folder, e));
+            return;
+        }
+        changes.forEach((file, added) -> SERVER.log(added < 0
+                ? Lang.console("gmne.console.lang_created", file)
+                : Lang.console("gmne.console.lang_completed", file, added)));
     }
 
     private static void migrateLegacyDataFolder() {
@@ -148,11 +172,10 @@ public class GeyserMCNewExtra implements EventRegistrar {
         Path legacy = current.toAbsolutePath().getParent().resolve(legacyName);
         try {
             if (DataFolderMigration.copyLegacyFolder(legacy, current)) {
-                SERVER.log("Copied the previous data folder " + legacy + " to " + current
-                        + " (config, player preferences, packs). The old folder was kept as a backup.");
+                SERVER.log(Lang.console("gmne.console.data_folder_copied", legacy, current));
             }
         } catch (IOException e) {
-            SERVER.warn("Could not copy the previous data folder " + legacy + ": " + e);
+            SERVER.warn(Lang.console("gmne.console.data_folder_copy_failed", legacy, e));
         }
     }
 
@@ -164,7 +187,7 @@ public class GeyserMCNewExtra implements EventRegistrar {
             BlockDisplayEntity.buildEntityDef();
             blockDisplayRegistered = true;
         } catch (Exception e) {
-            SERVER.warn("Block display workaround disabled: could not register the block display entity (" + e + ")");
+            SERVER.warn(Lang.console("gmne.console.block_display_failed", e));
         }
     }
 
@@ -204,7 +227,7 @@ public class GeyserMCNewExtra implements EventRegistrar {
             connections.get(ev.connection().xuid()).onDisconnect();
         }
         if (connections.remove(ev.connection().xuid()) == null) {
-            SERVER.warn("Could not remove user.");
+            SERVER.warn(Lang.console("gmne.console.remove_user_failed"));
         }
 
     }
@@ -259,7 +282,7 @@ public class GeyserMCNewExtra implements EventRegistrar {
             action.run();
         } catch (RuntimeException | LinkageError e) {
             if (SERVER != null) {
-                SERVER.warn("GeyserMCNewExtra: " + step + " failed: " + e);
+                SERVER.warn(Lang.console("gmne.console.step_failed", step, e));
             } else {
                 System.err.println("[GeyserMCNewExtra] " + step + " failed: " + e);
             }

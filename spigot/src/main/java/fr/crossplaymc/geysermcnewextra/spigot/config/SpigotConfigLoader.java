@@ -1,5 +1,6 @@
 package fr.crossplaymc.geysermcnewextra.spigot.config;
 
+import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.loader.HeaderMode;
@@ -59,7 +60,7 @@ public class SpigotConfigLoader {
             SPIGOT.setPlatformConfig(config);
         } catch (ConfigurateException e) {
             // todo logging?
-            SERVER.warn("Failed to load spigot config! Using defaults.\n" + e.getMessage());
+            SERVER.warn(Lang.console("gmne.console.spigot_config_load_failed", e.getMessage()));
             SPIGOT.setPlatformConfig(new GeyserMCNewExtraSpigotConfig());
         }
     }
