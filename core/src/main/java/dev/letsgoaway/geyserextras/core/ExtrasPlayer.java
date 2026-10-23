@@ -166,14 +166,12 @@ public class ExtrasPlayer {
 
     public void onEmoteEvent(ClientEmoteEvent ev) {
         UUID uuid = UUID.fromString(ev.emoteId());
-        int id = emotesList.indexOf(uuid);
+        // Geyser 2.11+ discards the client's EmoteListPacket (Bedrock emotes are server-side now),
+        // so emotesList stays empty and the wheel slot of an emote is unknown. Without a slot the
+        // emote behaves as unbound: emote chat is still sent, slot bindings cannot apply.
+        Remappable binding = emoteBinding(emotesList.indexOf(uuid));
 
-        if (id == -1) {
-            SERVER.debugWarn("Emote with id: " + ev.emoteId() + " was not in emote list!");
-            return;
-        }
-
-        if (preferences.isDefault(Remappable.values()[id])) {
+        if (binding == null || preferences.isDefault(binding)) {
             String emoteChat = EmoteUtils.getEmoteChatString(uuid, this);
 
             if (emoteChat != null && Duration.between(lastEmoteTime, Instant.now()).toMillis() >= 3000) {
@@ -181,9 +179,16 @@ public class ExtrasPlayer {
                 lastEmoteTime = Instant.now();
             }
         } else {
-            preferences.getAction(Remappable.values()[id]).run(this);
+            preferences.getAction(binding).run(this);
         }
 
+    }
+
+    private static final Remappable[] EMOTE_BINDINGS = {Remappable.EMOTE_1, Remappable.EMOTE_2, Remappable.EMOTE_3, Remappable.EMOTE_4};
+
+    @Nullable
+    private static Remappable emoteBinding(int slot) {
+        return slot >= 0 && slot < EMOTE_BINDINGS.length ? EMOTE_BINDINGS[slot] : null;
     }
 
     public void tick() {
