@@ -5,6 +5,8 @@ Java Edition features and handy extras for **Bedrock Edition players** on Java E
 including the public PvP server **CrossPlayMC-SMP**, with a focus on stability and fair PvP between
 both editions.
 
+Source code and issues: **https://github.com/Fazerdino1/geysermcnewextra**
+
 > **Status:** `2.1.0-alpha.1`, in development; no build is published yet.
 > See [CHANGELOG.md](CHANGELOG.md).
 

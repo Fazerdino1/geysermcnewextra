@@ -3,6 +3,7 @@ version: ${version}
 authors: ["LetsGoAway", "CrossPlayMC"]
 description: "Java Edition features for Bedrock players on CrossPlayMC (based on the MIT project by LetsGoAway)"
 main: fr.crossplaymc.geysermcnewextra.spigot.GeyserMCNewExtraSpigot
+website: https://github.com/Fazerdino1/geysermcnewextra
 api-version: '1.16'
 depend:
   - Geyser-Spigot

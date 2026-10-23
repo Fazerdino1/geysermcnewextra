@@ -41,6 +41,7 @@ import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.GE;
 
 @Plugin(
         authors = {"LetsGoAway", "CrossPlayMC"},
+        url = "https://github.com/Fazerdino1/geysermcnewextra",
         description = "Java Edition features for Bedrock players on CrossPlayMC (based on the MIT project by LetsGoAway)",
         name = "GeyserMCNewExtra",
         version = PluginVersion.GE_VERSION,

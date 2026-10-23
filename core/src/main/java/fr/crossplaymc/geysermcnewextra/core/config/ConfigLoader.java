@@ -23,7 +23,7 @@ public class ConfigLoader {
     private static final String HEADER = """
             GeyserMCNewExtra
             If Geyser is detected, all required config changes will be automatically applied.
-            Every option is described in docs/CONFIG.md of the GeyserMCNewExtra repository.
+            Documentation: https://github.com/Fazerdino1/geysermcnewextra
             """;
     private static final ConfigurationTransformation.Versioned transformer = ConfigurationTransformation.versionedBuilder()
             .addVersion(1, zeroToOne())
