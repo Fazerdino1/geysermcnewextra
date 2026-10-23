@@ -132,6 +132,7 @@ public class GeyserExtras implements EventRegistrar {
     }
 
     public void onSessionJoin(SessionJoinEvent ev) {
+        SERVER.debug("SessionJoinEvent xuid=" + ev.connection().xuid() + " known=" + connections.containsKey(ev.connection().xuid()));
         connections.get(ev.connection().xuid()).startGame();
 
     }
@@ -179,6 +180,7 @@ public class GeyserExtras implements EventRegistrar {
     public void onLoadPacks(SessionLoadResourcePacksEvent ev) {
         connections.remove(ev.connection().xuid());
         connections.put(ev.connection().xuid(), SERVER.createPlayer(ev.connection()));
+        SERVER.debug("Created player for xuid=" + ev.connection().xuid() + " javaUuid=" + ev.connection().javaUuid());
         PackCacheUtils.onPackLoadEvent(connections.get(ev.connection().xuid()), ev);
     }
 

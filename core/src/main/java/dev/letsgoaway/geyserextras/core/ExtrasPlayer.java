@@ -119,6 +119,7 @@ public class ExtrasPlayer {
 
     public void startGame() {
         loggedIn = true;
+        SERVER.debug("startGame xuid=" + bedrockXUID + " javaUuid=" + session.javaUuid());
 
         sendSystemToast(translateGE("ge.welcome_toast.line1"), translateGE("ge.welcome_toast.line2"));
 
@@ -165,6 +166,7 @@ public class ExtrasPlayer {
     }
 
     public void onEmoteEvent(ClientEmoteEvent ev) {
+        SERVER.debug("Emote " + ev.emoteId() + " from xuid=" + bedrockXUID);
         UUID uuid = UUID.fromString(ev.emoteId());
         // Geyser 2.11+ discards the client's EmoteListPacket (Bedrock emotes are server-side now),
         // so emotesList stays empty and the wheel slot of an emote is unknown. Without a slot the
@@ -228,6 +230,7 @@ public class ExtrasPlayer {
     }
 
     public void sendSystemToast(String title, String description) {
+        SERVER.debug("Toast '" + title + "' prefToasts=" + preferences.isSendSystemToasts() + " menuEnabled=" + GE.getConfig().isEnableGeyserExtrasMenu());
         if (preferences.isSendSystemToasts() && GE.getConfig().isEnableGeyserExtrasMenu()) {
             ToastRequestPacket toastPacket = new ToastRequestPacket();
             toastPacket.setTitle((CharSequence) title);
@@ -250,6 +253,7 @@ public class ExtrasPlayer {
     }
 
     public void sendForm(BedrockForm form) {
+        debugSendForm(form);
         if (IsAvailable.floodgate()) {
             org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID).sendForm(form.create(this).build());
         } else {
@@ -258,6 +262,7 @@ public class ExtrasPlayer {
     }
 
     public void sendForm(BedrockMenu form) {
+        debugSendForm(form);
         if (IsAvailable.floodgate()) {
             org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID).sendForm(form.create(this));
         } else {
@@ -266,11 +271,24 @@ public class ExtrasPlayer {
     }
 
     public void sendForm(BedrockModal form) {
+        debugSendForm(form);
         if (IsAvailable.floodgate()) {
             org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID).sendForm(form.create(this));
         } else {
             session.sendForm(form.create(this));
         }
+    }
+
+    private void debugSendForm(Object form) {
+        if (!GE.getConfig().isDebugMode()) {
+            return;
+        }
+        String route = IsAvailable.floodgate() ? "floodgate" : "geyser";
+        String floodgatePlayer = "";
+        if (IsAvailable.floodgate()) {
+            floodgatePlayer = " floodgatePlayer=" + (javaUUID != null && org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID) != null);
+        }
+        SERVER.debug("sendForm " + form.getClass().getSimpleName() + " via " + route + " javaUuid=" + javaUUID + floodgatePlayer);
     }
 
     public void setTickingState(float tickrate) {

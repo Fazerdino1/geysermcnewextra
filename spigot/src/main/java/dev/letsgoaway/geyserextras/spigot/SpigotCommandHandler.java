@@ -1,6 +1,7 @@
 package dev.letsgoaway.geyserextras.spigot;
 
 import dev.letsgoaway.geyserextras.core.ExtrasPlayer;
+import dev.letsgoaway.geyserextras.core.GeyserExtras;
 import dev.letsgoaway.geyserextras.core.commands.CommandExecutor;
 import dev.letsgoaway.geyserextras.core.injectors.GeyserHandler;
 import org.bukkit.command.Command;
@@ -12,6 +13,7 @@ public class SpigotCommandHandler implements org.bukkit.command.CommandExecutor 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player spigotPlayer) {
             ExtrasPlayer player = ExtrasPlayer.get(spigotPlayer.getUniqueId());
+            GeyserExtras.SERVER.debug("Command /" + label + " from " + spigotPlayer.getUniqueId() + " bedrockPlayer=" + (player != null));
             if (player != null) {
                 CommandExecutor.runFromCommandInput(player, label, args);
             }

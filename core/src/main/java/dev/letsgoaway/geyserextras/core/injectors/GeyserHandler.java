@@ -19,12 +19,16 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.Clie
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.inventory.ClientboundOpenScreenPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSoundPacket;
 
+import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
+
 public class GeyserHandler {
     public static void register() {
         SoundReplacer.loadSoundMappings();
         CommandExecutor.loadCommands();
         registerUpstream();
         registerDownstream();
+        SERVER.debug("Injected translators: InteractPacket -> " + Registries.BEDROCK_PACKET_TRANSLATORS.get(InteractPacket.class).getClass().getName()
+                + ", PlayerAuthInputPacket -> " + Registries.BEDROCK_PACKET_TRANSLATORS.get(PlayerAuthInputPacket.class).getClass().getName());
     }
 
     public static void registerUpstream() {
