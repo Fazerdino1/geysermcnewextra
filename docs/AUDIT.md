@@ -261,8 +261,10 @@ Vérifié sur le code de Geyser (`860fc710` = 2.11.1 final → `2565dc1c` = 2.12
    - Floodgate présent : le menu GE n'apparaît pas dans les Paramètres Bedrock (`BedrockServerSettingsRequestInjector`, contournement par toast + double-tap) et les formulaires passent par l'API Floodgate (`ExtrasPlayer#sendForm`).
    - PacketEvents éventuellement présent → F12 (mannequins) actif par défaut.
    - F22/F23 (options propres à Spigot) disponibles.
-   - Versions exactes de Minecraft et de Geyser : *en attente*. Si le serveur n'est pas en Java 26.3, la cible du portage sera la version de Geyser réellement installée, pas forcément 2.12.0.
-2. **Aucun JDK sur la machine** (`java` introuvable). Pour `./gradlew build`, il faut un JDK 21 (par ex. `sudo apt install openjdk-21-jdk`), ou m'autoriser à configurer le téléchargement automatique d'un JDK par Gradle (plugin `foojay-resolver`).
+   - Versions : **Purpur 1.21.11**, dernière version de Geyser-Spigot (2.12.0, protocole Java 26.3) + Floodgate, **PacketEvents installé** (donc F12 actif).
+   - Geyser 2.12.0 parle le protocole Java 26.3 : sur un serveur 1.21.11, il a besoin de **ViaVersion** pour traduire (`GeyserSpigotVersionChecker.checkForSupportedProtocol`, lu sur `2565dc1c`). Sans ViaVersion, Geyser affiche seulement un avertissement « outdated » et les joueurs Bedrock ne peuvent pas jouer correctement. ❓ Présence de ViaVersion à confirmer. Chaîne de traduction réelle des coups : Bedrock → Geyser (26.3) → ViaVersion → Purpur 1.21.11.
+2. **JDK** : résolu. Un Temurin 21 est installé dans `~/.local/share/jdks/` pour lancer Gradle, et le plugin `foojay-resolver` télécharge les toolchains (branche `chore/gradle-toolchain`).
+   **Build de référence de l'upstream `d49ad51` : ÉCHEC** (`:core:compileJava`, `PreferencesData.java:33` : `CooldownType.CROSSHAIR` introuvable). Le dernier commit upstream (`274d4bb`) utilise l'enum de Geyser 2.11 alors que les dépendances sont encore en 2.9.x : **le code d'origine ne compile plus tel quel**, le portage (Phase 2) est un prérequis.
 3. **Dépendance réseau aux dépôts GeyserExtras** (B6) : je recommande d'embarquer dans le jar les langues, les crédits et le GeyserExtrasPack (licence à vérifier pour le pack), et de ne plus rien télécharger au démarrage.
 4. **Mannequins (F12)** : je recommande `enableBedrockCapesOnJavaWorkaround: false` sur le SMP dès maintenant, quelle que soit la suite.
 5. Anti-cheat utilisé sur le SMP (Grim, Vulcan, Matrix… ?) et plugins PvP : nécessaires pour la Phase 2.
