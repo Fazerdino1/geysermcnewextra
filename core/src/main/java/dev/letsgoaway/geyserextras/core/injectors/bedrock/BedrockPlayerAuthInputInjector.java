@@ -4,7 +4,6 @@ import dev.letsgoaway.geyserextras.core.ExtrasPlayer;
 import dev.letsgoaway.geyserextras.core.injectors.bedrock.input.BedrockBlockInteractions;
 import org.cloudburstmc.protocol.bedrock.data.PlayerAuthInputData;
 import org.cloudburstmc.protocol.bedrock.packet.PlayerAuthInputPacket;
-import org.geysermc.api.util.InputMode;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.translator.protocol.PacketTranslator;
 import org.geysermc.geyser.translator.protocol.Translator;
@@ -29,11 +28,7 @@ public class BedrockPlayerAuthInputInjector extends PacketTranslator<PlayerAuthI
         for (PlayerAuthInputData input : packet.getInputData()) {
             switch (input) {
                 case PERFORM_BLOCK_ACTIONS -> BedrockBlockInteractions.translate(session, packet.getPlayerActions());
-                case MISSED_SWING -> {
-                    if (session.inputMode().equals(InputMode.TOUCH)) {
-                        player.swingArm();
-                    }
-                }
+                // MISSED_SWING: Geyser itself sends the swing animation back to touch clients now
             }
         }
     }
