@@ -17,7 +17,8 @@ import static dev.letsgoaway.geyserextras.core.GeyserExtras.GE;
 import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
 
 public class PluginVersion {
-    public static final String GE_VERSION = "2.0.0-BETA-11";
+    // Must match `version` in gradle.properties (checked by the :core:checkPluginVersion task)
+    public static final String GE_VERSION = "2.1.0-alpha.1";
 
     public static String latestVersion = "";
     public static String latestVersionModrinthID = "";

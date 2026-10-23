@@ -28,3 +28,21 @@ tasks {
     }
 }
 
+
+// PluginVersion.GE_VERSION has to be a compile-time constant (used by the Velocity @Plugin annotation),
+// so it cannot be generated from the project version. Fail the build if the two drift apart.
+val checkPluginVersion by tasks.registering {
+    val source = file("src/main/java/dev/letsgoaway/geyserextras/core/version/PluginVersion.java")
+    val expected = project.version.toString()
+    inputs.file(source)
+    doLast {
+        val actual = Regex("GE_VERSION = \"([^\"]+)\"").find(source.readText())?.groupValues?.get(1)
+        if (actual != expected) {
+            throw GradleException("PluginVersion.GE_VERSION is '$actual' but gradle.properties version is '$expected'")
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn(checkPluginVersion)
+}
