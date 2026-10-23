@@ -7,6 +7,7 @@ import dev.letsgoaway.geyserextras.core.parity.java.menus.tablist.PlayerListMenu
 import org.geysermc.geyser.entity.type.ChestBoatEntity;
 import org.geysermc.geyser.entity.type.Entity;
 import org.geysermc.geyser.entity.type.living.animal.horse.AbstractHorseEntity;
+import org.geysermc.geyser.entity.type.living.animal.nautilus.AbstractNautilusEntity;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.text.ChatColor;
 import org.geysermc.geyser.util.InventoryUtils;
@@ -62,10 +63,10 @@ public enum Action {
                 // TODO: platformlist
             }
             case OPEN_INVENTORY -> {
-                // Taken from BedrockInteractTranslator
+                // Taken from BedrockInteractTranslator (keep in sync, last checked against Geyser 2.12.0)
                 if (session.getInventoryHolder() == null) {
                     Entity ridingEntity = session.getPlayerEntity().getVehicle();
-                    if (ridingEntity instanceof AbstractHorseEntity || ridingEntity instanceof ChestBoatEntity) {
+                    if (ridingEntity instanceof AbstractHorseEntity || ridingEntity instanceof AbstractNautilusEntity || ridingEntity instanceof ChestBoatEntity) {
                         // This mob has an inventory of its own that we should open instead.
                         ServerboundPlayerCommandPacket openVehicleWindowPacket = new ServerboundPlayerCommandPacket(session.getPlayerEntity().getEntityId(), PlayerState.OPEN_VEHICLE_INVENTORY);
                         session.sendDownstreamGamePacket(openVehicleWindowPacket);
