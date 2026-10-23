@@ -81,7 +81,7 @@ public class ExtrasPlayer {
     // Used for the double click menu action
     @Setter
     @Getter
-    private float lastInventoryClickTime = 0;
+    private long lastInventoryClickTime = 0;
 
     // For emote chat on platforms where we cant get the dimensions of other players
     @Getter
