@@ -2,7 +2,6 @@ package dev.letsgoaway.geyserextras.core.features.skinsaver;
 
 import dev.letsgoaway.geyserextras.core.ExtrasPlayer;
 import org.geysermc.geyser.session.auth.BedrockClientData;
-import org.geysermc.geyser.util.FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,43 +15,70 @@ import java.util.Base64;
 import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
 
 public class SkinSaver {
+    // Geometry/animation JSON written to disk; real skins stay far below this
+    private static final int MAX_TEXT_BYTES = 2 * 1024 * 1024;
+
     public static void save(ExtrasPlayer player) {
         try {
             // Skins
             BedrockClientData data = player.getSession().getClientData();
-            Path skinsFolder = Files.createDirectories(SERVER.getPluginFolder().resolve("skins/" + data.getSkinId().replace(data.getCapeId(), "") + "/"));
+            // Skin and cape ids are chosen by the client: never use them as paths as-is
+            Path skinsFolder = createFolder(SERVER.getPluginFolder().resolve("skins"),
+                    SkinFiles.safeFolderName(data.getSkinId().replace(data.getCapeId(), "")));
+            if (skinsFolder == null) {
+                SERVER.warn("Not saving skin of player " + player.getBedrockXUID() + ": invalid skin id");
+                return;
+            }
 
-            File skinFile = skinsFolder.resolve("skin.png").toFile();
             // BedrockClientData already Base64-decodes these fields (StringToByteDeserializer)
             byte[] skinBytes = data.getSkinData();
-            ImageIO.write(getFromSkinData(data.getSkinImageWidth(), data.getSkinImageHeight(), skinBytes), "png", skinFile);
-
-            String geometryName = new String(data.getGeometryName(), StandardCharsets.UTF_8);
-            String geometryData = new String(data.getGeometryData(), StandardCharsets.UTF_8);
+            if (SkinFiles.isValidImage(data.getSkinImageWidth(), data.getSkinImageHeight(), skinBytes.length)) {
+                File skinFile = skinsFolder.resolve("skin.png").toFile();
+                ImageIO.write(getFromSkinData(data.getSkinImageWidth(), data.getSkinImageHeight(), skinBytes), "png", skinFile);
+            } else {
+                SERVER.warn("Not saving skin image of player " + player.getBedrockXUID() + ": unexpected size "
+                        + data.getSkinImageWidth() + "x" + data.getSkinImageHeight() + " for " + skinBytes.length + " bytes");
+            }
 
             String rawAnimData = data.getSkinAnimationData();
             if (!rawAnimData.isEmpty() && !rawAnimData.isBlank()) {
                 String animationData = new String(Base64.getDecoder().decode(rawAnimData.getBytes(StandardCharsets.UTF_8)));
                 if (!animationData.isEmpty() && !animationData.isBlank()) {
-                    FileUtils.writeFile(skinsFolder.resolve("skin.animation.json").toFile(), animationData.toCharArray());
+                    writeText(player, skinsFolder.resolve("skin.animation.json"), animationData);
                 }
             }
 
-
-            FileUtils.writeFile(skinsFolder.resolve("skin.geometry.json").toFile(), geometryData.toCharArray());
-            FileUtils.writeFile(skinsFolder.resolve("skin.geometry_name.json").toFile(), geometryName.toCharArray());
+            writeText(player, skinsFolder.resolve("skin.geometry.json"), new String(data.getGeometryData(), StandardCharsets.UTF_8));
+            writeText(player, skinsFolder.resolve("skin.geometry_name.json"), new String(data.getGeometryName(), StandardCharsets.UTF_8));
             // Capes
             if (!data.getCapeId().isEmpty()) {
-                Path capesFolder = Files.createDirectories(SERVER.getPluginFolder().resolve("capes/" + data.getCapeId() + "/"));
-                File capeFile = capesFolder.resolve("cape.png").toFile();
-
+                Path capesFolder = createFolder(SERVER.getPluginFolder().resolve("capes"), SkinFiles.safeFolderName(data.getCapeId()));
                 byte[] capeBytes = data.getCapeData();
-                ImageIO.write(getFromSkinData(data.getCapeImageWidth(), data.getCapeImageHeight(), capeBytes), "png", capeFile);
+                if (capesFolder != null && SkinFiles.isValidImage(data.getCapeImageWidth(), data.getCapeImageHeight(), capeBytes.length)) {
+                    File capeFile = capesFolder.resolve("cape.png").toFile();
+                    ImageIO.write(getFromSkinData(data.getCapeImageWidth(), data.getCapeImageHeight(), capeBytes), "png", capeFile);
+                } else {
+                    SERVER.warn("Not saving cape of player " + player.getBedrockXUID() + ": invalid cape id or image");
+                }
             }
 
-        } catch (IOException e) {
-            SERVER.warn("Could not save skin data for player " + player.getBedrockXUID() + ", " + e.getLocalizedMessage());
+        } catch (IOException | RuntimeException e) {
+            SERVER.warn("Could not save skin data for player " + player.getBedrockXUID() + ", " + e);
         }
+    }
+
+    private static Path createFolder(Path base, String name) throws IOException {
+        Path folder = SkinFiles.resolveInside(base, name);
+        return folder == null ? null : Files.createDirectories(folder);
+    }
+
+    private static void writeText(ExtrasPlayer player, Path file, String text) throws IOException {
+        byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length > MAX_TEXT_BYTES) {
+            SERVER.warn("Not saving " + file.getFileName() + " of player " + player.getBedrockXUID() + ": " + bytes.length + " bytes");
+            return;
+        }
+        Files.write(file, bytes);
     }
 
     private static BufferedImage getFromSkinData(int width, int height, byte[] pixelData) {
