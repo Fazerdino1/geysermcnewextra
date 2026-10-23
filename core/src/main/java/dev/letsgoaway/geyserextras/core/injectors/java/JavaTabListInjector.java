@@ -2,6 +2,7 @@ package dev.letsgoaway.geyserextras.core.injectors.java;
 
 import dev.letsgoaway.geyserextras.core.utils.ReflectionAPI;
 import dev.letsgoaway.geyserextras.core.ExtrasPlayer;
+import dev.letsgoaway.geyserextras.core.parity.java.menus.tablist.TabListData;
 import dev.letsgoaway.geyserextras.core.injectors.GeyserHandler;
 import dev.letsgoaway.geyserextras.core.utils.IsAvailable;
 import org.geysermc.geyser.session.GeyserSession;
@@ -27,7 +28,12 @@ public class JavaTabListInjector extends PacketTranslator<ClientboundTabListPack
         if (player == null) {
             return;
         }
-        player.getTabListData().setHeader(MessageTranslator.convertMessage(session, packet.getHeader()));
-        player.getTabListData().setFooter(MessageTranslator.convertMessage(session, packet.getFooter()));
+        try {
+            player.getTabListData().setHeader(MessageTranslator.convertMessage(session, packet.getHeader()));
+            player.getTabListData().setFooter(MessageTranslator.convertMessage(session, packet.getFooter()));
+        } catch (LinkageError e) {
+            // Same incompatibility as upstream #54/#56/#69: log once instead of failing every packet
+            TabListData.disableTracking(e);
+        }
     }
 }

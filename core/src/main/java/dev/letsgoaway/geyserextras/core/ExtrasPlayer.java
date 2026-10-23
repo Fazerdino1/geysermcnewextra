@@ -151,7 +151,7 @@ public class ExtrasPlayer {
             doubleClickShortcutFuture.cancel(false);
             doubleClickShortcutFuture = null;
         }
-        tabListData.getPlayers().clear();
+        tabListData.clear();
         if (fpsBossBar != null) {
             session.getEntityCache().removeBossBar(bossbarID);
             fpsBossBar = null;

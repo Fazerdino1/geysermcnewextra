@@ -20,22 +20,20 @@ public class PlayerListMenu extends BedrockMenu {
     public SimpleForm create(ExtrasPlayer player) {
         setTitle(player.translate("key.playerlist"));
         setHeader(player.getTabListData().getHeader() + "\n\n" + player.getTabListData().getFooter());
-        for (PlayerListEntry entry : player.getTabListData().getPlayers().values()) {
-            if (entry.isListed()) {
-                String name = fixUnreadable(createPlayerName(entry));
-                add(new Button(name, FormImage.Type.URL, TabListData.getPlayerListHead(entry), () -> {
-                    // Show the user profile menu if it is a bedrock player.
-                    long XUID = IdUtils.getBedrockXUID(entry.getProfileId());
-                    if (XUID != -1) {
-                        ShowProfilePacket showProfilePacket = new ShowProfilePacket();
-                        showProfilePacket.setXuid(String.valueOf(XUID));
-                        player.getSession().sendUpstreamPacket(showProfilePacket);
-                    } else {
-                        // Otherwise refresh the menu
-                        player.sendForm(new PlayerListMenu());
-                    }
-                }));
-            }
+        for (PlayerListEntry entry : player.getTabListData().listedEntries()) {
+            String name = fixUnreadable(createPlayerName(entry));
+            add(new Button(name, FormImage.Type.URL, TabListData.getPlayerListHead(entry), () -> {
+                // Show the user profile menu if it is a bedrock player.
+                long XUID = IdUtils.getBedrockXUID(entry.getProfileId());
+                if (XUID != -1) {
+                    ShowProfilePacket showProfilePacket = new ShowProfilePacket();
+                    showProfilePacket.setXuid(String.valueOf(XUID));
+                    player.getSession().sendUpstreamPacket(showProfilePacket);
+                } else {
+                    // Otherwise refresh the menu
+                    player.sendForm(new PlayerListMenu());
+                }
+            }));
         }
 
         return super.create(player);
