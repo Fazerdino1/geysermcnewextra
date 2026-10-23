@@ -23,11 +23,12 @@ public class SkinSaver {
             Path skinsFolder = Files.createDirectories(SERVER.getPluginFolder().resolve("skins/" + data.getSkinId().replace(data.getCapeId(), "") + "/"));
 
             File skinFile = skinsFolder.resolve("skin.png").toFile();
-            byte[] skinBytes = Base64.getDecoder().decode(data.getSkinData());
+            // BedrockClientData already Base64-decodes these fields (StringToByteDeserializer)
+            byte[] skinBytes = data.getSkinData();
             ImageIO.write(getFromSkinData(data.getSkinImageWidth(), data.getSkinImageHeight(), skinBytes), "png", skinFile);
 
-            String geometryName = new String(Base64.getDecoder().decode(data.getGeometryName()));
-            String geometryData = new String(Base64.getDecoder().decode(data.getGeometryData()));
+            String geometryName = new String(data.getGeometryName(), StandardCharsets.UTF_8);
+            String geometryData = new String(data.getGeometryData(), StandardCharsets.UTF_8);
 
             String rawAnimData = data.getSkinAnimationData();
             if (!rawAnimData.isEmpty() && !rawAnimData.isBlank()) {
