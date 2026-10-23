@@ -90,5 +90,34 @@ Activer `enable-bedrock-capes-on-java-workaround: true`, redémarrer, un Bedrock
 | 5.7 | Si `enable-skin-saving: true` | Dossier `skins/<id>/` avec `skin.png` lisible et fichiers geometry ; aucune exception à la connexion |
 | 5.8 | 15 minutes de jeu avec 2+ Bedrock, puis `/spark profiler` ou les timings | GeyserMCNewExtra ne ressort pas dans le profil |
 
+## 6. Modules compagnons
+Activer chaque module dans `spigot.yml` (ou `config.yml` pour les menus de recettes), redémarrer.
+Faire chaque test avec un joueur **Bedrock** et un joueur **Java**.
+
+| # | Test | Attendu |
+|---|---|---|
+| 6.1 | `armor-stands.enabled: true`. Poser un porte-armure | Il a des bras (Java et Bedrock) |
+| 6.2 | Accroupi, main vide puis objet en main, utiliser le porte-armure plusieurs fois | La pose change à chaque fois (13 poses, retour à la première) ; aucun objet n'est échangé |
+| 6.3 | Même chose sans être accroupi | Comportement normal (échange d'équipement) |
+| 6.4 | Dans une zone protégée (claim, région) où le joueur n'a pas les droits | Rien ne change |
+| 6.5 | Porte-armure invisible (hologramme d'un autre plugin) | Rien ne change |
+| 6.6 | `worlds: [<un autre monde>]` | Plus de bras ni de poses dans ce monde-ci |
+| 6.7 | `maps.enabled: true`. Créer une carte, la tenir en main | `X : …, Y : …, Z : …` en haut de la carte, qui suit le joueur ; texte en anglais pour un client en anglais |
+| 6.8 | Poser la carte dans un cadre | Les coordonnées ne s'affichent pas sur la carte du cadre (sauf si on tient la même carte) |
+| 6.9 | `locator-maps: true`, deux joueurs dans le monde de la carte | L'autre joueur apparaît (flèche bleue, rouge dans le Nether) avec son nom ; un joueur en spectateur ou vanish n'apparaît pas |
+| 6.10 | `reduced-debug-info: true`, redémarrer, puis `false` et redémarrer | La règle `reducedDebugInfo` passe à `true` puis revient à `false` (messages dans la console) ; une règle déjà à `true` avant n'est jamais remise à `false` |
+| 6.11 | `collisions.enabled: true`, redémarrer | Console : « bamboo n'a plus de collision… » et pareil pour pointed_dripstone ; avec Hurricane installé, un avertissement et rien n'est modifié |
+| 6.12 | Bedrock : marcher dans un champ de bambous et contre des stalactites | Plus de retours en arrière |
+| 6.13 | Poser un bambou ou une stalactite à l'endroit où l'on se tient | Refusé |
+| 6.14 | `recipe-menus.enabled: true`. Bedrock : ouvrir une enclume | Un coffre : objet gauche, objet droite, résultat ; l'objet central indique le coût |
+| 6.15 | Réparer / combiner deux objets, prendre le résultat | Résultat identique à Java, niveaux retirés, objets d'entrée consommés |
+| 6.16 | Recette ou enchantement personnalisé d'un plugin (ou datapack) dans l'enclume et la table de forge | Le résultat s'affiche et se récupère |
+| 6.17 | Cliquer sur une vitre grise ou l'objet d'information, essayer de les déplacer | Rien ne bouge, le menu se remet en place |
+| 6.18 | Coût ≥ 40 en survie | « Trop cher ! » ; le résultat ne se récupère pas |
+| 6.19 | Ouvrir l'enclume accroupi, mains vides | L'enclume Bedrock normale s'ouvre ; renommer fonctionne |
+| 6.20 | Table de forge : modèle + armure en diamant + lingot de netherite | Armure en netherite, enchantements conservés |
+| 6.21 | Fermer le menu avec des objets dedans, puis vérifier l'inventaire Java et Bedrock | Les objets reviennent dans l'inventaire, **aucune duplication** |
+| 6.22 | Menu d'enclume ouvert par un plugin (saisie de texte) | Non modifié (pas de bloc d'enclume) — à confirmer |
+
 ## Retour
 Envoie-moi : le tableau rempli, le `latest.log` du serveur de test, le nom et la version de ton anti-cheat, la version de PacketEvents.

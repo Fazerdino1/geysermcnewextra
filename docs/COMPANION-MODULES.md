@@ -37,4 +37,16 @@ Chaque module intégré serait **désactivé par défaut**, activable dans la co
 | Geyser Recipe Fix | ✅ Intégré | Réécrit de zéro | Désactivé, activable par monde |
 | Hurricane (collisions bambou / stalactites) | ✅ Intégré malgré le risque PvP | Repris (MIT, crédit à GeyserMC) | Désactivé, activable par monde et par bloc ; à laisser coupé sur le SMP sauf besoin |
 | GeyserFloatingPoints | ❌ Non intégré | — | — |
+
+### Ce qui a changé à l'implémentation
+- **Hurricane** : la forme d'un bloc est commune à tout le serveur, donc **pas de réglage par monde**,
+  et le changement ne s'applique (ou ne s'annule) qu'au démarrage. Le module ne fonctionne que sur Paper
+  et ses forks (Purpur), car il cherche les classes par leurs noms Mojang. Vérifié sur Paper 1.21.11 :
+  les collisions disparaissent, et sont rétablies à l'arrêt du plugin. La stalactite perd aussi son
+  contour (plus difficile à viser), exactement comme avec Hurricane.
+- **MapXYZ** : sa police (BananaTypeFont) n'a pas de licence ; on utilise la police Minecraft intégrée à Bukkit.
+- **Recipe Fix** : réécrit dans le **cœur** (option `recipe-menus` de `config.yml`), donc aussi pour
+  Velocity, BungeeCord et Standalone. Au lieu d'un objet de pack, l'enclume et la table de forge sont
+  présentées au joueur Bedrock comme un coffre ; le vrai menu reste sur le serveur. Réglage par monde
+  seulement sur Paper/Spigot. Renommer : s'accroupir mains vides en ouvrant l'enclume.
 | Hurricane (direction des montures) | ❌ Inutile, géré par Geyser | — | — |

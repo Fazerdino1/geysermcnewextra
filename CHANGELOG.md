@@ -30,6 +30,17 @@ versions continue from its last release, `2.0.0-BETA-11`.
 - GitHub Actions: build and tests on every push and pull request; a GitHub release with the four
   jars for each `v*` tag (the tag must match the project version).
 - The update checker reads this project's GitHub releases and compares versions with SemVer.
+- **Companion modules**, all off by default:
+  - `armor-stands` (`spigot.yml`): arms on placed armor stands and Bedrock Edition poses with sneak + use
+    (permission `geysermcnewextra.armorstands.pose`), written from scratch.
+  - `maps` (`spigot.yml`): coordinates on held maps, locator maps, starting map, Legacy Console zoom,
+    reduced debug info; based on MapXYZ by LetsGoAway (MIT).
+  - `collisions` (`spigot.yml`, Paper and forks): no server-side collision for bamboo and pointed dripstone;
+    based on Hurricane by GeyserMC (MIT). Skipped when Hurricane is installed.
+  - `recipe-menus` (`config.yml`, experimental): anvils and smithing tables shown to Bedrock players as a
+    chest whose result is computed by the server, so custom recipes and enchantments work. Written from scratch.
+  - The Spigot modules can be limited to some worlds; spigot config version 2, config version 10
+    (both migrated automatically).
 - Config option `disabled-command-aliases` to free aliases such as `/l` (upstream #35; config version 7).
 - Optional packs can be `.zip` files (upstream #60); a broken pack is skipped instead of aborting.
 - The plugin's settings are offered in the Bedrock settings screen even with Floodgate when the

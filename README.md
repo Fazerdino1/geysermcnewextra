@@ -65,6 +65,20 @@ Aliases can be turned off with `disabled-command-aliases` (e.g. to free `/l` for
 - Menu opened by double tapping the inventory button or typing `/ge`
 - `debug-mode: true` traces players, forms and shortcuts in the console
 
+### Companion modules (all off by default)
+Plugins the original project recommended installing next to it, built in. The Spigot ones are in
+`spigot.yml` and can be limited to some worlds (`worlds: [...]`, empty = every world).
+- **Armor stands** (`armor-stands`, Spigot): arms on placed armor stands, sneak + use to cycle through
+  Bedrock Edition's poses. Replaces *Bedrock Armorstands*.
+- **Maps** (`maps`, Spigot): coordinates on the held map; optional locator maps, starting map,
+  Legacy Console zoom and reduced debug info. Based on *MapXYZ* (MIT).
+- **Collisions** (`collisions`, Paper and forks): no server-side collision for bamboo and pointed dripstone,
+  so Bedrock players are not pulled back. Server-wide, applied at startup. Exploitable by modified
+  clients: think twice on a PvP server. Based on *Hurricane* (MIT).
+- **Recipe menus** (`recipe-menus` in `config.yml`, every platform, experimental): Bedrock players get
+  anvils and smithing tables as a chest whose result is computed by the server, so custom recipes and
+  enchantments work. Sneak with empty hands for the normal menu (renaming). Replaces *Geyser Recipe Fix*.
+
 ## Languages
 
 Every text comes from `plugins/GeyserMCNewExtra/lang/<locale>.yml`: English, French and 10 more
