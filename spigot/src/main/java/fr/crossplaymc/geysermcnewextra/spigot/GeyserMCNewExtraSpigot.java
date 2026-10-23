@@ -11,6 +11,7 @@ import fr.crossplaymc.geysermcnewextra.core.utils.IsAvailable;
 import fr.crossplaymc.geysermcnewextra.core.utils.TickUtil;
 import fr.crossplaymc.geysermcnewextra.spigot.config.GeyserMCNewExtraSpigotConfig;
 import fr.crossplaymc.geysermcnewextra.spigot.config.SpigotConfigLoader;
+import fr.crossplaymc.geysermcnewextra.spigot.modules.armorstands.ArmorStandModule;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -90,6 +91,18 @@ public class GeyserMCNewExtraSpigot extends JavaPlugin implements Server {
         if (IsAvailable.packetevents()) {
             fr.crossplaymc.geysermcnewextra.core.protocol.ProtocolHandler.init();
         }
+
+        // The platform config is missing when the core could not start
+        if (platformConfig != null) {
+            startModules();
+        }
+    }
+
+    // Each module starts on its own: one failing does not stop the others
+    private void startModules() {
+        // Listeners read the config on every event, so a module can be turned off by changing it
+        GeyserMCNewExtra.runSafely("armor-stands module", () ->
+                getServer().getPluginManager().registerEvents(new ArmorStandModule(this, () -> platformConfig.getArmorStands()), this));
     }
 
     @Override

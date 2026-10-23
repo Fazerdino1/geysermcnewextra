@@ -23,3 +23,16 @@ tasks {
         relocate("it.unimi.dsi.fastutil", "org.geysermc.geyser.platform.spigot.shaded.it.unimi.dsi.fastutil")
     }
 }
+
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Provided by the server at runtime; tests need them on their own classpath
+    testImplementation("org.spongepowered:configurate-yaml:4.2.0-GeyserMC-SNAPSHOT")
+    testImplementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

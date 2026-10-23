@@ -36,3 +36,7 @@ commands:
     aliases:
       - muteemotechat
       - unmuteemotechat
+permissions:
+  geysermcnewextra.armorstands.pose:
+    description: Change the pose of armor stands by sneaking and using them (armor-stands module).
+    default: true

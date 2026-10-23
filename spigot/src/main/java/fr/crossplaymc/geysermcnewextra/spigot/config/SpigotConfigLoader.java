@@ -15,12 +15,14 @@ import static fr.crossplaymc.geysermcnewextra.spigot.GeyserMCNewExtraSpigot.SPIG
 
 public class SpigotConfigLoader {
 
-    public static final int LATEST_VERSION = 1;
+    public static final int LATEST_VERSION = 2;
     private static final String HEADER = """
             GeyserMCNewExtra - Spigot Configuration
             """;
     private static final ConfigurationTransformation.Versioned transformer = ConfigurationTransformation.versionedBuilder()
             .addVersion(1, zeroToOne())
+            // 2: armor-stands module, filled with their defaults (all off)
+            .addVersion(2, ConfigurationTransformation.empty())
             .build();
 
 
