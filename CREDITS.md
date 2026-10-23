@@ -24,6 +24,15 @@ Everything they wrote is used under the MIT license; the original copyright noti
 
 Each of these changes says so in its commit message.
 
+## Plugins integrated as modules
+| Who | What | Where it went | License |
+|---|---|---|---|
+| **LetsGoAway** ([MapXYZ](https://github.com/letsgoawaydev/MapXYZ), Copyright (c) 2025 letsgoawaydev) | Coordinates on maps, locator maps, starting map, Legacy Console zoom, reduced debug info | `maps` module (`spigot.yml`) | MIT |
+
+The "Bedrock Armorstands" plugin has no license: the `armor-stands` module was written from scratch,
+without its code. MapXYZ's font (BananaTypeFont) has no license either and is not included; the module
+uses Bukkit's built-in Minecraft font.
+
 ## Projects we build on
 - [GeyserMC](https://github.com/GeyserMC/Geyser) and [Floodgate](https://github.com/GeyserMC/Floodgate),
   which make Bedrock players on Java servers possible.

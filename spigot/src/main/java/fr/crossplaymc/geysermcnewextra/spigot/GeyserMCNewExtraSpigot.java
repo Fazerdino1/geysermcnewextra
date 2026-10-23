@@ -12,6 +12,7 @@ import fr.crossplaymc.geysermcnewextra.core.utils.TickUtil;
 import fr.crossplaymc.geysermcnewextra.spigot.config.GeyserMCNewExtraSpigotConfig;
 import fr.crossplaymc.geysermcnewextra.spigot.config.SpigotConfigLoader;
 import fr.crossplaymc.geysermcnewextra.spigot.modules.armorstands.ArmorStandModule;
+import fr.crossplaymc.geysermcnewextra.spigot.modules.maps.MapModule;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -103,6 +104,12 @@ public class GeyserMCNewExtraSpigot extends JavaPlugin implements Server {
         // Listeners read the config on every event, so a module can be turned off by changing it
         GeyserMCNewExtra.runSafely("armor-stands module", () ->
                 getServer().getPluginManager().registerEvents(new ArmorStandModule(this, () -> platformConfig.getArmorStands()), this));
+
+        GeyserMCNewExtra.runSafely("maps module", () -> {
+            MapModule maps = new MapModule(this, () -> platformConfig.getMaps());
+            getServer().getPluginManager().registerEvents(maps, this);
+            maps.start();
+        });
     }
 
     @Override

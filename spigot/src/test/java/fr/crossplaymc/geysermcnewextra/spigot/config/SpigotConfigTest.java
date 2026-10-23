@@ -29,6 +29,10 @@ class SpigotConfigTest {
 
         assertTrue(config.isEnableJavaOnlyBlockPlacement(), "existing options are kept");
         assertFalse(config.getArmorStands().isEnabled());
+        assertFalse(config.getMaps().isEnabled());
+        // Options that matter for PvP stay off even once the module is turned on
+        assertFalse(config.getMaps().isLocatorMaps());
+        assertFalse(config.getMaps().isReducedDebugInfo());
     }
 
     @Test
@@ -59,6 +63,7 @@ class SpigotConfigTest {
 
         String saved = Files.readString(file);
         assertTrue(saved.contains("armor-stands:"), saved);
+        assertTrue(saved.contains("locator-maps: false"), saved);
         assertTrue(saved.contains("worlds: []"), saved);
     }
 

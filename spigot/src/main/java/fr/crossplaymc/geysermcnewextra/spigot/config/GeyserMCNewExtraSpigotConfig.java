@@ -48,6 +48,12 @@ public final class GeyserMCNewExtraSpigotConfig {
             """)
     private ArmorStands armorStands = new ArmorStands();
 
+    @Comment("""
+            Coordinates on maps, like Legacy Console Edition (based on MapXYZ by LetsGoAway, MIT).
+            Replaces the "MapXYZ" plugin: do not run both.
+            """)
+    private Maps maps = new Maps();
+
     @Comment("The version of the config. DO NOT CHANGE!")
     private int version = SpigotConfigLoader.LATEST_VERSION;
 
@@ -76,6 +82,35 @@ public final class GeyserMCNewExtraSpigotConfig {
 
         @Comment("Sneak + use an armor stand to change its pose. Invisible armor stands (holograms...) are left alone.")
         private boolean poseCycling = true;
+    }
+
+    @Getter
+    @ConfigSerializable
+    public static final class Maps extends WorldModule {
+        @Comment("Show the X, Y and Z coordinates at the top of the map the player is holding.")
+        private boolean coordinates = true;
+
+        @Comment("Show the eye level position instead of the feet position.")
+        private boolean eyeLevelPosition = false;
+
+        @Comment("Give an empty map to players joining the server for the first time.")
+        private boolean startingMap = false;
+
+        @Comment("New maps start zoomed out at 1:8 (level 3/4), like Legacy Console Edition.")
+        private boolean legacyConsoleZoom = false;
+
+        @Comment("""
+                Locator maps: other players of the world appear on maps, with their name.
+                PvP: this reveals where every player is. Keep it off on PvP worlds.
+                """)
+        private boolean locatorMaps = false;
+
+        @Comment("""
+                Set the reducedDebugInfo game rule in these worlds, which hides the coordinates of the F3 screen.
+                PvP: this only affects Java players. Worlds changed by this option get their game rule back
+                when the option is turned off.
+                """)
+        private boolean reducedDebugInfo = false;
     }
 
 }

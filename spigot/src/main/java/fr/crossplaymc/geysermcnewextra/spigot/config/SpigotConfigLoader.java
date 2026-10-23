@@ -21,7 +21,7 @@ public class SpigotConfigLoader {
             """;
     private static final ConfigurationTransformation.Versioned transformer = ConfigurationTransformation.versionedBuilder()
             .addVersion(1, zeroToOne())
-            // 2: armor-stands module, filled with their defaults (all off)
+            // 2: armor-stands and maps modules, filled with their defaults (all off)
             .addVersion(2, ConfigurationTransformation.empty())
             .build();
 
