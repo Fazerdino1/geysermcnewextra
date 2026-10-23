@@ -12,6 +12,7 @@ import dev.letsgoaway.geyserextras.core.parity.bedrock.EmoteUtils;
 import dev.letsgoaway.geyserextras.core.parity.java.blockdisplay.BlockDisplayEntity;
 import dev.letsgoaway.geyserextras.core.preferences.JavaPreferencesData;
 import dev.letsgoaway.geyserextras.core.preferences.PreferencesData;
+import dev.letsgoaway.geyserextras.core.preferences.PreferencesIO;
 import dev.letsgoaway.geyserextras.core.protocol.CapeLoader;
 import dev.letsgoaway.geyserextras.core.utils.IdUtils;
 import dev.letsgoaway.geyserextras.core.utils.IsAvailable;
@@ -31,6 +32,7 @@ import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class GeyserExtras implements EventRegistrar {
     public static GeyserExtras GE;
@@ -222,6 +224,8 @@ public class GeyserExtras implements EventRegistrar {
                 player.reconnect();
             });
         }
+        // Usually called on shutdown: make sure the preferences reach the disk first
+        PreferencesIO.flush(5, TimeUnit.SECONDS);
     }
 
     /**

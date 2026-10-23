@@ -76,16 +76,13 @@ public class JavaPreferencesData {
     }
 
     public void save() {
-        new Thread(() -> {
-            try {
-                if (!JSON_MAPPER.writeValueAsString(this).equals(JSON_MAPPER.writeValueAsString(DEFAULT))) {
-                    JSON_MAPPER.writeValue(saveFile, this);
-                } else if (saveFile.exists()) {
-                    saveFile.delete();
-                }
-            } catch (IOException e) {
-                SERVER.warn("Could not save data for player " + javaUUID + "\n" + e.getLocalizedMessage());
-            }
-        }).start();
+        try {
+            String json = JSON_MAPPER.writeValueAsString(this);
+            String content = json.equals(JSON_MAPPER.writeValueAsString(DEFAULT)) ? null : json;
+            PreferencesIO.submit(saveFile.toPath(), content, e ->
+                    SERVER.warn("Could not save data for player " + javaUUID + ": " + e));
+        } catch (IOException e) {
+            SERVER.warn("Could not save data for player " + javaUUID + ": " + e);
+        }
     }
 }

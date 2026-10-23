@@ -154,17 +154,11 @@ public class PreferencesData {
     public void save() {
         this.update();
         if (GE.getConfig().isEnableGeyserExtrasMenu()) {
-            new Thread(() -> {
-                try (FileWriter writer = new FileWriter(player.getUserPrefs())) {
-                    if (!GSON.toJson(this).equals(GSON.toJson(DEFAULT))) {
-                        GSON.toJson(this, writer);
-                    } else if (player.getUserPrefs().exists()) {
-                        player.getUserPrefs().delete();
-                    }
-                } catch (IOException e) {
-                    SERVER.warn("Could not save data for player " + player.getBedrockXUID() + "\n" + e.getLocalizedMessage());
-                }
-            }).start();
+            // Serialize now (the object keeps changing), write later on the preferences writer
+            String json = GSON.toJson(this);
+            String content = json.equals(GSON.toJson(DEFAULT)) ? null : json;
+            PreferencesIO.submit(player.getUserPrefs().toPath(), content, e ->
+                    SERVER.warn("Could not save data for player " + player.getBedrockXUID() + ": " + e));
         }
     }
 
