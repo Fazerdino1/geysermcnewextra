@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.letsgoaway.geyserextras.core.preferences.CooldownTypeAdapter;
+import org.geysermc.geyser.util.CooldownUtils;
 import dev.letsgoaway.geyserextras.core.locale.GELocale;
 import dev.letsgoaway.geyserextras.core.parity.java.menus.packs.PackLoader;
 
@@ -28,7 +30,9 @@ import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
 
 public class Cache {
     public static final ObjectMapper JSON_MAPPER = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(CooldownUtils.CooldownType.class, new CooldownTypeAdapter())
+            .create();
 
     public static Path CACHE_FOLDER;
     public static CacheDates CACHE_DATES;
