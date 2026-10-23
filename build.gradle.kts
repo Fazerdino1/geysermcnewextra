@@ -49,6 +49,11 @@ dependencies {
 
 
 
+// The root project has no sources: do not produce an empty jar next to the real ones
+tasks.jar {
+    enabled = false
+}
+
 subprojects {
     repositories {
         mavenCentral()
