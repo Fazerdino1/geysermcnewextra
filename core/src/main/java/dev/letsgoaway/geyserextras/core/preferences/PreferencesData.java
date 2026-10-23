@@ -38,6 +38,9 @@ public class PreferencesData {
     public boolean customSkullSkins;
 
     public HashMap<Remappable, Action> remappableActionMap;
+
+    // Emote each EMOTE_n binding listens to (see EmoteBindings); absent from older files, which load it empty
+    public HashMap<Remappable, UUID> emoteLinks = new HashMap<>();
     @Getter
     @Setter
     private Menus settingsMenuForm = Menus.GE_SETTINGS;
@@ -202,6 +205,7 @@ public class PreferencesData {
         // Copy the collections: sharing them with DEFAULT made every player without a preferences
         // file edit the same map (and never save it, since it always equalled the defaults)
         this.remappableActionMap = data.remappableActionMap == null ? new HashMap<>() : new HashMap<>(data.remappableActionMap);
+        this.emoteLinks = data.emoteLinks == null ? new HashMap<>() : new HashMap<>(data.emoteLinks);
         this.settingsMenuForm = data.settingsMenuForm;
         this.enableDoubleClickShortcut = data.enableDoubleClickShortcut;
         this.doubleClickMS = data.doubleClickMS;

@@ -9,6 +9,7 @@ import dev.letsgoaway.geyserextras.core.parity.bedrock.EmoteUtils;
 import dev.letsgoaway.geyserextras.core.parity.java.menus.serverlinks.ServerLinksData;
 import dev.letsgoaway.geyserextras.core.parity.java.menus.tablist.TabListData;
 import dev.letsgoaway.geyserextras.core.preferences.PreferencesData;
+import dev.letsgoaway.geyserextras.core.preferences.bindings.EmoteBindings;
 import dev.letsgoaway.geyserextras.core.preferences.bindings.Remappable;
 import dev.letsgoaway.geyserextras.core.utils.IdUtils;
 import dev.letsgoaway.geyserextras.core.utils.IsAvailable;
@@ -35,7 +36,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -60,9 +63,8 @@ public class ExtrasPlayer {
     private UUID javaUUID;
     @Getter
     private String bedrockXUID;
-    @Setter
-    @Getter
-    private ArrayList<UUID> emotesList;
+    // Emote bindings waiting for the player to perform the emote to link (filled from the bindings menu)
+    private final Queue<Remappable> emoteLinkQueue = new ConcurrentLinkedQueue<>();
     @Getter
     @Setter
     private ScheduledFuture<?> doubleClickShortcutFuture;
@@ -111,7 +113,6 @@ public class ExtrasPlayer {
         tabListData = new TabListData(this);
         serverLinksData = new ServerLinksData(this);
         preferences = new PreferencesData(this);
-        emotesList = new ArrayList<>();
         userPrefs = PreferencesData.PREFERENCES_PATH.resolve(bedrockXUID + ".json").toFile();
         preferences.load();
         playerDimensionsMap = new HashMap<>();
@@ -168,10 +169,18 @@ public class ExtrasPlayer {
     public void onEmoteEvent(ClientEmoteEvent ev) {
         SERVER.debug("Emote " + ev.emoteId() + " from xuid=" + bedrockXUID);
         UUID uuid = UUID.fromString(ev.emoteId());
-        // Geyser 2.11+ discards the client's EmoteListPacket (Bedrock emotes are server-side now),
-        // so emotesList stays empty and the wheel slot of an emote is unknown. Without a slot the
-        // emote behaves as unbound: emote chat is still sent, slot bindings cannot apply.
-        Remappable binding = emoteBinding(emotesList.indexOf(uuid));
+
+        Remappable toLink = emoteLinkQueue.poll();
+        if (toLink != null) {
+            EmoteBindings.link(preferences.emoteLinks, toLink, uuid);
+            preferences.save();
+            String emoteName = EmoteUtils.getName(uuid);
+            sendMessage(String.format(translateGE("cpmc.emote_link.done"), toLink.translate(this), emoteName != null ? emoteName : uuid.toString()));
+            return;
+        }
+
+        // Geyser 2.11+ no longer sends the emote wheel slots, so bindings follow the emote the player linked
+        Remappable binding = EmoteBindings.find(preferences.emoteLinks, uuid);
 
         if (binding == null || preferences.isDefault(binding)) {
             String emoteChat = EmoteUtils.getEmoteChatString(uuid, this);
@@ -186,11 +195,12 @@ public class ExtrasPlayer {
 
     }
 
-    private static final Remappable[] EMOTE_BINDINGS = {Remappable.EMOTE_1, Remappable.EMOTE_2, Remappable.EMOTE_3, Remappable.EMOTE_4};
-
-    @Nullable
-    private static Remappable emoteBinding(int slot) {
-        return slot >= 0 && slot < EMOTE_BINDINGS.length ? EMOTE_BINDINGS[slot] : null;
+    /**
+     * The next emote this player performs is linked to {@code binding} instead of being played as usual.
+     */
+    public void queueEmoteLink(Remappable binding) {
+        emoteLinkQueue.add(binding);
+        sendMessage(String.format(translateGE("cpmc.emote_link.prompt"), binding.translate(this)));
     }
 
     public void tick() {
