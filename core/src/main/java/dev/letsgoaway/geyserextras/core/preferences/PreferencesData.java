@@ -30,7 +30,8 @@ public class PreferencesData {
 
     private transient final ExtrasPlayer player;
     private transient final GeyserSession session;
-    public CooldownUtils.CooldownType cooldownType = CooldownUtils.CooldownType.CROSSHAIR;
+    // Default to the cooldown type the server configured in Geyser (idea from AnarchadiaMC/GeyserExtras@98bed88, MIT)
+    public CooldownUtils.CooldownType cooldownType = serverCooldownType();
     public boolean showCoordinates;
 
     public boolean advancedTooltips = false;
@@ -198,7 +199,7 @@ public class PreferencesData {
 
     // TODO: figure out literally any better way to do this
     public void copyFrom(PreferencesData data) {
-        this.cooldownType = data.cooldownType;
+        this.cooldownType = data.cooldownType != null ? data.cooldownType : serverCooldownType();
         this.showCoordinates = data.showCoordinates;
         this.advancedTooltips = data.advancedTooltips;
         this.customSkullSkins = data.customSkullSkins;
@@ -214,6 +215,11 @@ public class PreferencesData {
         this.selectedSubpacks = data.selectedSubpacks == null ? new HashMap<>() : new HashMap<>(data.selectedSubpacks);
         this.sendSystemToasts = data.sendSystemToasts;
         this.showFPS = data.showFPS;
+    }
+
+    private static CooldownUtils.CooldownType serverCooldownType() {
+        CooldownUtils.CooldownType configured = GeyserImpl.getInstance().config().gameplay().cooldownType();
+        return configured != null ? configured : CooldownUtils.CooldownType.CROSSHAIR;
     }
 
     public Action setAction(Remappable binding, Action action) {
