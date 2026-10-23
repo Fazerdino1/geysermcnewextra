@@ -20,6 +20,7 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Emote bindings now follow a recorded emote: tick "Link an emote" in the bindings menu, save,
   then perform the emote once (Geyser 2.11+ no longer exposes emote wheel slots).
 - Translations bundled in the jar for strings added by the fork (English, French).
+- Config option `bedrock-command-delay-ms` (config version 6, migrated automatically).
 - Debug traces (`debug-mode: true`) for player creation, forms, inventory shortcuts and emotes.
 
 ### Changed
@@ -33,7 +34,16 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
   [leemwood/GeyserPlus](https://github.com/leemwood/GeyserPlus).
 - Only the four Java combat sounds are replaced; every other sound is translated by Geyser again.
 
+### Security
+- Skin saving no longer uses client-chosen skin/cape ids as paths (a modified client could write
+  files outside the plugin folder) and rejects oversized or truncated images.
+
 ### Fixed
+- `/geyserextras` typed in chat by a Bedrock player showed nothing (forms arriving while the chat is
+  open are discarded); commands now run after `bedrock-command-delay-ms` (default 500).
+- Packets for a player GeyserExtras does not track yet are handled by Geyser instead of failing
+  (`Could not translate packet`, upstream #36, #54); player maps exist before any packet (#29, #76).
+- Config version mismatch: configs were rewritten on every start or kept removed options.
 - Emote chat to Java players works again on Geyser 2.11+ (Geyser no longer forwards the emote list).
 - Cooldown preferences saved before Geyser 2.11 (`TITLE`, `ACTIONBAR`) are migrated instead of
   becoming null.
