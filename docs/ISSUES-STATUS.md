@@ -28,10 +28,25 @@
 | Cooldown par défaut = config Geyser (AnarchadiaMC) | ✅ `d035458` |
 | Ne plus supprimer les packs de Geyser (h4-hub) | ✅ `0d2e2a0` |
 | Réflexion pour la tab list (AnarchadiaMC) | ⏳ seulement si #69 se reproduit |
-| Alias configurables (#35, à la place de Parthodys) | ⏳ |
+| Alias configurables (#35, à la place de Parthodys) | ✅ |
 
-## Priorités 3 et 4
-⏳ #53 / #43, #54 / #56, tablist vidée au changement de serveur, #57, #61, #60, menu Paramètres avec Floodgate. Déjà réglé : #62 (`2e1c42c`).
+## Priorité 3 : liste des joueurs et tablist
+| Issue | Statut | Preuve / commit |
+|---|---|---|
+| #53 / #43 erreur à l'ouverture de la player list | ✅ (cause probable) | Les logs mclo.gs ont expiré (404). Dans le code, une entrée créée sans `ADD_PLAYER` n'a ni profil ni nom affiché, et `getPlayerListName` plantait dessus. Nom de secours, et entrées créées seulement sur `ADD_PLAYER` ; test `TabListDataTest` (`8184cf3`). |
+| #54 `NoSuchMethodError PlayerListEntry.getDisplayName()` | ✅ | Le log (pastebin) montre **les jars Spigot et Extension installés ensemble** : le jar extension, compilé avec Adventure non relocalisé, tourne dans Geyser-Spigot, qui relocalise Adventure. Désormais un seul message explique quel jar utiliser, et la liste des joueurs se désactive au lieu de produire une erreur à chaque paquet (`8184cf3`). |
+| #56 `ClientboundTabListPacket` | ✅ | Même famille de `LinkageError`, même traitement (`8184cf3`). Le log joint ne contient pas l'erreur GeyserExtras. |
+| Tablist vidée au changement de serveur (proxy) | ✅ (à confirmer en jeu) | `ClientboundPlayerInfoRemovePacket` n'était pas géré : les joueurs partis restaient affichés, et la liste dépendait d'états incohérents. Les proxys vident et reremplissent la liste avec ces paquets, désormais suivis comme le fait le client Java (`8184cf3`). |
+
+## Priorité 4 : divers
+| Issue | Statut | Preuve / commit |
+|---|---|---|
+| #62 nautile et inventaire | ✅ | `2e1c42c` |
+| #57 le menu Extras refuse de s'ouvrir | ✅ | Plantage de `GELocale` sans fichier `en_US` corrigé (`dc35986`), test `GELocaleTest` (`ca83b15`). |
+| #61 Standalone oublie les packs après un redémarrage | ✅ (cause probable) | Le log mclo.gs a expiré. Les préférences, packs compris, étaient écrites par un thread créé pour chaque sauvegarde, qui **vidait le fichier avant d'écrire** : un arrêt entre les deux laissait un fichier vide. Écriture atomique et ordonnée, attente de 5 s à l'arrêt ; tests `PreferencesIOTest` (`cdd6b95`). |
+| #60 packs `.zip` | ✅ | `.zip` et `.mcpack` acceptés, un pack cassé est ignoré avec un avertissement ; test `PackLoaderTest`. |
+| Réglages absents du menu Paramètres avec Floodgate | ✅ (à confirmer en jeu) | Tentative par la voie Geyser ; à la première `LinkageError`, un message unique puis retour au toast (`0cb3177`). |
+| #35 alias configurables | ✅ | Option `disabled-command-aliases`. `/playerlist` réparé au passage. |
 
 ## Trouvé en route (absent des issues)
 | Problème | Statut |

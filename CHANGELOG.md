@@ -21,6 +21,10 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
   then perform the emote once (Geyser 2.11+ no longer exposes emote wheel slots).
 - Translations bundled in the jar for strings added by the fork (English, French).
 - Players' default cooldown display follows Geyser's `cooldown-type`.
+- Config option `disabled-command-aliases` to free aliases such as `/l` (upstream #35; config version 7).
+- Optional packs can be `.zip` files (upstream #60); a broken pack is skipped instead of aborting.
+- GeyserExtras settings are offered in the Bedrock settings screen even with Floodgate when the
+  server allows it (automatic fallback to the toast otherwise).
 - Config option `bedrock-command-delay-ms` (config version 6, migrated automatically).
 - Debug traces (`debug-mode: true`) for player creation, forms, inventory shortcuts and emotes.
 
@@ -52,6 +56,12 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
   cancelled: likely cause of the proxy memory leak in upstream #32).
 - Velocity: a player kicked from a backend server no longer reconnects every Bedrock player.
 - GeyserExtras no longer deletes packs from Geyser's packs folder at startup; it only warns.
+- Player list menu: players who left are removed, entries without a profile no longer break the
+  menu (likely upstream #43, #53), the server's list order is followed, and an incompatible jar
+  disables the menu with one message instead of errors on every packet (upstream #54, #56).
+- Preference files are written atomically and in order; a shutdown could leave them empty and
+  players lost their settings and packs (upstream #61).
+- `/playerlist` did nothing on Spigot.
 - Emote chat to Java players works again on Geyser 2.11+ (Geyser no longer forwards the emote list).
 - Cooldown preferences saved before Geyser 2.11 (`TITLE`, `ACTIONBAR`) are migrated instead of
   becoming null.
