@@ -171,6 +171,7 @@ public class ExtrasPlayer {
         UUID uuid = UUID.fromString(ev.emoteId());
 
         Remappable toLink = emoteLinkQueue.poll();
+        SERVER.debug("Emote link pending=" + toLink + " links=" + preferences.emoteLinks + " actions=" + preferences.remappableActionMap);
         if (toLink != null) {
             EmoteBindings.link(preferences.emoteLinks, toLink, uuid);
             preferences.save();
@@ -200,6 +201,7 @@ public class ExtrasPlayer {
      */
     public void queueEmoteLink(Remappable binding) {
         emoteLinkQueue.add(binding);
+        SERVER.debug("Emote link queued for " + binding + " xuid=" + bedrockXUID);
         sendMessage(String.format(translateGE("cpmc.emote_link.prompt"), binding.translate(this)));
     }
 

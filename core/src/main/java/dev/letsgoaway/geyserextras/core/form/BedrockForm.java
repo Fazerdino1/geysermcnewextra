@@ -35,32 +35,41 @@ public class BedrockForm {
             customForm.component(elem.getComponent());
         }
         customForm.validResultHandler((response) -> {
+            SERVER.debug("Form response '" + this.title + "' (" + elements.size() + " elements) from " + player.getBedrockXUID());
             int i = 0;
             response.includeLabels(true);
-            for (FormElement element : elements) {
-                switch (element.getType()) {
-                    case DROPDOWN -> {
-                        element.resultRecieved(response.asDropdown(i));
+            try {
+                for (FormElement element : elements) {
+                    switch (element.getType()) {
+                        case DROPDOWN -> {
+                            element.resultRecieved(response.asDropdown(i));
+                        }
+                        case INPUT -> {
+                            element.resultRecieved(response.asInput(i));
+                        }
+                        case LABEL -> {
+                            element.resultRecieved((Object) null);
+                        }
+                        case SLIDER -> {
+                            element.resultRecieved(response.asSlider(i));
+                        }
+                        case STEPSLIDER -> {
+                            element.resultRecieved(response.asStepSlider(i));
+                        }
+                        case TOGGLE -> {
+                            element.resultRecieved(response.asToggle(i));
+                        }
+                        default -> {
+                        }
                     }
-                    case INPUT -> {
-                        element.resultRecieved(response.asInput(i));
-                    }
-                    case LABEL -> {
-                        element.resultRecieved((Object) null);
-                    }
-                    case SLIDER -> {
-                        element.resultRecieved(response.asSlider(i));
-                    }
-                    case STEPSLIDER -> {
-                        element.resultRecieved(response.asStepSlider(i));
-                    }
-                    case TOGGLE -> {
-                        element.resultRecieved(response.asToggle(i));
-                    }
-                    default -> {
-                    }
+                    i++;
                 }
-                i++;
+            } catch (RuntimeException e) {
+                // Without this, a failing element silently dropped the whole response
+                SERVER.warn("Could not apply the response to form '" + this.title + "' at element " + i + " from " + player.getBedrockXUID() + ": " + e);
+                if (GeyserExtras.GE.getConfig().isDebugMode()) {
+                    e.printStackTrace();
+                }
             }
             onSubmit(player);
         });
