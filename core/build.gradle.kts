@@ -20,10 +20,10 @@ dependencies {
 tasks {
     shadowJar {
         archiveClassifier.set("")
-        archiveFileName.set("GeyserExtras-CPMC.jar")
-        relocate("org.spongepowered", "dev.letsgoaway.relocate.org.spongepowered")
-        relocate("io.leangen.geantyref", "dev.letsgoaway.io.leangen.geantyref")
-        relocate("com.fasterxml", "dev.letsgoaway.relocate.com.fasterxml")
+        archiveFileName.set("GeyserMCNewExtra.jar")
+        relocate("org.spongepowered", "fr.crossplaymc.geysermcnewextra.relocate.org.spongepowered")
+        relocate("io.leangen.geantyref", "fr.crossplaymc.geysermcnewextra.relocate.io.leangen.geantyref")
+        relocate("com.fasterxml", "fr.crossplaymc.geysermcnewextra.relocate.com.fasterxml")
 
     }
 }
@@ -32,7 +32,7 @@ tasks {
 // PluginVersion.GE_VERSION has to be a compile-time constant (used by the Velocity @Plugin annotation),
 // so it cannot be generated from the project version. Fail the build if the two drift apart.
 val checkPluginVersion by tasks.registering {
-    val source = file("src/main/java/dev/letsgoaway/geyserextras/core/version/PluginVersion.java")
+    val source = file("src/main/java/fr/crossplaymc/geysermcnewextra/core/version/PluginVersion.java")
     val expected = project.version.toString()
     inputs.file(source)
     doLast {

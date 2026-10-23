@@ -1,7 +1,0 @@
-{
-  "cpmc.emote_link.toggle": "Link an emote to %s (do it after saving)",
-  "cpmc.emote_link.current": "Linked emote: %s",
-  "cpmc.emote_link.none": "none",
-  "cpmc.emote_link.prompt": "Do the emote to link to %s now.",
-  "cpmc.emote_link.done": "%s is now linked to the emote %s."
-}

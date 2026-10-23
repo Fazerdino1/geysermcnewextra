@@ -98,8 +98,8 @@ subprojects {
             filesMatching(listOf("plugin.yml", "bungee.yml", "extension.yml")) {
                 expand(
                         "version" to version,
-                        "id" to "geyserextras",
-                        "name" to "GeyserExtras"
+                        "id" to "geysermcnewextra",
+                        "name" to "GeyserMCNewExtra"
                 )
             }
         }

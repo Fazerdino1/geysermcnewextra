@@ -1,4 +1,4 @@
-rootProject.name = "GeyserExtras-CPMC"
+rootProject.name = "GeyserMCNewExtra"
 pluginManagement {
     repositories {
         maven("https://maven.fabricmc.net/")

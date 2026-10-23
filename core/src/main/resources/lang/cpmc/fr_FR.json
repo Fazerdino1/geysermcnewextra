@@ -1,7 +1,0 @@
-{
-  "cpmc.emote_link.toggle": "Lier une emote à %s (fais-la après avoir validé)",
-  "cpmc.emote_link.current": "Emote liée : %s",
-  "cpmc.emote_link.none": "aucune",
-  "cpmc.emote_link.prompt": "Fais maintenant l'emote à lier à %s.",
-  "cpmc.emote_link.done": "%s est maintenant liée à l'emote %s."
-}

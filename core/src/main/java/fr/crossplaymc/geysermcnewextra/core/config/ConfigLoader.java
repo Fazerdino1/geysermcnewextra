@@ -1,0 +1,162 @@
+package fr.crossplaymc.geysermcnewextra.core.config;
+
+import fr.crossplaymc.geysermcnewextra.ServerType;
+import fr.crossplaymc.geysermcnewextra.core.utils.IsAvailable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.NodePath;
+import org.spongepowered.configurate.loader.HeaderMode;
+import org.spongepowered.configurate.transformation.ConfigurationTransformation;
+import org.spongepowered.configurate.transformation.TransformAction;
+import org.spongepowered.configurate.yaml.NodeStyle;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+
+import java.nio.file.Path;
+
+import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.GE;
+import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.SERVER;
+
+public class ConfigLoader {
+
+    public static final int LATEST_VERSION = 8;
+    private static final String HEADER = """
+            GeyserMCNewExtra
+            If Geyser is detected, all required config changes will be automatically applied.
+            Every option is described in docs/CONFIG.md of the GeyserMCNewExtra repository.
+            """;
+    private static final ConfigurationTransformation.Versioned transformer = ConfigurationTransformation.versionedBuilder()
+            .addVersion(1, zeroToOne())
+            .addVersion(2, oneToTwo())
+            .addVersion(3, twoToThree())
+            .addVersion(4, threeToFour())
+            .addVersion(5, fourToFive())
+            .addVersion(6, fiveToSix())
+            .addVersion(7, sixToSeven())
+            .addVersion(8, sevenToEight())
+
+            .build();
+
+
+    public static void load() {
+        Path configPath = SERVER.getPluginFolder().resolve("config.yml");
+
+        if (ServerType.isExtension()) {
+            // Ensure the data folder exists
+            if (!SERVER.getPluginFolder().toFile().exists()) {
+                if (!SERVER.getPluginFolder().toFile().mkdirs()) {
+                    SERVER.warn("Failed to create data folder");
+                }
+            }
+        }
+
+        boolean existingConfig = configPath.toFile().exists();
+
+        // Load the config, or create if needed
+        final YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                .path(configPath)
+                .nodeStyle(NodeStyle.BLOCK)
+                .headerMode(HeaderMode.PRESERVE)
+                .defaultOptions(options -> options.header(HEADER))
+                .build();
+
+        try {
+            final CommentedConfigurationNode configurationNode = loader.load();
+            int currentVersion = migrate(configurationNode);
+
+            // Get the configured values based on our GeyserMCNewExtraConfig class
+            GeyserMCNewExtraConfig config = configurationNode.get(GeyserMCNewExtraConfig.class);
+
+            // Let's not save the configuration options back to the original node, but create a new node instead
+            // and save them there. This will allow us to order new configuration options.
+            CommentedConfigurationNode newNode = CommentedConfigurationNode.root(loader.defaultOptions());
+            newNode.set(GeyserMCNewExtraConfig.class, config);
+
+            // Save only when the config changed, or didn't exist in the first place
+            if (!existingConfig || currentVersion != LATEST_VERSION) {
+                loader.save(newNode);
+            }
+
+            GE.setConfig(config);
+        } catch (ConfigurateException e) {
+            // todo logging?
+            SERVER.warn("Failed to load config! Using defaults.\n" + e.getMessage());
+            GE.setConfig(new GeyserMCNewExtraConfig());
+        }
+
+    }
+
+    /**
+     * Brings a loaded config node to {@link #LATEST_VERSION}.
+     *
+     * @return the version the node had before
+     */
+    static int migrate(ConfigurationNode node) throws ConfigurateException {
+        int version = transformer.version(node);
+        if (version != LATEST_VERSION) {
+            transformer.apply(node);
+        }
+        return version;
+    }
+
+    private static ConfigurationTransformation zeroToOne() {
+        return ConfigurationTransformation.builder()
+                .addAction(NodePath.path("proxy-mode"), TransformAction.remove())
+                .addAction(NodePath.path("external-address"), TransformAction.remove())
+                .addAction(NodePath.path("external-port"), TransformAction.remove())
+                .addAction(NodePath.path("mute-emote-chat"), TransformAction.remove())
+                .addAction(NodePath.path("quick-menu-actions"), TransformAction.remove())
+                .addAction(NodePath.path("enable-java-only-block-placement"), TransformAction.remove())
+                .addAction(NodePath.path("enable-block-ghosting-fix"), TransformAction.remove())
+                .addAction(NodePath.path("enable-knockback-attack-sprint-fix"), TransformAction.remove())
+                .build();
+    }
+
+    private static ConfigurationTransformation oneToTwo() {
+        return ConfigurationTransformation.builder()
+                .addAction(NodePath.path("quick-menu-actions"), TransformAction.remove())
+                .addAction(NodePath.path("enable-java-only-block-placement"), TransformAction.remove())
+                .addAction(NodePath.path("enable-block-ghosting-fix"), TransformAction.remove())
+                .addAction(NodePath.path("enable-knockback-attack-sprint-fix"), TransformAction.remove())
+                .build();
+    }
+
+    // no changes, added check for updates to config
+    private static ConfigurationTransformation twoToThree() {
+        return ConfigurationTransformation.builder()
+                .build();
+    }
+
+    // no changes, added packet events / mannequin cape workaround
+    private static ConfigurationTransformation threeToFour() {
+        return ConfigurationTransformation.builder()
+                .build();
+    }
+
+    // no changes, added packet events / mannequin cape workaround
+    private static ConfigurationTransformation fourToFive() {
+        return ConfigurationTransformation.builder()
+                .addAction(NodePath.path("enable-custom-cooldown"), TransformAction.remove())
+                .build();
+    }
+
+    // no changes, added bedrock-command-delay-ms (the bump makes existing configs get the new option written)
+    private static ConfigurationTransformation fiveToSix() {
+        return ConfigurationTransformation.builder()
+                .build();
+    }
+
+    // no changes, added disabled-command-aliases
+    private static ConfigurationTransformation sixToSeven() {
+        return ConfigurationTransformation.builder()
+                .build();
+    }
+
+    // project renamed: options named after the old project get neutral names
+    private static ConfigurationTransformation sevenToEight() {
+        return ConfigurationTransformation.builder()
+                .addAction(NodePath.path("enable-geyser-extras-menu"), TransformAction.rename("enable-menu"))
+                .addAction(NodePath.path("geyser-extras-pack-priority"), TransformAction.rename("resource-pack-priority"))
+                .build();
+    }
+}

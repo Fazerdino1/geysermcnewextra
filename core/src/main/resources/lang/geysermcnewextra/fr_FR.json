@@ -1,0 +1,8 @@
+{
+  "gmne.emote_link.toggle": "Lier une emote à %s (fais-la après avoir validé)",
+  "gmne.emote_link.current": "Emote liée : %s",
+  "gmne.emote_link.none": "aucune",
+  "gmne.emote_link.prompt": "Fais maintenant l'emote à lier à %s.",
+  "gmne.emote_link.done": "%s est maintenant liée à l'emote %s.",
+  "gmne.credits": "§lGeyserMCNewExtra§r, conçu pour CrossPlayMC.\nBasé sur GeyserExtras de §lLetsGoAway§r et de ses contributeurs (onebeastchris, Nogard, Ilamparithi Murali, Novampr, Auri, MythicalFlame), licence MIT.\nCorrectifs repris des forks de leemwood (GeyserPlus), paper0319, Undecimer, AnarchadiaMC et h4-hub.\nPropulsé par GeyserMC et Floodgate.\n\n§lCrédits d'origine :§r"
+}

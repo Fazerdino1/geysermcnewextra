@@ -1,6 +1,6 @@
 id: ${id}
 name: ${name}
-main: dev.letsgoaway.geyserextras.extension.GeyserExtrasExtension
+main: fr.crossplaymc.geysermcnewextra.extension.GeyserMCNewExtraExtension
 api: 2.12.0
 version: ${version}
 authors: [LetsGoAway, CrossPlayMC]
