@@ -30,9 +30,9 @@ import java.util.List;
 public class BlockDisplayEntity extends BlockDisplayBaseEntity implements Tickable {
     private static final DecimalFormat format = new DecimalFormat("#.###");
     private static final List<String> rendersAs2D = List.of(
-            Items.CAMPFIRE.javaIdentifier(),
-            Items.IRON_BARS.javaIdentifier(),
-            Items.BELL.javaIdentifier()
+            Items.CAMPFIRE.javaKey().asString(),
+            Items.IRON_BARS.javaKey().asString(),
+            Items.BELL.javaKey().asString()
     );
     private String animationExpression = "";
 
@@ -140,13 +140,13 @@ public class BlockDisplayEntity extends BlockDisplayBaseEntity implements Tickab
         BlockState state = BlockState.of(entityMetadata.getPrimitiveValue());
         Block block = state.block();
         Item item = block.asItem();
-        if (item.javaIdentifier().contains("_door") || item.javaIdentifier().contains("_candle")) {
+        if (item.javaKey().asString().contains("_door") || item.javaKey().asString().contains("_candle")) {
             setHand(Items.AIR.newItemStack(session, 1, null));
             updateMainHand();
             return;
         }
 
-        if (rendersAs2D.contains(block.javaIdentifier().toString())) {
+        if (rendersAs2D.contains(block.javaIdentifier().asString())) {
             setHand(Items.AIR.newItemStack(session, 1, null));
             updateMainHand();
             return;
