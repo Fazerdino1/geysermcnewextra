@@ -22,6 +22,9 @@ versions continue from its last release, `2.0.0-BETA-11`.
   then perform the emote once (Geyser 2.11+ no longer exposes emote wheel slots).
 - Translations bundled in the jar for strings added by the fork (English, French).
 - Players' default cooldown display follows Geyser's `cooldown-type`.
+- GitHub Actions: build and tests on every push and pull request; a GitHub release with the four
+  jars for each `v*` tag (the tag must match the project version).
+- The update checker reads this project's GitHub releases and compares versions with SemVer.
 - Config option `disabled-command-aliases` to free aliases such as `/l` (upstream #35; config version 7).
 - Optional packs can be `.zip` files (upstream #60); a broken pack is skipped instead of aborting.
 - The plugin's settings are offered in the Bedrock settings screen even with Floodgate when the
@@ -68,6 +71,7 @@ versions continue from its last release, `2.0.0-BETA-11`.
 - Preference files are written atomically and in order; a shutdown could leave them empty and
   players lost their settings and packs (upstream #61).
 - `/playerlist` did nothing on Spigot.
+- Resource pack version comparison (1.5.0 was considered newer than 2.0.0).
 - Emote chat to Java players works again on Geyser 2.11+ (Geyser no longer forwards the emote list).
 - Cooldown preferences saved before Geyser 2.11 (`TITLE`, `ACTIONBAR`) are migrated instead of
   becoming null.
