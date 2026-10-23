@@ -9,6 +9,7 @@ import dev.letsgoaway.geyserextras.core.config.ConfigLoader;
 import dev.letsgoaway.geyserextras.core.config.GeyserExtrasConfig;
 import dev.letsgoaway.geyserextras.core.injectors.GeyserHandler;
 import dev.letsgoaway.geyserextras.core.parity.bedrock.EmoteUtils;
+import dev.letsgoaway.geyserextras.core.parity.java.blockdisplay.BlockDisplayEntity;
 import dev.letsgoaway.geyserextras.core.preferences.JavaPreferencesData;
 import dev.letsgoaway.geyserextras.core.preferences.PreferencesData;
 import dev.letsgoaway.geyserextras.core.protocol.CapeLoader;
@@ -22,6 +23,7 @@ import org.geysermc.geyser.api.GeyserApi;
 import org.geysermc.geyser.api.connection.GeyserConnection;
 import org.geysermc.geyser.api.event.EventRegistrar;
 import org.geysermc.geyser.api.event.bedrock.*;
+import org.geysermc.geyser.api.event.lifecycle.GeyserDefineEntitiesEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPreReloadEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
@@ -39,6 +41,8 @@ public class GeyserExtras implements EventRegistrar {
     @Getter
     @Setter
     private GeyserExtrasConfig config;
+    @Getter
+    private boolean blockDisplayRegistered = false;
 
     public GeyserExtras(Server server) {
         GE = this;
@@ -78,6 +82,8 @@ public class GeyserExtras implements EventRegistrar {
         SERVER.log("Registering events...");
         geyserApi.eventBus().register(this, this);
         geyserApi.eventBus().subscribe(this, GeyserPostInitializeEvent.class, this::onGeyserInitialize);
+        // Custom entity types must be registered here: Geyser freezes its entity registry right after this event
+        geyserApi.eventBus().subscribe(this, GeyserDefineEntitiesEvent.class, this::onDefineEntities);
 
         // ExtrasPlayer handlers
         geyserApi.eventBus().subscribe(this, SessionLoginEvent.class, this::onSessionLogin);
@@ -124,6 +130,18 @@ public class GeyserExtras implements EventRegistrar {
             SERVER.log("Loading Emote Data...");
             EmoteUtils.initialize();
             InitializeLogger.end();
+        }
+    }
+
+    public void onDefineEntities(GeyserDefineEntitiesEvent ignored) {
+        if (!getConfig().isEnableBlockDisplayWorkaround() || blockDisplayRegistered) {
+            return;
+        }
+        try {
+            BlockDisplayEntity.buildEntityDef();
+            blockDisplayRegistered = true;
+        } catch (Exception e) {
+            SERVER.warn("Block display workaround disabled: could not register the block display entity (" + e + ")");
         }
     }
 

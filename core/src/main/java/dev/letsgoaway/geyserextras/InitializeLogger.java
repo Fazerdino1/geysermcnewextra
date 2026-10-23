@@ -1,6 +1,5 @@
 package dev.letsgoaway.geyserextras;
 
-import dev.letsgoaway.geyserextras.core.parity.java.blockdisplay.BlockDisplayEntity;
 import dev.letsgoaway.geyserextras.core.utils.IsAvailable;
 import dev.letsgoaway.geyserextras.core.version.PluginVersion;
 
@@ -35,8 +34,9 @@ public class InitializeLogger {
     }
 
     public static void end() {
-        if (GE.getConfig().isEnableBlockDisplayWorkaround()) {
-            BlockDisplayEntity.buildEntityDef();
+        if (GE.getConfig().isEnableBlockDisplayWorkaround() && !GE.isBlockDisplayRegistered()) {
+            // Happens when GeyserExtras starts after Geyser defined its entities (e.g. as an extension)
+            warn("The block display workaround is enabled but could not be registered with Geyser; it will not run.");
         }
         DecimalFormat r3 = new DecimalFormat("0.000");
         Instant finish = Instant.now();
