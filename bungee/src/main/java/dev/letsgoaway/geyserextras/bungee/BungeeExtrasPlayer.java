@@ -22,13 +22,14 @@ public class BungeeExtrasPlayer extends ExtrasPlayer {
     @Override
     public void startGame() {
         super.startGame();
-        GeyserExtras.SERVER.getTickUtil().runIn(1L, this::tick, this);
+        GeyserExtras.SERVER.getTickUtil().runIn(1L, this::tickAndReschedule, this);
         this.player = GeyserExtrasBungee.BUNGEE.getProxy().getPlayer(getJavaUUID());
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        scheduler.schedule(GeyserExtrasBungee.BUNGEE, this::tick, TickMath.toNanos(this.tickrate), TimeUnit.NANOSECONDS);
+    private void tickAndReschedule() {
+        // Stops once the player disconnected; it used to reschedule itself forever (upstream #32)
+        if (safeTick()) {
+            scheduler.schedule(GeyserExtrasBungee.BUNGEE, this::tickAndReschedule, TickMath.toNanos(this.tickrate), TimeUnit.NANOSECONDS);
+        }
     }
 }

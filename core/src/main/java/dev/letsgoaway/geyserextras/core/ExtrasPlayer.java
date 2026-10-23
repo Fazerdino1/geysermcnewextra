@@ -146,6 +146,7 @@ public class ExtrasPlayer {
     }
 
     public void onDisconnect() {
+        disconnected = true;
         if (doubleClickShortcutFuture != null) {
             doubleClickShortcutFuture.cancel(false);
             doubleClickShortcutFuture = null;
@@ -205,6 +206,37 @@ public class ExtrasPlayer {
         sendMessage(String.format(translateGE("cpmc.emote_link.prompt"), binding.translate(this)));
     }
 
+    private volatile boolean disconnected = false;
+    private int tickFailures = 0;
+
+    /**
+     * Ticks this player, never letting an exception escape to the scheduler (an exception would
+     * otherwise stop the Spigot tick loop for every other player, or kill the per-player task).
+     *
+     * @return false once the player disconnected, so per-player schedulers can stop
+     */
+    public final boolean safeTick() {
+        if (disconnected) {
+            return false;
+        }
+        try {
+            tick();
+        } catch (RuntimeException e) {
+            // Log the first failure only: the same error would otherwise repeat every tick (upstream #67)
+            if (tickFailures++ == 0) {
+                SERVER.warn("Tick failed for player " + bedrockXUID + " (further failures are not logged): " + e);
+                if (GE.getConfig().isDebugMode()) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isDisconnected() {
+        return disconnected;
+    }
+
     public void tick() {
         ticks++;
         if (GE.getConfig().isDisablePaperDoll() && !session.camera().isHudElementHidden(GuiElement.PAPER_DOLL)) {
@@ -212,7 +244,9 @@ public class ExtrasPlayer {
         }
 
 
-        if (session.getDimensionType().isNetherLike() && session.camera().fogEffects().contains(DimensionUtils.BEDROCK_FOG_HELL)) {
+        // The dimension is unknown until the Java server sends it (e.g. on the code of conduct screen, upstream #67)
+        if (session.getDimensionType() != null && session.getDimensionType().isNetherLike()
+                && session.camera().fogEffects().contains(DimensionUtils.BEDROCK_FOG_HELL)) {
             session.camera().removeFog(DimensionUtils.BEDROCK_FOG_HELL);
         }
 

@@ -116,7 +116,7 @@ public class GeyserExtras implements EventRegistrar {
     public void serverTick() {
         for (ExtrasPlayer player : connections.values()) {
             if (player.isLoggedIn()) {
-                player.tick();
+                player.safeTick();
             }
         }
     }

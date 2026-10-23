@@ -34,8 +34,11 @@ public class VelocityExtrasPlayer extends ExtrasPlayer {
     @Override
     public void setTickingState(float tickrate) {
         super.setTickingState(tickrate);
+        if (isDisconnected()) {
+            return;
+        }
         if (builder == null) {
-            builder = scheduler.buildTask(GeyserExtrasVelocity.VELOCITY, this::tick);
+            builder = scheduler.buildTask(GeyserExtrasVelocity.VELOCITY, this::safeTick);
         }
         if (task != null && task.status().equals(SCHEDULED)) {
             task.cancel();
@@ -44,5 +47,15 @@ public class VelocityExtrasPlayer extends ExtrasPlayer {
         builder.clearRepeat();
         builder.repeat(TickMath.toNanos(tickrate), TimeUnit.NANOSECONDS);
         task = builder.schedule();
+    }
+
+    @Override
+    public void onDisconnect() {
+        // The repeating task kept running (and kept this player in memory) after disconnecting (upstream #32)
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
+        super.onDisconnect();
     }
 }

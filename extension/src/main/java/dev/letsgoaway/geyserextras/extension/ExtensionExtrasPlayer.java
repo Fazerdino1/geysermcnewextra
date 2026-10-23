@@ -23,7 +23,14 @@ public class ExtensionExtrasPlayer extends ExtrasPlayer {
     @Override
     public void setTickingState(float tickrate) {
         super.setTickingState(tickrate);
-        tickThread = session.getTickEventLoop().scheduleAtFixedRate(this::tick, TickMath.toNanos(tickrate), TickMath.toNanos(tickrate), TimeUnit.NANOSECONDS);
+        if (isDisconnected()) {
+            return;
+        }
+        // Replace the previous task: each /tick rate change used to add one more (upstream #32)
+        if (tickThread != null) {
+            tickThread.cancel(false);
+        }
+        tickThread = session.getTickEventLoop().scheduleAtFixedRate(this::safeTick, TickMath.toNanos(tickrate), TickMath.toNanos(tickrate), TimeUnit.NANOSECONDS);
     }
 
     @Override
