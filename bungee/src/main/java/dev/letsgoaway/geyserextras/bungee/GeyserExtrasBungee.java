@@ -60,9 +60,14 @@ public class GeyserExtrasBungee extends Plugin implements Server {
 
     @Override
     public void onDisable() {
-        CORE.autoReconnectAll();
+        // CORE is null when the start failed; disabling must still never throw (upstream #47)
+        GeyserExtras.runSafely("auto-reconnect", () -> {
+            if (CORE != null) {
+                CORE.autoReconnectAll();
+            }
+        });
         if (IsAvailable.packetevents()) {
-            dev.letsgoaway.geyserextras.core.protocol.ProtocolHandler.terminate();
+            GeyserExtras.runSafely("PacketEvents shutdown", dev.letsgoaway.geyserextras.core.protocol.ProtocolHandler::terminate);
         }
     }
 

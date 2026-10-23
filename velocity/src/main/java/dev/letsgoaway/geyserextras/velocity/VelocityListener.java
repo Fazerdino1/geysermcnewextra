@@ -9,7 +9,9 @@ import com.velocitypowered.api.event.player.KickedFromServerEvent;
 public class VelocityListener {
     @Subscribe(order = PostOrder.LAST)
     public void onPlayerJoin(LoginEvent ev) {
-        GeyserExtrasVelocity.CORE.onJavaPlayerJoin(ev.getPlayer().getUniqueId());
+        if (GeyserExtrasVelocity.CORE != null) {
+            GeyserExtrasVelocity.CORE.onJavaPlayerJoin(ev.getPlayer().getUniqueId());
+        }
     }
     @Subscribe(order = PostOrder.LAST)
     public void onPlayerKick(KickedFromServerEvent ev) {
@@ -17,6 +19,8 @@ public class VelocityListener {
     }
     @Subscribe(order = PostOrder.LAST)
     public void onPlayerLeave(DisconnectEvent ev) {
-        GeyserExtrasVelocity.CORE.onJavaPlayerLeave(ev.getPlayer().getUniqueId());
+        if (GeyserExtrasVelocity.CORE != null) {
+            GeyserExtrasVelocity.CORE.onJavaPlayerLeave(ev.getPlayer().getUniqueId());
+        }
     }
 }

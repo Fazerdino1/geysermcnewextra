@@ -8,11 +8,15 @@ import net.md_5.bungee.event.EventHandler;
 public class BungeeListener implements Listener {
     @EventHandler
     public void onPlayerJoin(ServerConnectEvent ev) {
-        GeyserExtrasBungee.CORE.onJavaPlayerJoin(ev.getPlayer().getUniqueId());
+        if (GeyserExtrasBungee.CORE != null) {
+            GeyserExtrasBungee.CORE.onJavaPlayerJoin(ev.getPlayer().getUniqueId());
+        }
     }
 
     @EventHandler
     public void onPlayerLeave(PlayerDisconnectEvent ev) {
-        GeyserExtrasBungee.CORE.onJavaPlayerLeave(ev.getPlayer().getUniqueId());
+        if (GeyserExtrasBungee.CORE != null) {
+            GeyserExtrasBungee.CORE.onJavaPlayerLeave(ev.getPlayer().getUniqueId());
+        }
     }
 }

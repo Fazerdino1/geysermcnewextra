@@ -63,7 +63,9 @@ public class SpigotListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        GeyserExtrasSpigot.CORE.onJavaPlayerJoin(event.getPlayer().getUniqueId());
+        if (GeyserExtrasSpigot.CORE != null) {
+            GeyserExtrasSpigot.CORE.onJavaPlayerJoin(event.getPlayer().getUniqueId());
+        }
     }
 
     @EventHandler
@@ -139,6 +141,8 @@ public class SpigotListener implements Listener {
     }
 
     public void onPlayerLeave(Player player) {
-        GeyserExtrasSpigot.CORE.onJavaPlayerLeave(player.getUniqueId());
+        if (GeyserExtrasSpigot.CORE != null) {
+            GeyserExtrasSpigot.CORE.onJavaPlayerLeave(player.getUniqueId());
+        }
     }
 }

@@ -98,11 +98,13 @@ public class GeyserExtrasVelocity implements Server {
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent ev) {
-        if (CORE != null) {
-            CORE.autoReconnectAll();
-        }
+        GeyserExtras.runSafely("auto-reconnect", () -> {
+            if (CORE != null) {
+                CORE.autoReconnectAll();
+            }
+        });
         if (IsAvailable.packetevents()) {
-            dev.letsgoaway.geyserextras.core.protocol.ProtocolHandler.terminate();
+            GeyserExtras.runSafely("PacketEvents shutdown", dev.letsgoaway.geyserextras.core.protocol.ProtocolHandler::terminate);
         }
 
     }

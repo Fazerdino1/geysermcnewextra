@@ -15,6 +15,8 @@ public class ProtocolHandler implements PacketListener {
 
     static Map<UUID, JavaPlayer> connections = new HashMap<>();
 
+    private static boolean initialized = false;
+
     public static void load(PacketEventsAPI<?> builder) {
         PacketEvents.setAPI(builder);
         PacketEvents.getAPI().load();
@@ -24,10 +26,15 @@ public class ProtocolHandler implements PacketListener {
 
     public static void init() {
         PacketEvents.getAPI().init();
+        initialized = true;
         CapeLoader.init();
     }
 
     public static void terminate() {
+        if (!initialized || PacketEvents.getAPI() == null) {
+            return;
+        }
+        initialized = false;
         PacketEvents.getAPI().terminate();
     }
 

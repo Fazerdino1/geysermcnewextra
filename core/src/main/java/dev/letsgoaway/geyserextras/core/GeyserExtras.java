@@ -193,11 +193,11 @@ public class GeyserExtras implements EventRegistrar {
     }
 
     public void onGeyserReload(GeyserPreReloadEvent ignored) {
-        autoReconnectAll();
+        runSafely("auto-reconnect", this::autoReconnectAll);
     }
 
     public void onGeyserShutdown(GeyserShutdownEvent ignored) {
-        autoReconnectAll();
+        runSafely("auto-reconnect", this::autoReconnectAll);
     }
 
     public void onLoadPacks(SessionLoadResourcePacksEvent ev) {
@@ -212,10 +212,30 @@ public class GeyserExtras implements EventRegistrar {
     }
 
     public void autoReconnectAll() {
-        if (getConfig().isAutoReconnect()) {
-            for (ExtrasPlayer player : connections.values()) {
+        // Can run from a shutdown after a failed start, when the config was never loaded
+        if (getConfig() == null || !getConfig().isAutoReconnect()) {
+            return;
+        }
+        for (ExtrasPlayer player : connections.values()) {
+            runSafely("reconnecting " + player.getBedrockXUID(), () -> {
                 player.getPreferences().save();
                 player.reconnect();
+            });
+        }
+    }
+
+    /**
+     * Runs a shutdown or cleanup step so that its failure is logged instead of propagated:
+     * disabling the plugin must never throw, even after a failed start.
+     */
+    public static void runSafely(String step, Runnable action) {
+        try {
+            action.run();
+        } catch (RuntimeException | LinkageError e) {
+            if (SERVER != null) {
+                SERVER.warn("GeyserExtras: " + step + " failed: " + e);
+            } else {
+                System.err.println("[GeyserExtras] " + step + " failed: " + e);
             }
         }
     }
