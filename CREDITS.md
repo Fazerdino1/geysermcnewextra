@@ -30,8 +30,9 @@ Each of these changes says so in its commit message.
 | **LetsGoAway** ([MapXYZ](https://github.com/letsgoawaydev/MapXYZ), Copyright (c) 2025 letsgoawaydev) | Coordinates on maps, locator maps, starting map, Legacy Console zoom, reduced debug info | `maps` module (`spigot.yml`) | MIT |
 | **GeyserMC** ([Hurricane](https://github.com/GeyserMC/Hurricane), Copyright (c) 2023 Camotoy) | Removing the collision of bamboo and pointed dripstone | `collisions` module (`spigot.yml`) | MIT |
 
-The "Bedrock Armorstands" plugin has no license: the `armor-stands` module was written from scratch,
-without its code. MapXYZ's font (BananaTypeFont) has no license either and is not included; the module
+The "Bedrock Armorstands" and "Geyser Recipe Fix" plugins have no license: the `armor-stands` module and
+the `recipe-menus` feature were written from scratch, without their code (only Recipe Fix's public
+description was read). MapXYZ's font (BananaTypeFont) has no license either and is not included; the module
 uses Bukkit's built-in Minecraft font.
 
 ## Projects we build on

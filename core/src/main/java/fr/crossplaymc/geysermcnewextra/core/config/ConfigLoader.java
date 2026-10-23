@@ -20,7 +20,7 @@ import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.SERVER;
 
 public class ConfigLoader {
 
-    public static final int LATEST_VERSION = 9;
+    public static final int LATEST_VERSION = 10;
     private static final String HEADER = """
             GeyserMCNewExtra
             If Geyser is detected, all required config changes will be automatically applied.
@@ -36,6 +36,8 @@ public class ConfigLoader {
             .addVersion(7, sixToSeven())
             .addVersion(8, sevenToEight())
             .addVersion(9, eightToNine())
+            // 10: recipe-menus, filled with its defaults (off)
+            .addVersion(10, ConfigurationTransformation.empty())
 
             .build();
 

@@ -145,9 +145,47 @@ public final class GeyserMCNewExtraConfig {
             """)
     private List<String> disabledCommandAliases = new ArrayList<>();
 
+    @Comment("""
+            EXPERIMENTAL. Bedrock players see anvils and smithing tables as a chest menu whose result is computed
+            by the server, so custom recipes and enchantments from plugins and datapacks work for them
+            (replaces the "Geyser Recipe Fix" plugin: do not run both).
+            The real menu stays on the server: other plugins see a normal anvil and nothing can be duplicated.
+            Renaming needs the normal Bedrock anvil: sneak with empty hands when opening it.
+            """)
+    private RecipeMenus recipeMenus = new RecipeMenus();
+
     @Comment("Only enable if you know what you are doing.")
     private boolean debugMode = false;
 
     @Comment("The version of the config. DO NOT CHANGE!")
     private int version = ConfigLoader.LATEST_VERSION;
+
+    @Getter
+    @ConfigSerializable
+    public static final class RecipeMenus {
+        @Comment("Turns the feature on.")
+        private boolean enabled = false;
+
+        @Comment("Anvils.")
+        private boolean anvil = true;
+
+        @Comment("Smithing tables.")
+        private boolean smithingTable = true;
+
+        @Comment("""
+                Worlds where it works (folder names). Empty: every world.
+                Only on Paper/Spigot: on a proxy or Geyser Standalone the world is unknown and this list is ignored.
+                """)
+        private List<String> worlds = new ArrayList<>();
+
+        /**
+         * @param world the player's world, or null when the platform does not know it
+         */
+        public boolean appliesToWorld(String world) {
+            if (world == null || worlds == null || worlds.isEmpty()) {
+                return true;
+            }
+            return worlds.stream().anyMatch(name -> name != null && name.trim().equalsIgnoreCase(world));
+        }
+    }
 }

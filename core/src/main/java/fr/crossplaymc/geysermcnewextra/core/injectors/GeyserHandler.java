@@ -17,6 +17,10 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundEntityEventPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundRemoveEntitiesPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundAddEntityPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.inventory.ClientboundContainerClosePacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.inventory.ClientboundContainerSetContentPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.inventory.ClientboundContainerSetDataPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.inventory.ClientboundContainerSetSlotPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.inventory.ClientboundOpenScreenPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSoundPacket;
 
@@ -39,6 +43,11 @@ public class GeyserHandler {
         // Shield stuff
         Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundEntityEventPacket.class, new JavaEntityEventInjector());
         Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundOpenScreenPacket.class, new JavaOpenScreenInjector());
+        // Recipe menus (anvil and smithing table shown as a chest)
+        Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundContainerSetContentPacket.class, new JavaContainerSetContentInjector());
+        Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundContainerSetSlotPacket.class, new JavaContainerSetSlotInjector());
+        Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundContainerSetDataPacket.class, new JavaContainerSetDataInjector());
+        Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundContainerClosePacket.class, new JavaContainerCloseInjector());
         // Ticking state
         Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundTickingStatePacket.class, new JavaTickingStateInjector());
         // Auto reconnect (doesn't work, should look into)

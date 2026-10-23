@@ -40,6 +40,12 @@ public class SpigotExtrasPlayer extends ExtrasPlayer {
     }
 
     @Override
+    public String getWorldName() {
+        Player current = player;
+        return current == null ? null : current.getWorld().getName();
+    }
+
+    @Override
     public void hungerSprintCancel() {
     }
 }

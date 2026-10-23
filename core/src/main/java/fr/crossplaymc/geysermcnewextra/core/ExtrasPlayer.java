@@ -4,6 +4,7 @@ import fr.crossplaymc.geysermcnewextra.core.features.skinsaver.SkinSaver;
 import fr.crossplaymc.geysermcnewextra.core.form.BedrockForm;
 import fr.crossplaymc.geysermcnewextra.core.form.BedrockMenu;
 import fr.crossplaymc.geysermcnewextra.core.form.BedrockModal;
+import fr.crossplaymc.geysermcnewextra.core.features.recipemenus.RecipeMenus;
 import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import fr.crossplaymc.geysermcnewextra.core.parity.bedrock.EmoteUtils;
 import fr.crossplaymc.geysermcnewextra.core.parity.java.menus.serverlinks.ServerLinksData;
@@ -51,6 +52,8 @@ public class ExtrasPlayer {
     private final TabListData tabListData;
     @Getter
     private final ServerLinksData serverLinksData;
+    @Getter
+    private final RecipeMenus recipeMenus;
     @Getter
     private final PreferencesData preferences;
     @Getter
@@ -112,6 +115,7 @@ public class ExtrasPlayer {
         this.bedrockXUID = connection.xuid();
         tabListData = new TabListData(this);
         serverLinksData = new ServerLinksData(this);
+        recipeMenus = new RecipeMenus(this);
         preferences = new PreferencesData(this);
         userPrefs = PreferencesData.PREFERENCES_PATH.resolve(bedrockXUID + ".json").toFile();
         preferences.load();
@@ -130,6 +134,15 @@ public class ExtrasPlayer {
 
         // Java UUID is null until login
         javaUUID = session.javaUuid();
+
+        recipeMenus.attach(session);
+    }
+
+    /**
+     * @return the name of the world the player is in, or null on platforms that do not know it (proxies, standalone)
+     */
+    public String getWorldName() {
+        return null;
     }
 
     private UUID bossbarID;
