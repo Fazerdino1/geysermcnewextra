@@ -44,6 +44,12 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Packets for a player GeyserExtras does not track yet are handled by Geyser instead of failing
   (`Could not translate packet`, upstream #36, #54); player maps exist before any packet (#29, #76).
 - Config version mismatch: configs were rewritten on every start or kept removed options.
+- Disabling the plugin never throws, even after a failed start (upstream #47).
+- A null dimension no longer throws on every tick (upstream #67); a failing player tick is logged
+  once and no longer stops other players' ticks.
+- Disconnected players stop ticking on Velocity, Bungee and the extension (tasks were never
+  cancelled: likely cause of the proxy memory leak in upstream #32).
+- Velocity: a player kicked from a backend server no longer reconnects every Bedrock player.
 - Emote chat to Java players works again on Geyser 2.11+ (Geyser no longer forwards the emote list).
 - Cooldown preferences saved before Geyser 2.11 (`TITLE`, `ACTIONBAR`) are migrated instead of
   becoming null.
