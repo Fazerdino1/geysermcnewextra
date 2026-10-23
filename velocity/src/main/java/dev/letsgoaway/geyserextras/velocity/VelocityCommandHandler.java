@@ -14,7 +14,7 @@ public class VelocityCommandHandler implements RawCommand {
 
             ExtrasPlayer bedrockPlayer = ExtrasPlayer.get(player.getUniqueId());
             if (bedrockPlayer != null) {
-                CommandExecutor.runFromInput(bedrockPlayer, command);
+                CommandExecutor.runForBedrock(bedrockPlayer, () -> CommandExecutor.runFromInput(bedrockPlayer, command));
             } else {
                 CommandExecutor.runFromInput(player.getUniqueId(), command);
             }

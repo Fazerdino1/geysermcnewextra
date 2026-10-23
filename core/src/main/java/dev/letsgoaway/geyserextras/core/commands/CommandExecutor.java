@@ -3,6 +3,9 @@ package dev.letsgoaway.geyserextras.core.commands;
 import dev.letsgoaway.geyserextras.core.ExtrasPlayer;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static dev.letsgoaway.geyserextras.core.GeyserExtras.GE;
 
 public class CommandExecutor {
     public static Map<String, BedrockCommand> ids;
@@ -14,6 +17,20 @@ public class CommandExecutor {
         add(List.of("l", "players", "listplayers", "tab", "tablist"), new TabListCommand());
     }
 
+
+    /**
+     * Runs a command of a Bedrock player after {@code bedrock-command-delay-ms}, on the player's
+     * Geyser event loop: forms sent while the client's chat screen is still open are discarded.
+     * Based on paper0319/GeyserExtras@35d1877 (Velocity only there).
+     */
+    public static void runForBedrock(ExtrasPlayer player, Runnable command) {
+        int delay = GE.getConfig().getBedrockCommandDelayMs();
+        if (delay <= 0) {
+            command.run();
+            return;
+        }
+        player.getSession().scheduleInEventLoop(command, delay, TimeUnit.MILLISECONDS);
+    }
 
     public static void add(List<String> aliases, BedrockCommand cmd) {
         for (String alias : aliases) {

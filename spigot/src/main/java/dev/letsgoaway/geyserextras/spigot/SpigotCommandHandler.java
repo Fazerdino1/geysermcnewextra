@@ -15,7 +15,7 @@ public class SpigotCommandHandler implements org.bukkit.command.CommandExecutor 
             ExtrasPlayer player = ExtrasPlayer.get(spigotPlayer.getUniqueId());
             GeyserExtras.SERVER.debug("Command /" + label + " from " + spigotPlayer.getUniqueId() + " bedrockPlayer=" + (player != null));
             if (player != null) {
-                CommandExecutor.runFromCommandInput(player, label, args);
+                CommandExecutor.runForBedrock(player, () -> CommandExecutor.runFromCommandInput(player, label, args));
             }
             else {
                 CommandExecutor.runFromCommandInput(spigotPlayer.getUniqueId(), label, args);

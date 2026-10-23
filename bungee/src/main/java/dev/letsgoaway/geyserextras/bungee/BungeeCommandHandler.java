@@ -18,7 +18,7 @@ public class BungeeCommandHandler extends Command {
             ExtrasPlayer bedrockPlayer = ExtrasPlayer.get(player.getUniqueId());
             if (bedrockPlayer != null) {
                 // Run as bedrock player
-                CommandExecutor.runFromCommandInput(bedrockPlayer, this.getName(), args);
+                CommandExecutor.runForBedrock(bedrockPlayer, () -> CommandExecutor.runFromCommandInput(bedrockPlayer, this.getName(), args));
             }
             else {
                 // Run as java player
