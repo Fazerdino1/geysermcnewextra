@@ -42,10 +42,13 @@ public class GELocale {
     }
 
     public static String translate(String key, String locale) {
-        if (LANGUAGES_MAP.containsKey(locale)) {
-            return LANGUAGES_MAP.get(locale).getOrDefault(key, key);
+        HashMap<String, String> language = LANGUAGES_MAP.containsKey(locale) ? LANGUAGES_MAP.get(locale) : LANGUAGES_MAP.get("en_US");
+        String translation = language != null ? language.get(key) : null;
+        if (translation != null) {
+            return translation;
         }
-        return LANGUAGES_MAP.get("en_US").getOrDefault(key, key);
+        // Strings added by the fork are not in the downloaded language files
+        return BundledLocale.translate(key, locale);
     }
 
     public static String translateOtherwise(String key, String otherwise, String locale) {
