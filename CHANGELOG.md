@@ -20,6 +20,7 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Emote bindings now follow a recorded emote: tick "Link an emote" in the bindings menu, save,
   then perform the emote once (Geyser 2.11+ no longer exposes emote wheel slots).
 - Translations bundled in the jar for strings added by the fork (English, French).
+- Players' default cooldown display follows Geyser's `cooldown-type`.
 - Config option `bedrock-command-delay-ms` (config version 6, migrated automatically).
 - Debug traces (`debug-mode: true`) for player creation, forms, inventory shortcuts and emotes.
 
@@ -50,6 +51,7 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Disconnected players stop ticking on Velocity, Bungee and the extension (tasks were never
   cancelled: likely cause of the proxy memory leak in upstream #32).
 - Velocity: a player kicked from a backend server no longer reconnects every Bedrock player.
+- GeyserExtras no longer deletes packs from Geyser's packs folder at startup; it only warns.
 - Emote chat to Java players works again on Geyser 2.11+ (Geyser no longer forwards the emote list).
 - Cooldown preferences saved before Geyser 2.11 (`TITLE`, `ACTIONBAR`) are migrated instead of
   becoming null.
