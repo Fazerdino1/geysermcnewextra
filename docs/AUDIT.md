@@ -142,7 +142,7 @@ Classement : **Bug** = bug réel encore présent dans le code actuel (ou très p
 | #43, #53 | Erreur à l'ouverture de la liste des joueurs | ❓ logs externes (mclo.gs) à relire ; probablement `PlayerListMenu`/`TabListData`. | 🟡 |
 | #62 | Monter un zombie nautilus bloque l'inventaire jusqu'à reconnexion | `Action.OPEN_INVENTORY` recopie une ancienne version du code Geyser (ne gère que chevaux et chest boats) ; Geyser a depuis évolué. | 🟠 |
 | #61 | Standalone oublie les packs choisis après redémarrage | `onSessionRemove` vide les packs quand `authData`/`clientData` sont null + sauvegardes asynchrones non garanties à l'arrêt (B11). | 🟡 |
-| #55 | PacketEvents détecté mais « ne tournera pas » | Logique `IsAvailable`/messages contradictoires selon la plateforme (extension = pas de PacketEvents). | 🟡 |
+| #55 | PacketEvents détecté mais « ne tournera pas » | Condition inversée : l'avertissement « Features that require PacketEvents will not run! » s'affiche quand PacketEvents **est** installé (`InitializeLogger.java`, `if (IsAvailable.packetevents())` au lieu de `!`). Purement cosmétique, mais trompeur sur le SMP qui a PacketEvents. | 🟡 |
 | #32 | Fuite mémoire (proxy) | Tentative de correctif `b5a6d4b` ; suspects restants : `ProtocolHandler.connections` (HashMap statique), `playerDimensionsMap`, tâches Velocity par joueur, `new Thread` à chaque sauvegarde. ❓ | 🟠 |
 | #34 | Bungee : `LinkageError` sur `sendForm` | Conflit de classloaders Cumulus/Floodgate. Plateforme secondaire. | 🟡 |
 | #22 | Holoprint ne s'affiche plus avec GE | Probable conflit de fichiers du GeyserExtrasPack (priorité 100 par défaut). Priorité configurable depuis `7bc8940` → partiellement résolu. ❓ | 🟡 |
