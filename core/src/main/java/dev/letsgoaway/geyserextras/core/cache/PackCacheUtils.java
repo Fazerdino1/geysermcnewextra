@@ -54,20 +54,14 @@ public class PackCacheUtils {
         SERVER.log("Loading resources...");
         RP_GEYSER_EXTRAS = ResourcePack.create(PackCodec.path(GEYSER_EXTRAS_PACK));
 
-        // temporary, remove when geyserextras is released as its to remove a workaround for a bug i fixed that i suggested in the discord
+        // Geyser's packs folder belongs to the admin: only warn about packs that are now redundant,
+        // never delete them (based on h4-hub/GeyserExtras@a352538, MIT)
         Path geyserMCPacks = GE.geyserApi.packDirectory();
-        File geWorkaroundPack = geyserMCPacks.resolve("GeyserExtrasPack.mcpack").toFile();
-        if (geWorkaroundPack.exists()) {
-            if (geWorkaroundPack.delete()) {
-                SERVER.log("Deleted GeyserExtrasPack.mcpack from GeyserMC packs folder");
-            }
+        if (geyserMCPacks.resolve("GeyserExtrasPack.mcpack").toFile().exists()) {
+            SERVER.warn("GeyserExtrasPack.mcpack is in Geyser's packs folder; GeyserExtras already sends it, you can remove that copy.");
         }
-        // delete old GeyserOptionalPack if it exists (deprecated, now included in Geyser by default)
-        File gopWorkaroundPack = geyserMCPacks.resolve("GeyserOptionalPack.mcpack").toFile();
-        if (gopWorkaroundPack.exists()) {
-            if (gopWorkaroundPack.delete()) {
-                SERVER.log("Removed deprecated GeyserOptionalPack.mcpack from GeyserMC packs");
-            }
+        if (geyserMCPacks.resolve("GeyserOptionalPack.mcpack").toFile().exists()) {
+            SERVER.warn("GeyserOptionalPack.mcpack is in Geyser's packs folder; it is deprecated (Geyser now ships the GeyserIntegratedPack) and may conflict with it.");
         }
         // delete old GeyserOptionalPack from cache folder if it exists
         File oldOptionalPack = PACKS_FOLDER.resolve("GeyserOptionalPack.mcpack").toFile();
