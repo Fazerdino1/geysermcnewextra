@@ -65,6 +65,14 @@ Aliases can be turned off with `disabled-command-aliases` (e.g. to free `/l` for
 - Menu opened by double tapping the inventory button or typing `/ge`
 - `debug-mode: true` traces players, forms and shortcuts in the console
 
+## Languages
+
+Every text comes from `plugins/GeyserMCNewExtra/lang/<locale>.yml`: English, French and 10 more
+languages are included. Bedrock players see their own client language when a file exists for it;
+otherwise, and for the console, `default-locale` is used (French by default). Edit any text in
+these files, or add a language by adding a file; texts added by a new version are appended to your
+files automatically.
+
 ## Documentation
 
 - [docs/TEST-CHECKLIST.md](docs/TEST-CHECKLIST.md): in-game test checklist

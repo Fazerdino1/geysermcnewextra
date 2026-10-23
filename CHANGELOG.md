@@ -22,6 +22,11 @@ versions continue from its last release, `2.0.0-BETA-11`.
   then perform the emote once (Geyser 2.11+ no longer exposes emote wheel slots).
 - Translations bundled in the jar for strings added by the fork (English, French).
 - Players' default cooldown display follows Geyser's `cooldown-type`.
+- **Language files** for every text shown to players or in the console: `lang/<locale>.yml`
+  (English, French and 10 more), extracted on startup and completed automatically when keys are
+  missing. Bedrock players get their client language; the console and fallback use
+  `default-locale`, now `fr_FR` by default (configs still on `en_US` are switched, config version 9).
+  A test fails the build if a visible text is hardcoded.
 - GitHub Actions: build and tests on every push and pull request; a GitHub release with the four
   jars for each `v*` tag (the tag must match the project version).
 - The update checker reads this project's GitHub releases and compares versions with SemVer.
@@ -71,6 +76,8 @@ versions continue from its last release, `2.0.0-BETA-11`.
 - Preference files are written atomically and in order; a shutdown could leave them empty and
   players lost their settings and packs (upstream #61).
 - `/playerlist` did nothing on Spigot.
+- The startup warning about PacketEvents showed when it was installed instead of missing (upstream #55).
+- Language files and the original credits are bundled instead of downloaded at every start.
 - Resource pack version comparison (1.5.0 was considered newer than 2.0.0).
 - Emote chat to Java players works again on Geyser 2.11+ (Geyser no longer forwards the emote list).
 - Cooldown preferences saved before Geyser 2.11 (`TITLE`, `ACTIONBAR`) are migrated instead of

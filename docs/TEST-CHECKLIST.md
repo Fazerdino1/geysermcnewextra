@@ -22,6 +22,14 @@ Pour chaque ligne : ✅ OK, ❌ KO (avec l'extrait de log), ➖ pas testé.
 | 1.4 | Erreurs PacketEvents au démarrage (point 2 de ANTICHEAT.md) | Aucune erreur ni double injection signalée |
 | 1.5 | Connexion Bedrock **juste après** « Geyser started on UDP port » (issues #68/#76) | Noter s'il y a une NPE GeyserMCNewExtra (connue, à corriger en Phase 3) |
 
+## 1bis. Langues
+| # | Test | Attendu |
+|---|---|---|
+| 1b.1 | Premier démarrage | Dossier `plugins/GeyserMCNewExtra/lang/` créé avec `fr_FR.yml`, `en_US.yml`… ; messages de console en français |
+| 1b.2 | Client Bedrock en français, puis en anglais (réglage de langue du jeu) | Menus et messages GeyserMCNewExtra dans la langue du client |
+| 1b.3 | Modifier un texte dans `fr_FR.yml`, redémarrer | Le texte modifié s'affiche, la modification est conservée |
+| 1b.4 | Supprimer une ligne de `fr_FR.yml`, redémarrer | Console : « 1 textes manquants ajoutés… », la ligne revient en fin de fichier |
+
 ## 2. Connexion et menus (Bedrock)
 | # | Test | Attendu |
 |---|---|---|
