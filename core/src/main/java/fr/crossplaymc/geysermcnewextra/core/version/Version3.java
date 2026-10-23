@@ -18,7 +18,14 @@ public class Version3 {
     }
 
     public boolean isNewer(Version3 v) {
-        return this.major > v.major || this.minor > v.minor || this.patch > v.patch;
+        // Compare field by field: 1.5.0 used to be "newer" than 2.0.0
+        if (this.major != v.major) {
+            return this.major > v.major;
+        }
+        if (this.minor != v.minor) {
+            return this.minor > v.minor;
+        }
+        return this.patch > v.patch;
     }
 
     public static Version3 fromString(String string) {
