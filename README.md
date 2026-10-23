@@ -1,51 +1,80 @@
-# NOTICE: v2.0.0 IS NOW IN BETA!
+# GeyserExtras CPMC
 
-You can view 2.0's WIP wiki here: https://geyserextras.letsgoaway.dev/
+A maintained fork of [GeyserExtras](https://github.com/GeyserExtras/GeyserExtras) for the
+**CrossPlayMC** network (Java & Bedrock), including the public PvP server **CrossPlayMC-SMP**.
 
-# GeyserExtras
-A plugin which attempts to unify features for Bedrock Edition players on Java Edition Servers with GeyserMC, aswell as other handy features for Bedrock Players.
+GeyserExtras adds Java Edition features and handy extras for Bedrock Edition players joining
+Java Edition servers through [GeyserMC](https://geysermc.org/). The original project was archived
+on 2026-06-19; this fork keeps it working on current Geyser releases, with a focus on stability
+and fair PvP between both editions.
 
-[![CodeFactor](https://www.codefactor.io/repository/github/geyserextras/geyserextras/badge/master)](https://www.codefactor.io/repository/github/geyserextras/geyserextras/overview/master)
+> **Status:** `2.1.0-alpha.1`, in development. The port to the latest Geyser is not finished yet,
+> so no build is published. See [CHANGELOG.md](CHANGELOG.md) and [docs/AUDIT.md](docs/AUDIT.md).
 
-[![generic](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/documentation/generic_vector.svg)](https://geyserextras.letsgoaway.dev)
-[![discord-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/social/discord-singular_vector.svg)](https://discord.gg/2FfuShKQgy)
+## Drop-in replacement
 
-[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth_vector.svg)](https://modrinth.com/plugin/geyserextras) 
-[![hangar](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/hangar_vector.svg)](https://hangar.papermc.io/GeyserExtras/GeyserExtras)
-[![github](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/github_vector.svg)](https://github.com/GeyserExtras/GeyserExtras/releases)
+The fork keeps every technical identifier of GeyserExtras, so it can replace an existing install
+without touching configs or player data:
 
-![spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/spigot_vector.svg)
-![paper](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/paper_vector.svg)
-![purpur](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/purpur_vector.svg)
+- plugin / extension id: `geyserextras` (plugin name `GeyserExtras`)
+- commands: `/geyserextras` (`/ge`), `/platformlist`, `/playerlist`, `/emotechat`
+- data folder: `plugins/GeyserExtras/` (or `Geyser/extensions/geyserextras/`) with the same
+  `config.yml`, `preferences/`, `optionalpacks/`, `skins/` layout
 
-![bungeecord](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/bungeecord_vector.svg)
-![waterfall](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact-minimal/supported/waterfall_vector.svg)
+Only the jar names change (`GeyserExtras-CPMC-Spigot.jar`, …): remove the old
+`GeyserExtras-*.jar` before adding the new one.
 
-![velocity](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/supported/velocity_vector.svg)
+## Supported platforms
 
-**The extension version** of GeyserExtras for the `Geyser/extensions` folder is available at [https://github.com/GeyserExtras/GeyserExtras/releases](https://github.com/GeyserExtras/GeyserExtras/releases)
+| Jar | Platform | Notes |
+|---|---|---|
+| `GeyserExtras-CPMC-Spigot.jar` | Paper, Purpur, Spigot with Geyser-Spigot | Primary target (CrossPlayMC runs Purpur + Geyser-Spigot + Floodgate) |
+| `GeyserExtras-CPMC-Velocity.jar` | Velocity with Geyser-Velocity | Builds, less tested |
+| `GeyserExtras-CPMC-BungeeCord.jar` | BungeeCord / Waterfall with Geyser-BungeeCord | Builds, less tested |
+| `GeyserExtras-CPMC-Extension.jar` | `Geyser/extensions` folder (incl. Geyser Standalone) | Builds, less tested |
 
-# Features
-## Combat
-- ~~Changes the Attack Cooldown to look like Java Editions~~ This feature has been added into the GeyserIntegratedPack
-- Adds the Java Edition combat sounds
-## Parity
-- Sends emote chat to Java players (can be muted by `/muteemotechat`)
-- Ports some Java Edition only menus to Bedrock Forms
-- Experimental Block Display Entity support using FMBE
-## Utility
-- Allows rebinding of certain actions to Java Actions (e.g swap offhand)
-- Allows players to load resource packs from the `GeyserExtras/optionalpacks` folder as they please
-- Allows saving player skin, geometry and animation data to `GeyserExtras/skins`
-- Accessible menu by double tapping Inventory or typing `/ge`
+[PacketEvents](https://modrinth.com/plugin/packetevents) is optional; some features need it.
 
-## Plans
-[Trello](https://trello.com/b/9UHPTQST)
+## Features
 
-## Other parity Spigot plugins that work great with GeyserExtras
-### Legacy Console features
-- [MapXYZ](https://modrinth.com/plugin/mapxyz) - Shows coordinates on maps instead of in the debug menu or on the hud if you are on bedrock.
-### Bedrock features
-- [Bedrock Armorstands](https://modrinth.com/plugin/armorstand) - Adds arms to armor stands for both Bedrock and Java
-### Java features
-- [Geyser Recipe Fix](https://modrinth.com/plugin/geyser-recipe-fix) - Fixes smithing table recipes to work properly on Bedrock
+### Combat
+- Java Edition combat sounds (critical, sweep, knockback and weak attacks)
+- The Java-style attack cooldown indicator is now provided by Geyser itself
+  (`cooldown-type` in Geyser's config); each player can still pick crosshair, hotbar or off
+### Parity
+- Emote chat sent to nearby Java players (can be muted with `/muteemotechat`)
+- Bedrock forms for Java-only menus (player list with tab header/footer, server links,
+  advancements, statistics)
+- Experimental Block Display support using FMBE
+- Experimental Bedrock capes shown to Java players (requires PacketEvents)
+### Utility
+- Rebind some Bedrock actions to Java actions (e.g. swap offhand)
+- Optional resource packs players can toggle from `GeyserExtras/optionalpacks`
+- Save player skin, geometry and animation data to `GeyserExtras/skins`
+- Menu opened by double tapping the inventory button or typing `/ge`
+
+## Building
+
+Requires a JVM to launch Gradle; the JDK used for compilation is downloaded automatically by the
+Gradle toolchain resolver.
+
+```bash
+./gradlew build
+```
+
+Jars are written to `<module>/build/libs/`.
+
+## Credits
+
+- **[LetsGoAway (letsgoawaydev)](https://github.com/letsgoawaydev)**: original author of
+  GeyserExtras, and the project's other contributors
+  ([GeyserExtras/GeyserExtras](https://github.com/GeyserExtras/GeyserExtras)).
+- **[leemwood/GeyserPlus](https://github.com/leemwood/GeyserPlus)**: community fork whose port to
+  Geyser 2.11.1 / Minecraft 26.x was used as a reference for the API changes in this fork.
+  Commits that build on it say so.
+- [GeyserMC](https://github.com/GeyserMC/Geyser), on which everything here depends.
+
+## License
+
+MIT, see [LICENSE](LICENSE). The original copyright notice (Copyright (c) 2024 LetsGoAway) is kept
+as required by the license.
