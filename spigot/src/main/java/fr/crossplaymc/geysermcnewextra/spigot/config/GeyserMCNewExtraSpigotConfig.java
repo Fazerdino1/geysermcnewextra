@@ -54,6 +54,15 @@ public final class GeyserMCNewExtraSpigotConfig {
             """)
     private Maps maps = new Maps();
 
+    @Comment("""
+            Removes the server-side collision of bamboo and pointed dripstone, so Bedrock players stop being
+            pulled back when they walk into them (based on Hurricane by GeyserMC, MIT).
+            WARNING for PvP servers: a modified client, Java or Bedrock, can then walk through these blocks.
+            This changes the blocks for the whole server: it cannot be limited to some worlds, and it only
+            applies (or stops) after a restart. Paper and its forks only. Skipped if Hurricane is installed.
+            """)
+    private Collisions collisions = new Collisions();
+
     @Comment("The version of the config. DO NOT CHANGE!")
     private int version = SpigotConfigLoader.LATEST_VERSION;
 
@@ -113,4 +122,16 @@ public final class GeyserMCNewExtraSpigotConfig {
         private boolean reducedDebugInfo = false;
     }
 
+    @Getter
+    @ConfigSerializable
+    public static final class Collisions {
+        @Comment("Turns the module on.")
+        private boolean enabled = false;
+
+        @Comment("No collision for bamboo.")
+        private boolean bamboo = true;
+
+        @Comment("No collision for pointed dripstone. It can then no longer be targeted easily either.")
+        private boolean pointedDripstone = true;
+    }
 }

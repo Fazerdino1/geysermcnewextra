@@ -12,6 +12,7 @@ import fr.crossplaymc.geysermcnewextra.core.utils.TickUtil;
 import fr.crossplaymc.geysermcnewextra.spigot.config.GeyserMCNewExtraSpigotConfig;
 import fr.crossplaymc.geysermcnewextra.spigot.config.SpigotConfigLoader;
 import fr.crossplaymc.geysermcnewextra.spigot.modules.armorstands.ArmorStandModule;
+import fr.crossplaymc.geysermcnewextra.spigot.modules.collisions.CollisionModule;
 import fr.crossplaymc.geysermcnewextra.spigot.modules.maps.MapModule;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,8 @@ public class GeyserMCNewExtraSpigot extends JavaPlugin implements Server {
     public static GeyserMCNewExtraSpigot SPIGOT;
 
     private static SpigotTickUtil spigotTickUtil;
+
+    private final CollisionModule collisionModule = new CollisionModule();
 
 
     @Getter
@@ -110,6 +113,12 @@ public class GeyserMCNewExtraSpigot extends JavaPlugin implements Server {
             getServer().getPluginManager().registerEvents(maps, this);
             maps.start();
         });
+
+        GeyserMCNewExtra.runSafely("collisions module", () -> {
+            if (collisionModule.start(platformConfig.getCollisions())) {
+                getServer().getPluginManager().registerEvents(collisionModule, this);
+            }
+        });
     }
 
     @Override
@@ -127,6 +136,7 @@ public class GeyserMCNewExtraSpigot extends JavaPlugin implements Server {
                 CORE.autoReconnectAll();
             }
         });
+        GeyserMCNewExtra.runSafely("collisions", collisionModule::stop);
         if (IsAvailable.packetevents()) {
             GeyserMCNewExtra.runSafely("PacketEvents shutdown", fr.crossplaymc.geysermcnewextra.core.protocol.ProtocolHandler::terminate);
         }

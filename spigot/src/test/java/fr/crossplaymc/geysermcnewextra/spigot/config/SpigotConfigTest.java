@@ -30,6 +30,7 @@ class SpigotConfigTest {
         assertTrue(config.isEnableJavaOnlyBlockPlacement(), "existing options are kept");
         assertFalse(config.getArmorStands().isEnabled());
         assertFalse(config.getMaps().isEnabled());
+        assertFalse(config.getCollisions().isEnabled());
         // Options that matter for PvP stay off even once the module is turned on
         assertFalse(config.getMaps().isLocatorMaps());
         assertFalse(config.getMaps().isReducedDebugInfo());
@@ -43,6 +44,9 @@ class SpigotConfigTest {
                   enabled: true
                   worlds: [smp, smp_nether]
                   pose-cycling: false
+                collisions:
+                  enabled: true
+                  pointed-dripstone: false
                 """);
 
         GeyserMCNewExtraSpigotConfig config = load(file);
@@ -51,6 +55,8 @@ class SpigotConfigTest {
         assertEquals(List.of("smp", "smp_nether"), config.getArmorStands().getWorlds());
         assertFalse(config.getArmorStands().isPoseCycling());
         assertTrue(config.getArmorStands().isArms());
+        assertTrue(config.getCollisions().isBamboo());
+        assertFalse(config.getCollisions().isPointedDripstone());
     }
 
     @Test
