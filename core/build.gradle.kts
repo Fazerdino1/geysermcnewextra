@@ -46,3 +46,15 @@ val checkPluginVersion by tasks.registering {
 tasks.named("check") {
     dependsOn(checkPluginVersion)
 }
+
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Geyser is provided at runtime by the server; tests need it on their own classpath
+    testImplementation("org.geysermc.geyser:core:${property("geyser_version")}")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
