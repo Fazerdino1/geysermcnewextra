@@ -1,6 +1,6 @@
 # Comparaison avec les autres forks de GeyserExtras
 
-> Date : 2026-10-23 · Notre base : branche `port/geyser-2.12` (GeyserExtras CPMC `2.1.0-alpha.1`, Geyser 2.12.0).
+> Date : 2026-10-23 · Notre base : branche `port/geyser-2.12` (GeyserMCNewExtra `2.1.0-alpha.1`, Geyser 2.12.0).
 > Méthode : API Modrinth, puis API GitHub `compare` de chacun des 34 forks de `GeyserExtras/GeyserExtras`
 > par rapport à `master` (`d49ad51`), lecture des patchs des commits en avance.
 > Toutes les sources lues ici sont sous licence **MIT**, comme l'original. On peut donc reprendre du code

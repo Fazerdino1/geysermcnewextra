@@ -1,11 +1,12 @@
 # Changelog
 
-All notable changes to GeyserExtras CPMC are documented in this file.
+All notable changes to GeyserMCNewExtra are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream release).
+GeyserMCNewExtra is based on the MIT-licensed GeyserExtras by LetsGoAway (see CREDITS.md);
+versions continue from its last release, `2.0.0-BETA-11`.
 
 ## [Unreleased]
 
@@ -23,15 +24,20 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Players' default cooldown display follows Geyser's `cooldown-type`.
 - Config option `disabled-command-aliases` to free aliases such as `/l` (upstream #35; config version 7).
 - Optional packs can be `.zip` files (upstream #60); a broken pack is skipped instead of aborting.
-- GeyserExtras settings are offered in the Bedrock settings screen even with Floodgate when the
+- The plugin's settings are offered in the Bedrock settings screen even with Floodgate when the
   server allows it (automatic fallback to the toast otherwise).
 - Config option `bedrock-command-delay-ms` (config version 6, migrated automatically).
 - Debug traces (`debug-mode: true`) for player creation, forms, inventory shortcuts and emotes.
 
 ### Changed
-- Project renamed to **GeyserExtras CPMC** (display name, authors, descriptions, README).
-  The id `geyserextras`, plugin name `GeyserExtras`, commands and data folder are unchanged.
-- Jars renamed to `GeyserExtras-CPMC*.jar`.
+- **Project renamed to GeyserMCNewExtra**, everywhere: plugin/extension id `geysermcnewextra`,
+  plugin name `GeyserMCNewExtra`, main command `/geysermcnewextra` (alias `/ge` kept), data folder
+  `plugins/GeyserMCNewExtra/`, Java package `fr.crossplaymc.geysermcnewextra`, jar names.
+  On the first start the previous data folder is copied to the new one (kept as a backup), and the
+  options `enable-geyser-extras-menu` and `geyser-extras-pack-priority` are renamed to `enable-menu`
+  and `resource-pack-priority` (config version 8).
+- Jars renamed to `GeyserMCNewExtra*.jar`.
+- Credits for the original project and every fork we took code or ideas from: `CREDITS.md`.
 - Single version number `2.1.0-alpha.1` everywhere (plugin descriptors used to say `2.0.0`
   while the code said `2.0.0-BETA-11`).
 - **Requires Geyser 2.12.0** (pinned to build #1269) and Java 21; Java Edition 26.3 protocol
@@ -44,9 +50,9 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
   files outside the plugin folder) and rejects oversized or truncated images.
 
 ### Fixed
-- `/geyserextras` typed in chat by a Bedrock player showed nothing (forms arriving while the chat is
+- The main command typed in chat by a Bedrock player showed nothing (forms arriving while the chat is
   open are discarded); commands now run after `bedrock-command-delay-ms` (default 500).
-- Packets for a player GeyserExtras does not track yet are handled by Geyser instead of failing
+- Packets for a player the plugin does not track yet are handled by Geyser instead of failing
   (`Could not translate packet`, upstream #36, #54); player maps exist before any packet (#29, #76).
 - Config version mismatch: configs were rewritten on every start or kept removed options.
 - Disabling the plugin never throws, even after a failed start (upstream #47).
@@ -55,7 +61,7 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Disconnected players stop ticking on Velocity, Bungee and the extension (tasks were never
   cancelled: likely cause of the proxy memory leak in upstream #32).
 - Velocity: a player kicked from a backend server no longer reconnects every Bedrock player.
-- GeyserExtras no longer deletes packs from Geyser's packs folder at startup; it only warns.
+- The plugin no longer deletes packs from Geyser's packs folder at startup; it only warns.
 - Player list menu: players who left are removed, entries without a profile no longer break the
   menu (likely upstream #43, #53), the server's list order is followed, and an incompatible jar
   disables the menu with one message instead of errors on every packet (upstream #54, #56).
@@ -70,9 +76,9 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Touch players no longer see their arm swing twice on a missed attack.
 - A binding or optional pack chosen by a player without a preferences file applied to every such
   player and was never saved (preferences shared their collections with the defaults).
-- The block display workaround crashed GeyserExtras' startup on Geyser 2.12 (entity registry frozen).
+- The block display workaround crashed the plugin's startup on Geyser 2.12 (entity registry frozen).
 - Inventory double-tap detection was random (timestamp stored in a float).
-- The build no longer produces an empty `GeyserExtras-CPMC-<version>.jar` at the project root.
+- The build no longer produces an empty `GeyserMCNewExtra-<version>.jar` at the project root.
 - The update checker no longer compares the fork with the archived upstream Modrinth project,
   which would always have reported a bogus update. It is skipped until the fork has releases.
 

@@ -5,7 +5,7 @@
 > Spartan, Themis) ; les remarques « PacketEvents » concernent surtout ceux qui s'appuient dessus (Grim).
 > Ce document décrit le code de `port/geyser-2.12`. Les solutions marquées « Phase 3 » ne sont **pas** implémentées.
 
-Rappel d'architecture : GeyserExtras agit à deux endroits.
+Rappel d'architecture : GeyserMCNewExtra agit à deux endroits.
 1. **Côté Geyser** (joueurs Bedrock) : il remplace des translators Geyser. Ce qu'il envoie au serveur
    passe ensuite par ViaVersion puis Purpur, exactement comme un paquet Geyser normal. L'anti-cheat
    voit un joueur Java ordinaire (celui que Geyser simule).
@@ -35,4 +35,4 @@ auto-reconnect: true                              # utile pour les reloads, mais
 disable-paper-doll: true                          # équité : la paper doll montre l'armure sans ouvrir l'inventaire
 ```
 
-Les noms exacts des clés sont ceux de `plugins/GeyserExtras/config.yml` sur ton serveur (le fork n'en a changé aucune).
+Les noms exacts des clés sont ceux de `plugins/GeyserMCNewExtra/config.yml` sur ton serveur (le fork n'en a changé aucune).

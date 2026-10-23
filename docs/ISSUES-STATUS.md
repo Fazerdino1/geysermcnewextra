@@ -1,4 +1,4 @@
-# Suivi des issues du dépôt original (mission 2, Phase B)
+# Suivi des issues du projet d'origine (mission 2, Phase B)
 
 > Mis à jour le 2026-10-23. Le classement complet des 48 issues est dans `docs/AUDIT.md` (§4) ; ce fichier suit l'avancement.
 > Statuts : ✅ corrigé · 🟰 réglé par le portage (preuve indiquée) · 📝 expliqué, pas de bug chez nous · ⏳ à faire.
@@ -12,7 +12,7 @@
 | #69 `LinkageError` sur la tab list | ⏳ | Priorité 3 : à reproduire avec notre jar. Le jar Spigot pointe vers la copie d'Adventure embarquée dans Geyser (vérifié). |
 | #68 NPE à la connexion pendant l'initialisation | 📝 | Bug de **Geyser** : Geyser-Spigot ouvre son port UDP (`GeyserImpl.start()`) avant de créer son `WorldManager` (`GeyserSpigotPlugin.onGeyserEnable`, commit `2565dc1c`). GeyserExtras élargissait la fenêtre parce qu'il télécharge des fichiers dans `GeyserPostInitializeEvent`, qui s'exécute à l'intérieur de `start()`. Ce n'est plus le cas une fois le cache rempli (0 s dans tes logs). Solution définitive côté fork : embarquer langues et pack dans le jar (audit B6). À signaler à GeyserMC. |
 | #67 `getDimensionType()` null | ✅ | Garde dans `ExtrasPlayer.tick` + `safeTick()` qui n'écrit qu'une erreur par joueur (`339fff2`). |
-| #47 crash à l'arrêt (core jamais initialisé) | ✅ | `onDisable` passe par `GeyserExtras.runSafely` sur toutes les plateformes, test `RunSafelyTest` (`1a3092f`). |
+| #47 crash à l'arrêt (core jamais initialisé) | ✅ | `onDisable` passe par `GeyserMCNewExtra.runSafely` sur toutes les plateformes, test `RunSafelyTest` (`1a3092f`). |
 
 ## Priorité 2 : PvP
 | Issue | Statut | Explication |
@@ -35,7 +35,7 @@
 |---|---|---|
 | #53 / #43 erreur à l'ouverture de la player list | ✅ (cause probable) | Les logs mclo.gs ont expiré (404). Dans le code, une entrée créée sans `ADD_PLAYER` n'a ni profil ni nom affiché, et `getPlayerListName` plantait dessus. Nom de secours, et entrées créées seulement sur `ADD_PLAYER` ; test `TabListDataTest` (`8184cf3`). |
 | #54 `NoSuchMethodError PlayerListEntry.getDisplayName()` | ✅ | Le log (pastebin) montre **les jars Spigot et Extension installés ensemble** : le jar extension, compilé avec Adventure non relocalisé, tourne dans Geyser-Spigot, qui relocalise Adventure. Désormais un seul message explique quel jar utiliser, et la liste des joueurs se désactive au lieu de produire une erreur à chaque paquet (`8184cf3`). |
-| #56 `ClientboundTabListPacket` | ✅ | Même famille de `LinkageError`, même traitement (`8184cf3`). Le log joint ne contient pas l'erreur GeyserExtras. |
+| #56 `ClientboundTabListPacket` | ✅ | Même famille de `LinkageError`, même traitement (`8184cf3`). Le log joint ne contient pas l'erreur du plugin. |
 | Tablist vidée au changement de serveur (proxy) | ✅ (à confirmer en jeu) | `ClientboundPlayerInfoRemovePacket` n'était pas géré : les joueurs partis restaient affichés, et la liste dépendait d'états incohérents. Les proxys vident et reremplissent la liste avec ces paquets, désormais suivis comme le fait le client Java (`8184cf3`). |
 
 ## Priorité 4 : divers

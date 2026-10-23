@@ -25,7 +25,7 @@ Chaque module plateforme fait `implementation(project(":core"))` et embarque le 
 Identifiants techniques actuels (à **conserver** pour la compatibilité, règle n°3) :
 - id : `geyserextras` (injecté par `processResources` dans `build.gradle.kts`), nom affiché : `GeyserExtras`
 - commandes : `/geyserextras` (alias `/ge`), `/platformlist` (`/pl`, `/platforms`), `/playerlist` (`/l`, `/players`, `/listplayers`, `/tab`, `/tablist`), `/emotechat` (`/muteemotechat`, `/unmuteemotechat`)
-- dossier de données : `plugins/GeyserExtras/` (ou `Geyser/extensions/geyserextras/`) — `config.yml`, `preferences/<xuid>.json`, `preferences/default.json`, `preferences/java/`, `cache/`, `optionalpacks/`, `skins/`, `capes/`
+- dossier de données : `plugins/GeyserMCNewExtra/` (ou `Geyser/extensions/geyserextras/`) — `config.yml`, `preferences/<xuid>.json`, `preferences/default.json`, `preferences/java/`, `cache/`, `optionalpacks/`, `skins/`, `capes/`
 - package Java : `dev.letsgoaway.geyserextras.*`
 
 ### 1.2 Cycle de vie

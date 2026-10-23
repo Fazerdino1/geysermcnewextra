@@ -1,6 +1,6 @@
 # Checklist de test en jeu — portage Geyser 2.12.0
 
-> Build : branche `port/geyser-2.12`, jar `spigot/build/libs/GeyserExtras-CPMC-Spigot.jar` (`2.1.0-alpha.1`).
+> Build : branche `port/geyser-2.12`, jar `spigot/build/libs/GeyserMCNewExtra-Spigot.jar` (`2.1.0-alpha.1`).
 > À faire sur un **serveur de test** qui reproduit le SMP : Purpur 1.21.11, Geyser-Spigot 2.12.0,
 > ViaVersion, Floodgate, PacketEvents, ton anti-cheat et tes plugins PvP.
 > Il faut au moins **un compte Bedrock** et **un compte Java**, idéalement un Bedrock tactile (mobile) en plus.
@@ -8,19 +8,19 @@
 Pour chaque ligne : ✅ OK, ❌ KO (avec l'extrait de log), ➖ pas testé.
 
 ## 0. Préparation
-- [ ] Copier `plugins/GeyserExtras/` du SMP vers le serveur de test (pour vérifier la reprise des vraies configs et préférences).
+- [ ] Copier `plugins/GeyserMCNewExtra/` du SMP vers le serveur de test (pour vérifier la reprise des vraies configs et préférences).
 - [ ] Noter la version de PacketEvents installée : `/version packetevents` → `______`
-- [ ] Supprimer l'ancien `GeyserExtras-*.jar`, mettre `GeyserExtras-CPMC-Spigot.jar`.
+- [ ] Supprimer l'ancien jar du plugin (ancien nom), mettre `GeyserMCNewExtra-Spigot.jar`. Au premier démarrage, l'ancien dossier de données est recopié dans `plugins/GeyserMCNewExtra/`.
 - [ ] Premier passage avec `enable-bedrock-capes-on-java-workaround: false` (voir [ANTICHEAT.md](ANTICHEAT.md)).
 
 ## 1. Démarrage
 | # | Test | Attendu |
 |---|---|---|
-| 1.1 | Console au démarrage | Bannière `GeyserExtras CPMC`, `Version: 2.1.0-alpha.1`, `Done!`, aucune exception GeyserExtras |
-| 1.2 | Message de mise à jour | `Update check skipped: GeyserExtras CPMC has no release channel yet.` |
+| 1.1 | Console au démarrage | Bannière `GeyserMCNewExtra`, `Version: 2.1.0-alpha.1`, `Done!`, aucune exception GeyserMCNewExtra |
+| 1.2 | Message de mise à jour | `Update check skipped: GeyserMCNewExtra has no release channel yet.` |
 | 1.3 | `config.yml` avant/après (diff) | Mêmes clés et valeurs ; seul le champ `version` peut changer |
 | 1.4 | Erreurs PacketEvents au démarrage (point 2 de ANTICHEAT.md) | Aucune erreur ni double injection signalée |
-| 1.5 | Connexion Bedrock **juste après** « Geyser started on UDP port » (issues #68/#76) | Noter s'il y a une NPE GeyserExtras (connue, à corriger en Phase 3) |
+| 1.5 | Connexion Bedrock **juste après** « Geyser started on UDP port » (issues #68/#76) | Noter s'il y a une NPE GeyserMCNewExtra (connue, à corriger en Phase 3) |
 
 ## 2. Connexion et menus (Bedrock)
 | # | Test | Attendu |
@@ -76,11 +76,11 @@ Activer `enable-bedrock-capes-on-java-workaround: true`, redémarrer, un Bedrock
 | 5.1 | Monter un nautilus sellé, appuyer sur inventaire (simple tap, puis double-tap) | L'inventaire du nautilus s'ouvre (#62) |
 | 5.2 | Descendre du nautilus, ouvrir l'inventaire | Fonctionne sans reconnexion |
 | 5.3 | Utiliser un pinceau sur du sable suspect, observé par un autre Bedrock | Particules visibles (fonction Geyser, auparavant bloquée par GE) |
-| 5.4 | Packs optionnels : en activer un dans le menu, se reconnecter | Le pack est chargé ; le GeyserExtrasPack aussi |
+| 5.4 | Packs optionnels : en activer un dans le menu, se reconnecter | Le pack est chargé ; le pack de ressources « extras » aussi |
 | 5.5 | `/kick <bedrock>` | Noter : le joueur est-il automatiquement renvoyé sur le serveur ? (point 7 d'ANTICHEAT.md) |
 | 5.6 | `/stop` avec un Bedrock connecté | Le Bedrock est transféré (reconnexion auto) puis rejoint au redémarrage |
 | 5.7 | Si `enable-skin-saving: true` | Dossier `skins/<id>/` avec `skin.png` lisible et fichiers geometry ; aucune exception à la connexion |
-| 5.8 | 15 minutes de jeu avec 2+ Bedrock, puis `/spark profiler` ou les timings | GeyserExtras ne ressort pas dans le profil |
+| 5.8 | 15 minutes de jeu avec 2+ Bedrock, puis `/spark profiler` ou les timings | GeyserMCNewExtra ne ressort pas dans le profil |
 
 ## Retour
 Envoie-moi : le tableau rempli, le `latest.log` du serveur de test, le nom et la version de ton anti-cheat, la version de PacketEvents.
