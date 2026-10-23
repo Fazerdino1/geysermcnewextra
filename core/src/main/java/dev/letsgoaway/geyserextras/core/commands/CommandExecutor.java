@@ -14,8 +14,16 @@ public class CommandExecutor {
         ids = new HashMap<>();
         add(List.of("ge", "geyserextras"), new GeyserExtrasCommand());
         add(List.of("emotechat", "muteemotechat", "unmuteemotechat"), new EmoteChatCommand());
-        add(List.of("l", "players", "listplayers", "tab", "tablist"), new TabListCommand());
+        // "playerlist" is the Spigot command name (plugin.yml) and was missing, so /playerlist did nothing
+        add(List.of("playerlist", "l", "players", "listplayers", "tab", "tablist"), new TabListCommand());
+        for (String alias : GE.getConfig().getDisabledCommandAliases()) {
+            if (!alias.equalsIgnoreCase(MAIN_COMMAND)) {
+                ids.remove(alias.toLowerCase(Locale.ROOT));
+            }
+        }
     }
+
+    public static final String MAIN_COMMAND = "geyserextras";
 
 
     /**

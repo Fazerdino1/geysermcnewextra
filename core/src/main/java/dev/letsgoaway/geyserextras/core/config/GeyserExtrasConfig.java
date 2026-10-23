@@ -134,6 +134,13 @@ public final class GeyserExtrasConfig {
             """)
     private int bedrockCommandDelayMs = 500;
 
+    @Comment("""
+            Command aliases to turn off, e.g. [l, tab] if another plugin uses /l for local chat.
+            /geyserextras itself cannot be turned off. Available aliases:
+            ge, emotechat, muteemotechat, unmuteemotechat, playerlist, l, players, listplayers, tab, tablist
+            """)
+    private List<String> disabledCommandAliases = new ArrayList<>();
+
     @Comment("Only enable if you know what you are doing.")
     private boolean debugMode = false;
 

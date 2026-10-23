@@ -19,7 +19,7 @@ import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
 
 public class ConfigLoader {
 
-    public static final int LATEST_VERSION = 6;
+    public static final int LATEST_VERSION = 7;
     private static final String HEADER = """
             GeyserExtras
             If Geyser is detected, all required config changes will be automatically applied.
@@ -32,6 +32,7 @@ public class ConfigLoader {
             .addVersion(4, threeToFour())
             .addVersion(5, fourToFive())
             .addVersion(6, fiveToSix())
+            .addVersion(7, sixToSeven())
 
             .build();
 
@@ -140,6 +141,12 @@ public class ConfigLoader {
 
     // no changes, added bedrock-command-delay-ms (the bump makes existing configs get the new option written)
     private static ConfigurationTransformation fiveToSix() {
+        return ConfigurationTransformation.builder()
+                .build();
+    }
+
+    // no changes, added disabled-command-aliases
+    private static ConfigurationTransformation sixToSeven() {
         return ConfigurationTransformation.builder()
                 .build();
     }

@@ -82,6 +82,7 @@ public class GeyserExtrasSpigot extends JavaPlugin implements Server {
 
         this.getServer().getPluginManager().registerEvents(new SpigotListener(), this);
         CORE = new GeyserExtras(this);
+        SpigotCommandAliases.disable(this, CORE.getConfig().getDisabledCommandAliases());
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             CORE.serverTick();
         }, 0L, 0L);
