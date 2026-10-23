@@ -64,7 +64,11 @@ Activer `enable-bedrock-capes-on-java-workaround: true`, redémarrer, un Bedrock
 |---|---|---|
 | 4.1 | Bedrock fait une emote près d'un Java | Message d'emote dans le chat du Java (cassé dans GeyserPlus, rétabli ici) |
 | 4.2 | Java tape `/muteemotechat` puis le Bedrock refait une emote | Plus de message |
-| 4.3 | Binding « Emote 1 → Swap offhand » | **Ne fonctionne pas** : connu, Geyser ne transmet plus la liste des emotes. Confirmer seulement que rien ne plante |
+| 4.3 | Menu GE → Paramètres → Raccourcis : Emote 1 = Swap offhand, cocher « Lier une emote à Emote 1 », valider, fermer les menus, faire une emote | Message « Emote 1 est maintenant liée à l'emote … » ; cette emote n'envoie pas d'emote chat |
+| 4.4 | Refaire cette emote (avec un objet dans chaque main) | Les mains s'échangent |
+| 4.5 | Faire une autre emote, non liée | Emote chat normal pour les Java proches, pas de swap |
+| 4.6 | Se déconnecter / reconnecter, refaire l'emote liée | Le lien est conservé (swap) |
+| 4.7 | Un second joueur Bedrock **sans** réglages personnels ouvre ses raccourcis | Il ne voit **pas** les réglages du premier joueur (bug corrigé) |
 
 ## 5. Divers
 | # | Test | Attendu |

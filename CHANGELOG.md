@@ -17,6 +17,11 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - JUnit 5 tests for the core module.
 - `docs/ANTICHEAT.md` (anti-cheat friction points) and `docs/TEST-CHECKLIST.md` (in-game tests).
 
+- Emote bindings now follow a recorded emote: tick "Link an emote" in the bindings menu, save,
+  then perform the emote once (Geyser 2.11+ no longer exposes emote wheel slots).
+- Translations bundled in the jar for strings added by the fork (English, French).
+- Debug traces (`debug-mode: true`) for player creation, forms, inventory shortcuts and emotes.
+
 ### Changed
 - Project renamed to **GeyserExtras CPMC** (display name, authors, descriptions, README).
   The id `geyserextras`, plugin name `GeyserExtras`, commands and data folder are unchanged.
@@ -35,11 +40,15 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
 - Skin saving no longer decodes skin data twice (would fail on join with Geyser 2.11+).
 - Opening the inventory while riding a nautilus (upstream #62).
 - Touch players no longer see their arm swing twice on a missed attack.
+- A binding or optional pack chosen by a player without a preferences file applied to every such
+  player and was never saved (preferences shared their collections with the defaults).
+- The block display workaround crashed GeyserExtras' startup on Geyser 2.12 (entity registry frozen).
+- Inventory double-tap detection was random (timestamp stored in a float).
+- The build no longer produces an empty `GeyserExtras-CPMC-<version>.jar` at the project root.
 - The update checker no longer compares the fork with the archived upstream Modrinth project,
   which would always have reported a bogus update. It is skipped until the fork has releases.
 
 ### Known issues
-- Emote slot bindings (Emote 1–4 → action) cannot work: Geyser 2.11+ discards the client's emote
-  list, so the slot of an emote is unknown.
+- Bedrock 26.x seems to send two "open inventory" interactions per press (under investigation).
 - Bugs listed in `docs/AUDIT.md` (startup order, network-dependent startup, mannequin capes and
   anti-cheats, reconnect on kick, …) are scheduled for the reliability phase.
