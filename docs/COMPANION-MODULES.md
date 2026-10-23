@@ -27,3 +27,14 @@
 | — | Hurricane (collisions) | Ne pas intégrer : exploitable sur un serveur PvP. Réfléchir à garder ou non le plugin actuel |
 
 Chaque module intégré serait **désactivé par défaut**, activable dans la config, et aussi par monde pour ceux qui touchent au gameplay.
+
+## Décision (2026-10-23)
+
+| Module | Choix | Mode | Réglage par défaut |
+|---|---|---|---|
+| Bedrock Armorstands | ✅ Intégré | Réécrit de zéro | Désactivé, activable par monde |
+| MapXYZ | ✅ Intégré | Repris (MIT, crédit à letsgoawaydev) | Désactivé ; cartes localisatrices et masquage du F3 désactivés même quand le module est actif |
+| Geyser Recipe Fix | ✅ Intégré | Réécrit de zéro | Désactivé, activable par monde |
+| Hurricane (collisions bambou / stalactites) | ✅ Intégré malgré le risque PvP | Repris (MIT, crédit à GeyserMC) | Désactivé, activable par monde et par bloc ; à laisser coupé sur le SMP sauf besoin |
+| GeyserFloatingPoints | ❌ Non intégré | — | — |
+| Hurricane (direction des montures) | ❌ Inutile, géré par Geyser | — | — |
