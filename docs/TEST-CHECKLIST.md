@@ -117,7 +117,7 @@ Faire chaque test avec un joueur **Bedrock** et un joueur **Java**.
 | 6.19 | Ouvrir l'enclume accroupi, mains vides | L'enclume Bedrock normale s'ouvre ; renommer fonctionne |
 | 6.20 | Table de forge : modèle + armure en diamant + lingot de netherite | Armure en netherite, enchantements conservés |
 | 6.21 | Fermer le menu avec des objets dedans, puis vérifier l'inventaire Java et Bedrock | Les objets reviennent dans l'inventaire, **aucune duplication** |
-| 6.22 | Menu d'enclume ouvert par un plugin (saisie de texte) | Non modifié (pas de bloc d'enclume) — à confirmer |
+| 6.22 | Menu d'enclume ouvert par un plugin pour une saisie de texte (recherche, nom…) | Enclume Bedrock normale, la saisie fonctionne |
 
 ## Retour
 Envoie-moi : le tableau rempli, le `latest.log` du serveur de test, le nom et la version de ton anti-cheat, la version de PacketEvents.

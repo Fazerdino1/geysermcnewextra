@@ -9,8 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -65,6 +68,16 @@ public class SpigotListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (GeyserMCNewExtraSpigot.CORE != null) {
             GeyserMCNewExtraSpigot.CORE.onJavaPlayerJoin(event.getPlayer().getUniqueId());
+        }
+    }
+
+    // Recipe menus: only anvils and smithing tables of the world, not menus plugins open to ask for text
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        InventoryType type = event.getInventory().getType();
+        if ((type == InventoryType.ANVIL || type == InventoryType.SMITHING) && event.getInventory().getLocation() != null
+                && ExtrasPlayer.get(event.getPlayer().getUniqueId()) instanceof SpigotExtrasPlayer player) {
+            player.blockMenuOpened();
         }
     }
 

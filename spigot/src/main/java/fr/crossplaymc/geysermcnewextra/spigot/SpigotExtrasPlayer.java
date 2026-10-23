@@ -39,6 +39,21 @@ public class SpigotExtrasPlayer extends ExtrasPlayer {
         }
     }
 
+    // When the server last opened an anvil or smithing table block for this player (recipe menus)
+    private volatile long blockMenuOpenedAt = 0;
+
+    public void blockMenuOpened() {
+        blockMenuOpenedAt = System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean isOpeningBlockMenu() {
+        // The menu packet reaches Geyser right after the open event; a second covers a busy server
+        boolean recent = System.currentTimeMillis() - blockMenuOpenedAt < 1000;
+        blockMenuOpenedAt = 0;
+        return recent;
+    }
+
     @Override
     public String getWorldName() {
         Player current = player;

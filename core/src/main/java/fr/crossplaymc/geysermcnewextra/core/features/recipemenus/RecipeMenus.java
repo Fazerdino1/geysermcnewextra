@@ -103,17 +103,20 @@ public final class RecipeMenus extends SessionAdapter {
         if (disabled || !settings.isEnabled() || !settings.appliesToWorld(player.getWorldName())) {
             return null;
         }
-        // Sneaking with empty hands opens the normal menu, e.g. to rename an item in the anvil
-        if (session.isSneaking()) {
+        RecipeMenuLayout layout;
+        if (type == ContainerType.ANVIL && settings.isAnvil()) {
+            layout = RecipeMenuLayout.ANVIL;
+        } else if (type == ContainerType.SMITHING && settings.isSmithingTable()) {
+            layout = RecipeMenuLayout.SMITHING;
+        } else {
             return null;
         }
-        if (type == ContainerType.ANVIL && settings.isAnvil()) {
-            return RecipeMenuLayout.ANVIL;
+        // Anvils opened by plugins to ask for text keep the normal menu, and sneaking with empty hands
+        // opens the normal menu, e.g. to rename an item
+        if (!player.isOpeningBlockMenu() || session.isSneaking()) {
+            return null;
         }
-        if (type == ContainerType.SMITHING && settings.isSmithingTable()) {
-            return RecipeMenuLayout.SMITHING;
-        }
-        return null;
+        return layout;
     }
 
     public void opened(int containerId, RecipeMenuLayout layout) {

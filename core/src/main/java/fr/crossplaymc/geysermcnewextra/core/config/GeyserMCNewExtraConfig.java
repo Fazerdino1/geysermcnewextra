@@ -151,6 +151,8 @@ public final class GeyserMCNewExtraConfig {
             (replaces the "Geyser Recipe Fix" plugin: do not run both).
             The real menu stays on the server: other plugins see a normal anvil and nothing can be duplicated.
             Renaming needs the normal Bedrock anvil: sneak with empty hands when opening it.
+            On Paper/Spigot, anvils that plugins open to ask for text keep the normal menu; on a proxy or
+            Geyser Standalone they cannot be told apart, so leave this off if such plugins are used there.
             """)
     private RecipeMenus recipeMenus = new RecipeMenus();
 

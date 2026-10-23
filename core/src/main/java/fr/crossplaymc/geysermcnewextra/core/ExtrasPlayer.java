@@ -145,6 +145,14 @@ public class ExtrasPlayer {
         return null;
     }
 
+    /**
+     * @return whether the anvil or smithing table being opened is a block of the world, as opposed to a menu a
+     * plugin opens to ask for text; true on platforms that cannot tell
+     */
+    public boolean isOpeningBlockMenu() {
+        return true;
+    }
+
     private UUID bossbarID;
 
     private void createFpsBossBar() {
