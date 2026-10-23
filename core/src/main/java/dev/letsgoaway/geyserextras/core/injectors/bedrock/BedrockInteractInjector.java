@@ -20,7 +20,7 @@ public class BedrockInteractInjector extends BedrockInteractTranslator {
     public void translate(GeyserSession session, InteractPacket packet) {
         ExtrasPlayer player = ExtrasPlayer.get(session);
         if (packet.getAction().equals(InteractPacket.Action.OPEN_INVENTORY)) {
-            SERVER.debug("OPEN_INVENTORY xuid=" + session.xuid() + " known=" + (player != null) + " sneaking=" + session.isSneaking());
+            SERVER.debug("OPEN_INVENTORY xuid=" + session.xuid() + " known=" + (player != null) + " sneaking=" + session.isSneaking() + " t=" + System.currentTimeMillis());
         }
         if (!packet.getAction().equals(InteractPacket.Action.OPEN_INVENTORY)) {
             super.translate(session, packet);
