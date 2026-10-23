@@ -17,6 +17,10 @@ import static dev.letsgoaway.geyserextras.core.GeyserExtras.GE;
 import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
 
 public class PluginVersion {
+    // Shown to admins and players. The technical id/name stay "geyserextras"/"GeyserExtras"
+    // so existing data folders, configs and commands keep working.
+    public static final String DISPLAY_NAME = "GeyserExtras CPMC";
+
     // Must match `version` in gradle.properties (checked by the :core:checkPluginVersion task)
     public static final String GE_VERSION = "2.1.0-alpha.1";
 

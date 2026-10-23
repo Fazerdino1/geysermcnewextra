@@ -3,4 +3,4 @@ name: ${name}
 main: dev.letsgoaway.geyserextras.extension.GeyserExtrasExtension
 api: 2.9.0
 version: ${version}
-authors: [LetsGoAway]
+authors: [LetsGoAway, CrossPlayMC]

@@ -40,7 +40,8 @@ import java.util.concurrent.ExecutorService;
 import static dev.letsgoaway.geyserextras.core.GeyserExtras.GE;
 
 @Plugin(
-        authors = "LetsGoAway",
+        authors = {"LetsGoAway", "CrossPlayMC"},
+        description = "GeyserExtras CPMC: CrossPlayMC's maintained fork of GeyserExtras by LetsGoAway",
         name = "GeyserExtras",
         version = PluginVersion.GE_VERSION,
         id = "geyserextras",

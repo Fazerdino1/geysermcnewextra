@@ -1,6 +1,7 @@
 name: ${name}
 version: ${version}
-author: "LetsGoAway"
+authors: ["LetsGoAway", "CrossPlayMC"]
+description: "GeyserExtras CPMC: CrossPlayMC's maintained fork of GeyserExtras by LetsGoAway"
 main: dev.letsgoaway.geyserextras.spigot.GeyserExtrasSpigot
 api-version: '1.16'
 depend:
