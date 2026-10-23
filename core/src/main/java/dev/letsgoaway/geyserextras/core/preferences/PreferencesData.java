@@ -199,13 +199,15 @@ public class PreferencesData {
         this.showCoordinates = data.showCoordinates;
         this.advancedTooltips = data.advancedTooltips;
         this.customSkullSkins = data.customSkullSkins;
-        this.remappableActionMap = data.remappableActionMap;
+        // Copy the collections: sharing them with DEFAULT made every player without a preferences
+        // file edit the same map (and never save it, since it always equalled the defaults)
+        this.remappableActionMap = data.remappableActionMap == null ? new HashMap<>() : new HashMap<>(data.remappableActionMap);
         this.settingsMenuForm = data.settingsMenuForm;
         this.enableDoubleClickShortcut = data.enableDoubleClickShortcut;
         this.doubleClickMS = data.doubleClickMS;
         this.lockedPerspective = data.lockedPerspective;
-        this.selectedPacks = data.selectedPacks;
-        this.selectedSubpacks = data.selectedSubpacks;
+        this.selectedPacks = data.selectedPacks == null ? new ArrayList<>() : new ArrayList<>(data.selectedPacks);
+        this.selectedSubpacks = data.selectedSubpacks == null ? new HashMap<>() : new HashMap<>(data.selectedSubpacks);
         this.sendSystemToasts = data.sendSystemToasts;
         this.showFPS = data.showFPS;
     }
