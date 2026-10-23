@@ -24,6 +24,8 @@ public class PluginVersion {
     // Must match `version` in gradle.properties (checked by the :core:checkPluginVersion task)
     public static final String GE_VERSION = "2.1.0-alpha.1";
 
+    private static final boolean UPSTREAM_UPDATE_CHECK = false;
+
     public static String latestVersion = "";
     public static String latestVersionModrinthID = "";
 
@@ -61,6 +63,13 @@ public class PluginVersion {
 
     public static void checkForUpdatesAndPrintToLog() {
         if (!GE.getConfig().isCheckForUpdates()) {
+            return;
+        }
+
+        // The Modrinth project above is the archived upstream: comparing our fork's version with it
+        // would always report a bogus "new update". Skip until the fork's own releases exist.
+        if (!UPSTREAM_UPDATE_CHECK) {
+            SERVER.log("Update check skipped: " + DISPLAY_NAME + " has no release channel yet.");
             return;
         }
 
