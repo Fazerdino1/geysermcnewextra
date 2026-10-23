@@ -12,8 +12,8 @@ import dev.letsgoaway.geyserextras.core.ExtrasPlayer;
 public class BedrockCommandRequestInjector extends BedrockCommandRequestTranslator {
     @Override
     public void translate(GeyserSession session, CommandRequestPacket packet) {
-        if (CommandExecutor.isExtrasCommand(packet.getCommand())) {
-            ExtrasPlayer player = ExtrasPlayer.get(session);
+        ExtrasPlayer player = ExtrasPlayer.get(session);
+        if (player != null && CommandExecutor.isExtrasCommand(packet.getCommand())) {
             CommandExecutor.runForBedrock(player, () -> CommandExecutor.runFromInput(player, packet.getCommand()));
         } else {
             super.translate(session, packet);

@@ -12,6 +12,9 @@ public class JavaServerLinksInjector extends PacketTranslator<ClientboundServerL
     @Override
     public void translate(GeyserSession session, ClientboundServerLinksPacket packet) {
         ExtrasPlayer player = ExtrasPlayer.get(session);
+        if (player == null) {
+            return;
+        }
         player.getServerLinksData().setServerLinks(packet.getLinks());
     }
 }

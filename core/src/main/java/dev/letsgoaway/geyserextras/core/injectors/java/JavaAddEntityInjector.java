@@ -15,6 +15,9 @@ public class JavaAddEntityInjector extends JavaAddEntityTranslator {
         super.translate(session, packet);
         if (packet.getType() == EntityType.PLAYER) {
             ExtrasPlayer player = ExtrasPlayer.get(session);
+            if (player == null) {
+                return;
+            }
             player.getPlayerDimensionsMap().put(packet.getEntityId(), session.getDimensionType());
         }
     }

@@ -11,6 +11,9 @@ public class JavaTickingStateInjector extends JavaTickingStateTranslator {
     @Override
     public void translate(GeyserSession session, ClientboundTickingStatePacket packet) {
         super.translate(session, packet);
-        ExtrasPlayer.get(session).setTickingState(packet.getTickRate());
+        ExtrasPlayer player = ExtrasPlayer.get(session);
+        if (player != null) {
+            player.setTickingState(packet.getTickRate());
+        }
     }
 }

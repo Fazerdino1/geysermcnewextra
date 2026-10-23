@@ -22,7 +22,7 @@ public class BedrockInteractInjector extends BedrockInteractTranslator {
         if (packet.getAction().equals(InteractPacket.Action.OPEN_INVENTORY)) {
             SERVER.debug("OPEN_INVENTORY xuid=" + session.xuid() + " known=" + (player != null) + " sneaking=" + session.isSneaking() + " t=" + System.currentTimeMillis());
         }
-        if (!packet.getAction().equals(InteractPacket.Action.OPEN_INVENTORY)) {
+        if (player == null || !packet.getAction().equals(InteractPacket.Action.OPEN_INVENTORY)) {
             super.translate(session, packet);
         } else {
             if ((player.getPreferences().isEnableDoubleClickShortcut() && GE.getConfig().isEnableGeyserExtrasMenu())

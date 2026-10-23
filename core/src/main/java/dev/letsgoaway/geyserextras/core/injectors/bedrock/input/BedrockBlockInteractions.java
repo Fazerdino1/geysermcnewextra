@@ -21,6 +21,9 @@ public class BedrockBlockInteractions {
     private static void handle(GeyserSession session, PlayerBlockActionData blockActionData) {
         PlayerActionType action = blockActionData.getAction();
         ExtrasPlayer player = ExtrasPlayer.get(session);
+        if (player == null) {
+            return;
+        }
 
         if (action == PlayerActionType.DROP_ITEM) {
             if (session.isSneaking()) {

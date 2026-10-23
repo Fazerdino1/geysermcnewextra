@@ -24,6 +24,9 @@ public class JavaTabListInjector extends PacketTranslator<ClientboundTabListPack
             return;
         }
         ExtrasPlayer player = ExtrasPlayer.get(session);
+        if (player == null) {
+            return;
+        }
         player.getTabListData().setHeader(MessageTranslator.convertMessage(session, packet.getHeader()));
         player.getTabListData().setFooter(MessageTranslator.convertMessage(session, packet.getFooter()));
     }

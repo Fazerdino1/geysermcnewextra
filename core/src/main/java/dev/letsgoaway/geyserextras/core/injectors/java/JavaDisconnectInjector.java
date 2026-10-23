@@ -16,6 +16,9 @@ public class JavaDisconnectInjector extends PacketTranslator<ClientboundDisconne
     public void translate(GeyserSession session, ClientboundDisconnectPacket packet) {
         if (GE.getConfig().isAutoReconnect()) {
             ExtrasPlayer player = ExtrasPlayer.get(session);
+            if (player == null) {
+                return;
+            }
 
             player.sendToast("", MessageTranslator.convertMessage(packet.getReason(), session.locale()));
 

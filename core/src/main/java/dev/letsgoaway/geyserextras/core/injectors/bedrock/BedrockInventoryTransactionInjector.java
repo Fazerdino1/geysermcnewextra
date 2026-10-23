@@ -38,6 +38,9 @@ public class BedrockInventoryTransactionInjector extends BedrockInventoryTransac
         // Trying to do a block interaction, but we should disable the shield first
 
         super.translate(session, packet);
+        if (player == null) {
+            return;
+        }
 
         if (type.equals(InventoryTransactionType.ITEM_USE_ON_ENTITY)) {
             Entity entity = session.getEntityCache().getEntityByGeyserId(packet.getRuntimeEntityId());

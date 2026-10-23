@@ -24,6 +24,10 @@ public class BedrockServerSettingsRequestInjector extends BedrockServerSettingsR
         }
 
         ExtrasPlayer player = ExtrasPlayer.get(session);
+        if (player == null) {
+            super.translate(session, packet);
+            return;
+        }
         // Sending settings form with floodgate causes linkage error :/
         if (IsAvailable.floodgate()) {
             player.sendSystemToast(player.translateGE("ge.form_error_toast.line1"), player.translateGE("ge.form_error_toast.line2"));
