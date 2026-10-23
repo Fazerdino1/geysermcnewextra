@@ -49,6 +49,5 @@ Versions continue from the upstream GeyserExtras `2.0.0-BETA-11` (last upstream 
   which would always have reported a bogus update. It is skipped until the fork has releases.
 
 ### Known issues
-- Bedrock 26.x seems to send two "open inventory" interactions per press (under investigation).
 - Bugs listed in `docs/AUDIT.md` (startup order, network-dependent startup, mannequin capes and
   anti-cheats, reconnect on kick, …) are scheduled for the reliability phase.
