@@ -82,13 +82,6 @@ public class ConfigLoader {
             GE.setConfig(new GeyserExtrasConfig());
         }
 
-        if (IsAvailable.floodgate() && GE.getConfig().isEnableGeyserExtrasMenu()) {
-            SERVER.warn("WARNING: Floodgate is installed, so GeyserExtras Settings will not");
-            SERVER.warn("show up in the Game Settings menu due to how forms work on GeyserMC.");
-            SERVER.warn("If you want a temporary work around to this, use Geyser-Standalone,");
-            SERVER.warn("otherwise a notification toast will show up informing players that");
-            SERVER.warn("they will have to double tap inventory.");
-        }
     }
 
     /**

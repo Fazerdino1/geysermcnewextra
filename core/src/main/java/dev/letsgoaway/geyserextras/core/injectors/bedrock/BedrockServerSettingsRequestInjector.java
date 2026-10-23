@@ -14,8 +14,11 @@ import org.geysermc.geyser.translator.protocol.bedrock.BedrockServerSettingsRequ
 import java.util.concurrent.TimeUnit;
 
 import static dev.letsgoaway.geyserextras.core.GeyserExtras.GE;
+import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
 
 public class BedrockServerSettingsRequestInjector extends BedrockServerSettingsRequestTranslator {
+    private static volatile boolean settingsFormSupported = true;
+
     @Override
     public void translate(GeyserSession session, ServerSettingsRequestPacket packet) {
         if (!GE.getConfig().isEnableGeyserExtrasMenu()) {
@@ -28,18 +31,29 @@ public class BedrockServerSettingsRequestInjector extends BedrockServerSettingsR
             super.translate(session, packet);
             return;
         }
-        // Sending settings form with floodgate causes linkage error :/
-        if (IsAvailable.floodgate()) {
-            player.sendSystemToast(player.translateGE("ge.form_error_toast.line1"), player.translateGE("ge.form_error_toast.line2"));
-            super.translate(session, packet);
+        // With Floodgate installed, the form classes can come from Floodgate's copy of Cumulus, which
+        // Geyser's form cache then rejects with a LinkageError. Whether that happens depends on the
+        // platform's class loading, so try once and fall back to the toast if it does.
+        if (IsAvailable.floodgate() && !settingsFormSupported) {
+            sendFallback(session, packet, player);
             return;
         }
 
+        CustomForm form;
+        int formId;
+        String jsonData;
+        try {
+            form = player.getPreferences().getSettingsMenuForm().open(player);
+            formId = session.getFormCache().addForm(form);
+            jsonData = FormDefinitions.instance().codecFor(form).jsonData(form);
+        } catch (LinkageError e) {
+            settingsFormSupported = false;
+            SERVER.warn("GeyserExtras settings cannot be shown in the Bedrock settings screen on this server ("
+                    + e + "); players will be told to double tap inventory instead.");
+            sendFallback(session, packet, player);
+            return;
+        }
         player.getPreferences().runAction(Remappable.SETTINGS);
-        CustomForm form = player.getPreferences().getSettingsMenuForm().open(player);
-        int formId = session.getFormCache().addForm(form);
-
-        String jsonData = FormDefinitions.instance().codecFor(form).jsonData(form);
 
         // Fixes https://bugs.mojang.com/browse/MCPE-94012 because of the delay
         session.scheduleInEventLoop(() -> {
@@ -48,5 +62,10 @@ public class BedrockServerSettingsRequestInjector extends BedrockServerSettingsR
             serverSettingsResponsePacket.setFormId(formId);
             session.sendUpstreamPacket(serverSettingsResponsePacket);
         }, 1, TimeUnit.SECONDS);
+    }
+
+    private void sendFallback(GeyserSession session, ServerSettingsRequestPacket packet, ExtrasPlayer player) {
+        player.sendSystemToast(player.translateGE("ge.form_error_toast.line1"), player.translateGE("ge.form_error_toast.line2"));
+        super.translate(session, packet);
     }
 }
