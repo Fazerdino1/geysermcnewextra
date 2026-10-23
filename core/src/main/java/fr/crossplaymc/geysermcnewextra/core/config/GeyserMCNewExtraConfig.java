@@ -102,7 +102,8 @@ public final class GeyserMCNewExtraConfig {
     private boolean disablePaperDoll = false;
 
     @Comment("""
-            Whether to check for updates or not.
+            Whether to check for updates or not: new GeyserMCNewExtra releases on GitHub
+            (https://github.com/Fazerdino1/geysermcnewextra/releases, logged at startup).
             This also disables updating of the extras resource pack,
             however you can manually update them by deleting the 'GeyserMCNewExtra/cache/' folder.
             """)
