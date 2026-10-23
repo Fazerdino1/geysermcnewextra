@@ -4,6 +4,7 @@ import dev.letsgoaway.geyserextras.ServerType;
 import dev.letsgoaway.geyserextras.core.utils.IsAvailable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.NodePath;
 import org.spongepowered.configurate.loader.HeaderMode;
 import org.spongepowered.configurate.transformation.ConfigurationTransformation;
@@ -18,7 +19,7 @@ import static dev.letsgoaway.geyserextras.core.GeyserExtras.SERVER;
 
 public class ConfigLoader {
 
-    public static final int LATEST_VERSION = 4;
+    public static final int LATEST_VERSION = 6;
     private static final String HEADER = """
             GeyserExtras
             If Geyser is detected, all required config changes will be automatically applied.
@@ -30,6 +31,7 @@ public class ConfigLoader {
             .addVersion(3, twoToThree())
             .addVersion(4, threeToFour())
             .addVersion(5, fourToFive())
+            .addVersion(6, fiveToSix())
 
             .build();
 
@@ -58,10 +60,7 @@ public class ConfigLoader {
 
         try {
             final CommentedConfigurationNode configurationNode = loader.load();
-            int currentVersion = transformer.version(configurationNode);
-            if (currentVersion != LATEST_VERSION) {
-                transformer.apply(configurationNode);
-            }
+            int currentVersion = migrate(configurationNode);
 
             // Get the configured values based on our GeyserExtrasConfig class
             GeyserExtrasConfig config = configurationNode.get(GeyserExtrasConfig.class);
@@ -90,6 +89,19 @@ public class ConfigLoader {
             SERVER.warn("otherwise a notification toast will show up informing players that");
             SERVER.warn("they will have to double tap inventory.");
         }
+    }
+
+    /**
+     * Brings a loaded config node to {@link #LATEST_VERSION}.
+     *
+     * @return the version the node had before
+     */
+    static int migrate(ConfigurationNode node) throws ConfigurateException {
+        int version = transformer.version(node);
+        if (version != LATEST_VERSION) {
+            transformer.apply(node);
+        }
+        return version;
     }
 
     private static ConfigurationTransformation zeroToOne() {
@@ -130,6 +142,12 @@ public class ConfigLoader {
     private static ConfigurationTransformation fourToFive() {
         return ConfigurationTransformation.builder()
                 .addAction(NodePath.path("enable-custom-cooldown"), TransformAction.remove())
+                .build();
+    }
+
+    // no changes, added bedrock-command-delay-ms (the bump makes existing configs get the new option written)
+    private static ConfigurationTransformation fiveToSix() {
+        return ConfigurationTransformation.builder()
                 .build();
     }
 }

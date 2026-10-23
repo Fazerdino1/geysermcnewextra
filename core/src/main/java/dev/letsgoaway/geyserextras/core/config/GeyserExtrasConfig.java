@@ -127,6 +127,13 @@ public final class GeyserExtrasConfig {
             """)
     private int geyserExtrasPackPriority = 100;
 
+    @Comment("""
+            Delay in milliseconds before running a GeyserExtras command typed by a Bedrock player.
+            The Bedrock client discards forms that arrive while its chat screen is still open,
+            so without a delay commands like `/ge` can show nothing. 0 runs commands immediately.
+            """)
+    private int bedrockCommandDelayMs = 500;
+
     @Comment("Only enable if you know what you are doing.")
     private boolean debugMode = false;
 
