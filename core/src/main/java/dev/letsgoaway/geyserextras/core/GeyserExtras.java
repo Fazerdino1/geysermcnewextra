@@ -36,8 +36,9 @@ public class GeyserExtras implements EventRegistrar {
     public static GeyserExtras GE;
     public static Server SERVER;
     public GeyserApi geyserApi;
-    public ConcurrentHashMap<String, ExtrasPlayer> connections;
-    public ConcurrentHashMap<UUID, JavaPreferencesData> javaConnections;
+    // Created up front: packet injectors can run before the constructor finishes (issues #29, #76)
+    public final ConcurrentHashMap<String, ExtrasPlayer> connections = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<UUID, JavaPreferencesData> javaConnections = new ConcurrentHashMap<>();
     @Getter
     @Setter
     private GeyserExtrasConfig config;
@@ -99,8 +100,6 @@ public class GeyserExtras implements EventRegistrar {
 
         // Packs
         geyserApi.eventBus().subscribe(this, SessionLoadResourcePacksEvent.class, this::onLoadPacks);
-        connections = new ConcurrentHashMap<>();
-        javaConnections = new ConcurrentHashMap<>();
 
         if (ServerType.isExtension()) {
             InitializeLogger.end();
@@ -151,7 +150,10 @@ public class GeyserExtras implements EventRegistrar {
 
     public void onSessionJoin(SessionJoinEvent ev) {
         SERVER.debug("SessionJoinEvent xuid=" + ev.connection().xuid() + " known=" + connections.containsKey(ev.connection().xuid()));
-        connections.get(ev.connection().xuid()).startGame();
+        ExtrasPlayer player = connections.get(ev.connection().xuid());
+        if (player != null) {
+            player.startGame();
+        }
 
     }
 
@@ -184,7 +186,10 @@ public class GeyserExtras implements EventRegistrar {
     }
 
     public void onEmoteEvent(ClientEmoteEvent ev) {
-        connections.get(ev.connection().xuid()).onEmoteEvent(ev);
+        ExtrasPlayer player = connections.get(ev.connection().xuid());
+        if (player != null) {
+            player.onEmoteEvent(ev);
+        }
     }
 
     public void onGeyserReload(GeyserPreReloadEvent ignored) {
