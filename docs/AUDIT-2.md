@@ -8,6 +8,11 @@
 
 Légende : 🔴 critique · 🟠 important · 🟡 mineur · ⚔️ impact PvP/modération · ❓ à confirmer en jeu
 
+> **Mise à jour (2026-11-11) : tout est corrigé sur `claude/keen-lovelace-6l50ys`** (commits `4943095`, `f0ec47e`,
+> `661cef1`, `03eeab8`, `07d0ac5`), sauf **S10**, qui est sur `feat/companion-modules` et sera traité sur cette branche.
+> À vérifier en jeu : kick/ban (C1), PvP près des mannequins si la cape est réactivée (C3/C4), `/ge reload`, démarrage
+> hors ligne, brouillard du Nether, son du bouclier, double-tap. Détail dans `CHANGELOG.md` [Unreleased].
+
 ---
 
 ## 1. Résumé
