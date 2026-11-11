@@ -15,7 +15,7 @@ Légende : 🔴 critique · 🟠 important · 🟡 mineur · ⚔️ impact PvP/m
 | Gravité | Nombre | Les plus urgents |
 |---|---|---|
 | 🔴 | 4 | Reconnexion auto après un kick (C1), protection des blocs contournée (C2), mannequins actifs par défaut (C3), mannequins envoyés aussi aux joueurs Bedrock (C4) |
-| 🟠 | 10 | Démarrage dépendant de GitHub (S1), préférences perdues à l'arrêt (S2), `/pl` remplacé (S4)… |
+| 🟠 | 10 | Démarrage dépendant de GitHub (S1), préférences perdues à l’arrêt (S3), `/pl` remplacé (S4)… |
 | 🟡 | 15 | Fuites de fichiers, NPE rares, hygiène du build, code mort |
 
 **À faire avant de mettre le jar sur le SMP :** dans `config.yml`, `auto-reconnect: false` et
