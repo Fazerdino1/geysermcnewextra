@@ -67,8 +67,7 @@ public class GeyserHandler {
         Registries.BEDROCK_PACKET_TRANSLATORS.register(ServerSettingsRequestPacket.class, new BedrockServerSettingsRequestInjector());
 
         // FPS Counter
-        // why isnt this registering even though its being sent AAAAAAAAAAAAAAAAAAAAAAAAAAA
-        // update: 2.6.1 of geyser just magically fixed this!!
+        // Needs Geyser 2.6.1 or newer to be received
         Registries.BEDROCK_PACKET_TRANSLATORS.register(ServerboundDiagnosticsPacket.class, new BedrockDiagnosticsInjector());
 
         /* Action intercept related */

@@ -11,6 +11,8 @@ versions continue from its last release, `2.0.0-BETA-11`.
 ## [Unreleased]
 
 ### Added
+- `/ge reload` (permission `geysermcnewextra.reload`) reloads the config and language files, also from the console.
+- Config options `remove-nether-fog` and `enable-shield-block-sound` (both on, config version 11).
 - Phase 0 audit of the codebase, open upstream issues and Geyser API changes (`docs/AUDIT.md`).
 - Gradle downloads the required JDK automatically (foojay toolchain resolver).
 - Build check that fails when the code version and the Gradle version differ.
@@ -38,6 +40,12 @@ versions continue from its last release, `2.0.0-BETA-11`.
 - Debug traces (`debug-mode: true`) for player creation, forms, inventory shortcuts and emotes.
 
 ### Changed
+- The capes workaround (mannequins) is off by default and switched off once in existing configs (config version 10).
+- The inventory double-tap shortcut is off by default for new players (it delays every inventory opening);
+  it can be turned on in the settings. Existing `preferences/default.json` files keep their value.
+- Removed the `/pl` alias, which hid the server plugins command.
+- Spigot Java-only block placement only ever cancels the event, respects cancellations by other plugins and
+  no longer replaces blocks with air.
 - **Project renamed to GeyserMCNewExtra**, everywhere: plugin/extension id `geysermcnewextra`,
   plugin name `GeyserMCNewExtra`, main command `/geysermcnewextra` (alias `/ge` kept), data folder
   `plugins/GeyserMCNewExtra/`, Java package `fr.crossplaymc.geysermcnewextra`, jar names.
@@ -58,6 +66,14 @@ versions continue from its last release, `2.0.0-BETA-11`.
   files outside the plugin folder) and rejects oversized or truncated images.
 
 ### Fixed
+- A kicked or banned player is no longer reconnected automatically; only a server stop or a Geyser reload reconnects.
+- Startup no longer fails when GitHub is unreachable: the cached resource pack is kept, downloads go to a
+  temporary file first, and the HTTP requests have a read timeout.
+- Capes workaround: Bedrock players are no longer handled as Java players by PacketEvents, the shared state is
+  thread-safe, Java players' hits on a mannequin reach the Bedrock player, and the console is no longer spammed.
+- `/emotechat` and command aliases are parsed correctly; forms are sent through Geyser when Floodgate does not
+  know the player yet.
+- Preference files are always closed after reading, and `default.json` can no longer be left half written.
 - The main command typed in chat by a Bedrock player showed nothing (forms arriving while the chat is
   open are discarded); commands now run after `bedrock-command-delay-ms` (default 500).
 - Packets for a player the plugin does not track yet are handled by Geyser instead of failing

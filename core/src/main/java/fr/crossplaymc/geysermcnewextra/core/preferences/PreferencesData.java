@@ -14,8 +14,10 @@ import org.geysermc.geyser.util.CooldownUtils;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +50,7 @@ public class PreferencesData {
     private Menus settingsMenuForm = Menus.GE_SETTINGS;
     @Getter
     @Setter
-    private boolean enableDoubleClickShortcut = true;
+    private boolean enableDoubleClickShortcut = false;
     @Getter
     @Setter
     private int doubleClickMS = 200;
@@ -117,8 +119,17 @@ public class PreferencesData {
     private static void writeDefaults() {
         Path defaultPath = PREFERENCES_PATH.resolve("default.json");
 
-        try (FileWriter write = new FileWriter(defaultPath.toFile())) {
-            GSON.toJson(DEFAULT, write);
+        // Written next to the file then moved, so a crash while writing never leaves a broken default.json
+        Path temp = PREFERENCES_PATH.resolve("default.json.tmp");
+        try {
+            try (FileWriter write = new FileWriter(temp.toFile())) {
+                GSON.toJson(DEFAULT, write);
+            }
+            try {
+                Files.move(temp, defaultPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(temp, defaultPath, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (IOException e) {
             SERVER.warn(Lang.console("gmne.console.prefs_default_write_failed", e.getLocalizedMessage()));
         }

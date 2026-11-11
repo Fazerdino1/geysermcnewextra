@@ -7,7 +7,7 @@ both editions.
 
 Source code and issues: **https://github.com/Fazerdino1/geysermcnewextra**
 
-> **Status:** `2.1.0-alpha.1`, in development; no build is published yet.
+> **Status:** in development, alpha builds are on the [releases page](https://github.com/Fazerdino1/geysermcnewextra/releases).
 > See [CHANGELOG.md](CHANGELOG.md).
 
 ## Supported platforms
@@ -62,7 +62,7 @@ Aliases can be turned off with `disabled-command-aliases` (e.g. to free `/l` for
   link an emote to an action once from the bindings menu
 - Optional resource packs (`.mcpack` or `.zip`) players can toggle from `optionalpacks/`
 - Save player skin, geometry and animation data to `skins/` (off by default)
-- Menu opened by double tapping the inventory button or typing `/ge`
+- Menu opened by typing `/ge` (or by double tapping the inventory button, a shortcut each player can turn on in the settings)
 - `debug-mode: true` traces players, forms and shortcuts in the console
 
 ## Languages

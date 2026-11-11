@@ -4,7 +4,6 @@ import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,9 +33,7 @@ public class JavaPreferencesData {
         this.saveFile = JAVA_PREFRENCES_PATH.resolve(javaUUID.toString() + ".json").toFile();
         if (saveFile.exists()) {
             try {
-                FileInputStream data = new FileInputStream(saveFile);
-
-                this.copyFrom(JSON_MAPPER.convertValue(JSON_MAPPER.readTree(data.readAllBytes()), JavaPreferencesData.class));
+                this.copyFrom(JSON_MAPPER.convertValue(JSON_MAPPER.readTree(saveFile), JavaPreferencesData.class));
             } catch (Exception e) {
                 SERVER.warn(Lang.console("gmne.console.prefs_load_failed", javaUUID, e.getLocalizedMessage()));
 
@@ -58,9 +55,8 @@ public class JavaPreferencesData {
         DEFAULT = new JavaPreferencesData();
         try {
             if (defaultPath.toFile().exists()) {
-                FileInputStream data = new FileInputStream(defaultPath.toFile());
                 // Copy from because defaults might be different
-                DEFAULT.copyFrom(JSON_MAPPER.convertValue(JSON_MAPPER.readTree(data.readAllBytes()), JavaPreferencesData.class));
+                DEFAULT.copyFrom(JSON_MAPPER.convertValue(JSON_MAPPER.readTree(defaultPath.toFile()), JavaPreferencesData.class));
             }
             JSON_MAPPER.writeValue(defaultPath.toFile(), DEFAULT);
         } catch (Exception e) {

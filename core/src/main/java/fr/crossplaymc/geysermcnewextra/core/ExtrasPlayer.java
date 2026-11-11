@@ -34,10 +34,10 @@ import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -115,7 +115,7 @@ public class ExtrasPlayer {
         preferences = new PreferencesData(this);
         userPrefs = PreferencesData.PREFERENCES_PATH.resolve(bedrockXUID + ".json").toFile();
         preferences.load();
-        playerDimensionsMap = new HashMap<>();
+        playerDimensionsMap = new ConcurrentHashMap<>();
     }
 
     public void startGame() {
@@ -163,8 +163,10 @@ public class ExtrasPlayer {
     }
 
 
+    /**
+     * Stops sprinting when the player is too hungry. Only the Spigot player does it, proxies cannot.
+     */
     public void hungerSprintCancel() {
-        // todo: figure out how to recreate this option with geyser codebase
     }
 
     public void onEmoteEvent(ClientEmoteEvent ev) {
@@ -245,7 +247,7 @@ public class ExtrasPlayer {
 
 
         // The dimension is unknown until the Java server sends it (e.g. on the code of conduct screen, upstream #67)
-        if (session.getDimensionType() != null && session.getDimensionType().isNetherLike()
+        if (GE.getConfig().isRemoveNetherFog() && session.getDimensionType() != null && session.getDimensionType().isNetherLike()
                 && session.camera().fogEffects().contains(DimensionUtils.BEDROCK_FOG_HELL)) {
             session.camera().removeFog(DimensionUtils.BEDROCK_FOG_HELL);
         }
@@ -300,28 +302,29 @@ public class ExtrasPlayer {
 
     public void sendForm(BedrockForm form) {
         debugSendForm(form);
-        if (IsAvailable.floodgate()) {
-            org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID).sendForm(form.create(this).build());
-        } else {
-            session.sendForm(form.create(this).build());
-        }
+        sendForm(form.create(this).build());
     }
 
     public void sendForm(BedrockMenu form) {
         debugSendForm(form);
-        if (IsAvailable.floodgate()) {
-            org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID).sendForm(form.create(this));
-        } else {
-            session.sendForm(form.create(this));
-        }
+        sendForm(form.create(this));
     }
 
     public void sendForm(BedrockModal form) {
         debugSendForm(form);
-        if (IsAvailable.floodgate()) {
-            org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID).sendForm(form.create(this));
+        sendForm(form.create(this));
+    }
+
+    private void sendForm(org.geysermc.cumulus.form.Form form) {
+        // Floodgate knows the player only once the Java login is done: Geyser can always send it
+        org.geysermc.floodgate.api.player.FloodgatePlayer floodgatePlayer = null;
+        if (IsAvailable.floodgate() && javaUUID != null) {
+            floodgatePlayer = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(javaUUID);
+        }
+        if (floodgatePlayer != null) {
+            floodgatePlayer.sendForm(form);
         } else {
-            session.sendForm(form.create(this));
+            session.sendForm(form);
         }
     }
 

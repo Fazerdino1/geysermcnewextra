@@ -18,7 +18,7 @@ public final class GeyserMCNewExtraConfig {
 
     @Comment("""
             Enable the GeyserMCNewExtra menu, which can be opened by players by
-            double-tapping inventory, or typing `/ge`.
+            typing `/ge`, or by double-tapping inventory once they turned that shortcut on in their settings.
             \s
             The GeyserMCNewExtra Menu provides actions and configurable settings such as
             - Remapping certain actions (e.g emotes/pick block) to Java Edition only actions (e.g offhand)
@@ -107,6 +107,18 @@ public final class GeyserMCNewExtraConfig {
             you can see what armor has broken during combat
             """)
     private boolean disablePaperDoll = false;
+
+    @Comment("""
+            Remove the thick Bedrock Edition fog in the Nether, so Bedrock players see as far as Java players.
+            Turn off to keep the vanilla Bedrock Edition fog.
+            """)
+    private boolean removeNetherFog = true;
+
+    @Comment("""
+            Play the shield block sound to Bedrock players when their shield blocks a hit
+            (the Bedrock client does not play it on its own).
+            """)
+    private boolean enableShieldBlockSound = true;
 
     @Comment("""
             Whether to check for updates or not: new GeyserMCNewExtra releases on GitHub

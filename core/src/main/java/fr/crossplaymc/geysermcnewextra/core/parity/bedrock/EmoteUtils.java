@@ -119,8 +119,9 @@ public class EmoteUtils {
 
         switch (type) {
             case RANDOM -> {
-                if (emoteRandom.nextInt(0, 16) == 4) {
-                    return obj.get("specialmessage").getAsString();
+                JsonElement special = obj.get("specialmessage");
+                if (special != null && emoteRandom.nextInt(0, 16) == 4) {
+                    return special.getAsString();
                 }
 
                 return message.getAsString();
@@ -129,7 +130,8 @@ public class EmoteUtils {
                 return message.getAsString();
             }
             case SPECIAL_MESSAGE -> {
-                return obj.get("specialmessage").getAsString();
+                JsonElement special = obj.get("specialmessage");
+                return special == null ? message.getAsString() : special.getAsString();
             }
             default -> {
                 return null;

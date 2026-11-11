@@ -20,7 +20,7 @@ import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.SERVER;
 
 public class ConfigLoader {
 
-    public static final int LATEST_VERSION = 10;
+    public static final int LATEST_VERSION = 11;
     private static final String HEADER = """
             GeyserMCNewExtra
             If Geyser is detected, all required config changes will be automatically applied.
@@ -37,6 +37,7 @@ public class ConfigLoader {
             .addVersion(8, sevenToEight())
             .addVersion(9, eightToNine())
             .addVersion(10, nineToTen())
+            .addVersion(11, tenToEleven())
 
             .build();
 
@@ -194,6 +195,12 @@ public class ConfigLoader {
                     value.raw(false);
                     return null;
                 })
+                .build();
+    }
+
+    // no changes, added remove-nether-fog and enable-shield-block-sound
+    private static ConfigurationTransformation tenToEleven() {
+        return ConfigurationTransformation.builder()
                 .build();
     }
 }

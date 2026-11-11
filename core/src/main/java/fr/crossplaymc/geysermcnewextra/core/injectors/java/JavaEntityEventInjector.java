@@ -7,6 +7,8 @@ import org.geysermc.geyser.translator.protocol.java.entity.JavaEntityEventTransl
 import org.geysermc.mcprotocollib.protocol.data.game.entity.EntityEvent;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundEntityEventPacket;
 
+import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.GE;
+
 public class JavaEntityEventInjector extends JavaEntityEventTranslator {
     @Override
     public void translate(GeyserSession session, ClientboundEntityEventPacket packet) {
@@ -14,8 +16,8 @@ public class JavaEntityEventInjector extends JavaEntityEventTranslator {
         Entity entity = session.getEntityCache().getEntityByJavaId(packet.getEntityId());
         if (entity == null)
             return;
-        // Possible bug in Geyser? Shield doesnt play sound, should make PR
-        if (packet.getEvent() == EntityEvent.LIVING_SHIELD_BLOCK) {
+        // The Bedrock client does not play the shield block sound on its own
+        if (packet.getEvent() == EntityEvent.LIVING_SHIELD_BLOCK && GE.getConfig().isEnableShieldBlockSound()) {
             if (packet.getEntityId() == session.getPlayerEntity().getEntityId()) {
                 PlaySoundPacket playSoundPacket = new PlaySoundPacket();
                 playSoundPacket.setSound("item.shield.block");
