@@ -3,7 +3,7 @@ package fr.crossplaymc.geysermcnewextra.spigot;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
 import fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra;
 import fr.crossplaymc.geysermcnewextra.core.commands.CommandExecutor;
-import fr.crossplaymc.geysermcnewextra.core.injectors.GeyserHandler;
+import fr.crossplaymc.geysermcnewextra.core.commands.GeyserMCNewExtraCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,6 +20,10 @@ public class SpigotCommandHandler implements org.bukkit.command.CommandExecutor 
             else {
                 CommandExecutor.runFromCommandInput(spigotPlayer.getUniqueId(), label, args);
             }
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("reload")
+                && command.getName().equalsIgnoreCase(CommandExecutor.MAIN_COMMAND)) {
+            // Console, command blocks, RCON
+            GeyserMCNewExtraCommand.reloadFromConsole();
         }
         return true;
     }

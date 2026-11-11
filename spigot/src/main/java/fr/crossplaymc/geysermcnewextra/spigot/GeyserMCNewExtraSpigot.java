@@ -65,11 +65,6 @@ public class GeyserMCNewExtraSpigot extends JavaPlugin implements Server {
             geCommand.setExecutor(handler);
         }
 
-        PluginCommand platformlistCommand = this.getCommand("platformlist");
-        if (platformlistCommand != null){
-            platformlistCommand.setExecutor(handler);
-        }
-
         PluginCommand playerlistCommand = this.getCommand("playerlist");
         if (playerlistCommand != null){
             playerlistCommand.setExecutor(handler);
@@ -154,6 +149,12 @@ public class GeyserMCNewExtraSpigot extends JavaPlugin implements Server {
                 }
             }
         }, player);
+    }
+
+    @Override
+    public boolean hasPermission(UUID javaPlayer, String permission) {
+        Player player = Bukkit.getPlayer(javaPlayer);
+        return player != null && player.hasPermission(permission);
     }
 
     @Override

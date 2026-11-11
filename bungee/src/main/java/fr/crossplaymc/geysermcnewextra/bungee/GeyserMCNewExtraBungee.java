@@ -135,6 +135,12 @@ public class GeyserMCNewExtraBungee extends Plugin implements Server {
     }
 
     @Override
+    public boolean hasPermission(UUID javaPlayer, String permission) {
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(javaPlayer);
+        return player != null && player.hasPermission(permission);
+    }
+
+    @Override
     public void sendRawMessage(UUID javaPlayer, String message) {
         ProxyServer.getInstance().getPlayer(javaPlayer).sendMessage(message);
     }

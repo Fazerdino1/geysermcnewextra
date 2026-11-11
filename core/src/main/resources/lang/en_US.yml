@@ -3,6 +3,10 @@
 # {0}, {1}... are replaced by values; /{key}/ inserts another text of this file.
 # Based on the MIT-licensed GeyserExtras language files (Copyright (c) 2024 GeyserExtras).
 
+gmne.command.reload.done: "GeyserMCNewExtra reloaded (config and languages)."
+gmne.command.reload.failed: "Reload failed: {0}"
+gmne.command.reload.kept_config: "Reloaded, but config.yml has an error: the current config was kept (see the console)."
+gmne.command.reload.no_permission: "You do not have permission to reload GeyserMCNewExtra."
 gmne.console.alias_disable_failed: "Could not disable command aliases {0}: {1}"
 gmne.console.alias_disabled: "Command alias /{0} disabled."
 gmne.console.block_display_failed: "Block display workaround disabled: could not register the block display entity ({0})"
@@ -12,6 +16,7 @@ gmne.console.cache_unsaved: "Could not save the cache: {0}"
 gmne.console.cape_invalid: "Not saving the cape of player {0}: invalid cape id or image"
 gmne.console.cape_load_failed: "Could not load cape {0}"
 gmne.console.config_load_failed: "Could not load the config, using the defaults: {0}"
+gmne.console.config_reload_failed: "Could not reload the config, keeping the current one: {0}"
 gmne.console.data_folder_copied: "Copied the previous data folder {0} to {1} (config, player preferences, packs). The old folder was kept as a backup."
 gmne.console.data_folder_copy_failed: "Could not copy the previous data folder {0}: {1}"
 gmne.console.data_folder_failed: "Could not create the data folder."

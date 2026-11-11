@@ -183,6 +183,11 @@ public class GeyserMCNewExtraVelocity implements Server {
     }
 
     @Override
+    public boolean hasPermission(UUID javaPlayer, String permission) {
+        return server.getPlayer(javaPlayer).map(player -> player.hasPermission(permission)).orElse(false);
+    }
+
+    @Override
     public void sendRawMessage(UUID javaPlayer, String message) {
         Optional<Player> optPlayer = server.getPlayer(javaPlayer);
         optPlayer.ifPresent(player -> player.sendPlainMessage(message));

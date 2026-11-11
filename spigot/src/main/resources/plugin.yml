@@ -11,16 +11,10 @@ softdepend:
   - packetevents
 commands:
   geysermcnewextra:
-    description: Open the GeyserMCNewExtra menu.
-    usage: /<command>
+    description: Open the GeyserMCNewExtra menu, or reload it with /ge reload.
+    usage: /<command> [settings|reload]
     aliases:
       - ge
-  platformlist:
-    description: Shows a player list including everyone's platforms.
-    usage: /<command>
-    aliases:
-      - pl
-      - platforms
   playerlist:
     description: Shows the Java Tab Player List menu for Bedrock Edition Players.
     usage: /<command>
@@ -36,3 +30,7 @@ commands:
     aliases:
       - muteemotechat
       - unmuteemotechat
+permissions:
+  geysermcnewextra.reload:
+    description: Allows /ge reload (config and languages).
+    default: op

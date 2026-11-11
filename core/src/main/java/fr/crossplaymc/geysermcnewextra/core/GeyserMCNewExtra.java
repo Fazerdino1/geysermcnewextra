@@ -6,6 +6,7 @@ import fr.crossplaymc.geysermcnewextra.ServerType;
 import fr.crossplaymc.geysermcnewextra.core.cache.Cache;
 import fr.crossplaymc.geysermcnewextra.core.cache.PackCacheUtils;
 import fr.crossplaymc.geysermcnewextra.core.cache.UpstreamResources;
+import fr.crossplaymc.geysermcnewextra.core.commands.CommandExecutor;
 import fr.crossplaymc.geysermcnewextra.core.config.ConfigLoader;
 import fr.crossplaymc.geysermcnewextra.core.config.DataFolderMigration;
 import fr.crossplaymc.geysermcnewextra.core.config.GeyserMCNewExtraConfig;
@@ -252,6 +253,29 @@ public class GeyserMCNewExtra implements EventRegistrar {
     }
 
     /**
+     * Same as {@link #getJavaPreferencesData(UUID)}, but loads the preferences when they are
+     * missing (e.g. the player ran a command before the join event, or after a cancelled kick).
+     */
+    public JavaPreferencesData getOrLoadJavaPreferencesData(UUID javaUUID) {
+        return javaConnections.computeIfAbsent(javaUUID, JavaPreferencesData::load);
+    }
+
+    /**
+     * {@code /ge reload}: reloads the config, the platform config, the languages and the
+     * command aliases. Players stay connected; options read when a player joins apply to the
+     * next connections.
+     *
+     * @return true if the config was read without error
+     */
+    public boolean reload() {
+        boolean loaded = ConfigLoader.load();
+        SERVER.onConfigLoad();
+        loadLanguages();
+        CommandExecutor.loadCommands();
+        return loaded;
+    }
+
+    /**
      * Called when the server, the proxy or Geyser stops or reloads: saves every player's
      * preferences and waits for them to reach the disk, then reconnects the Bedrock players
      * if {@code auto-reconnect} is on. This is the only place players are reconnected:
@@ -297,9 +321,9 @@ public class GeyserMCNewExtra implements EventRegistrar {
     }
 
     public void onJavaPlayerLeave(UUID javaUUID) {
-        if (javaConnections.containsKey(javaUUID)) {
-            javaConnections.get(javaUUID).save();
-            javaConnections.remove(javaUUID);
+        JavaPreferencesData data = javaConnections.remove(javaUUID);
+        if (data != null) {
+            data.save();
         }
     }
 }

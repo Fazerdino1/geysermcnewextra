@@ -11,16 +11,18 @@ public class CommandExecutor {
     public static Map<String, BedrockCommand> ids;
 
     public static void loadCommands() {
-        ids = new HashMap<>();
-        add(List.of("ge", "geysermcnewextra"), new GeyserMCNewExtraCommand());
-        add(List.of("emotechat", "muteemotechat", "unmuteemotechat"), new EmoteChatCommand());
+        // Built aside then swapped: commands keep working while /ge reload runs
+        Map<String, BedrockCommand> commands = new HashMap<>();
+        add(commands, List.of("ge", "geysermcnewextra"), new GeyserMCNewExtraCommand());
+        add(commands, List.of("emotechat", "muteemotechat", "unmuteemotechat"), new EmoteChatCommand());
         // "playerlist" is the Spigot command name (plugin.yml) and was missing, so /playerlist did nothing
-        add(List.of("playerlist", "l", "players", "listplayers", "tab", "tablist"), new TabListCommand());
+        add(commands, List.of("playerlist", "l", "players", "listplayers", "tab", "tablist"), new TabListCommand());
         for (String alias : GE.getConfig().getDisabledCommandAliases()) {
             if (!alias.equalsIgnoreCase(MAIN_COMMAND)) {
-                ids.remove(alias.toLowerCase(Locale.ROOT));
+                commands.remove(alias.toLowerCase(Locale.ROOT));
             }
         }
+        ids = commands;
     }
 
     public static final String MAIN_COMMAND = "geysermcnewextra";
@@ -41,44 +43,89 @@ public class CommandExecutor {
     }
 
     public static void add(List<String> aliases, BedrockCommand cmd) {
+        add(ids, aliases, cmd);
+    }
+
+    private static void add(Map<String, BedrockCommand> commands, List<String> aliases, BedrockCommand cmd) {
         for (String alias : aliases) {
-            ids.put(alias, cmd);
+            commands.put(alias.toLowerCase(Locale.ROOT), cmd);
         }
     }
 
+    /**
+     * @return the command for this root ("/GE", "/geysermcnewextra:ge"...), or null
+     */
+    private static BedrockCommand find(String root) {
+        if (root == null) {
+            return null;
+        }
+        String name = root.toLowerCase(Locale.ROOT);
+        int namespace = name.indexOf(':');
+        if (namespace >= 0) {
+            name = name.substring(namespace + 1);
+        }
+        Map<String, BedrockCommand> commands = ids;
+        return commands == null ? null : commands.get(name);
+    }
+
+    /**
+     * Splits "/root a b" into its words, ignoring repeated spaces. Empty when there is no command.
+     */
+    private static List<String> split(String input) {
+        if (input == null) {
+            return new ArrayList<>();
+        }
+        String command = input.strip();
+        if (command.startsWith("/")) {
+            command = command.substring(1);
+        }
+        command = command.strip();
+        if (command.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(List.of(command.split("\\s+")));
+    }
+
     public static boolean isExtrasCommand(String input) {
-        ArrayList<String> args = new ArrayList<>(List.of(input.substring(1).split(" ")));
-        String root = args.get(0);
-        return ids.containsKey(root);
+        List<String> args = split(input);
+        return !args.isEmpty() && find(args.get(0)) != null;
     }
 
     public static void runFromInput(ExtrasPlayer player, String input) {
-        ArrayList<String> args = new ArrayList<>(List.of(input.substring(1).split(" ")));
-        String root = args.get(0);
-        if (ids.containsKey(root)) {
-            args.remove(0);
-            ids.get(root).onExecute(player, args, root);
+        List<String> args = split(input);
+        if (args.isEmpty()) {
+            return;
+        }
+        String root = args.remove(0);
+        BedrockCommand command = find(root);
+        if (command != null) {
+            command.onExecute(player, args, root);
         }
     }
 
     public static void runFromCommandInput(ExtrasPlayer player, String label, String[] args) {
-        if (ids.containsKey(label)) {
-            ids.get(label).onExecute(player, Arrays.asList(args), label);
+        BedrockCommand command = find(label);
+        if (command != null) {
+            command.onExecute(player, Arrays.asList(args), label);
         }
     }
 
     public static void runFromInput(UUID player, String input) {
-        ArrayList<String> args = new ArrayList<>(List.of(input.substring(1).split(" ")));
-        String root = args.get(0);
-        if (ids.containsKey(root)) {
-            args.remove(0);
-            ids.get(root).onJavaExecute(player, args, root);
+        List<String> args = split(input);
+        if (args.isEmpty()) {
+            return;
+        }
+        String root = args.remove(0);
+        BedrockCommand command = find(root);
+        if (command != null) {
+            command.onJavaExecute(player, args, root);
         }
     }
 
     public static void runFromCommandInput(UUID player, String label, String[] args) {
-        if (ids.containsKey(label)) {
-            ids.get(label).onJavaExecute(player, Arrays.asList(args), label);
+        BedrockCommand command = find(label);
+        if (command != null) {
+            command.onJavaExecute(player, Arrays.asList(args), label);
         }
     }
 

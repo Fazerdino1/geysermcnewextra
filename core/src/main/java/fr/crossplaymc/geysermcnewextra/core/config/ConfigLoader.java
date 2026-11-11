@@ -41,7 +41,13 @@ public class ConfigLoader {
             .build();
 
 
-    public static void load() {
+    /**
+     * Loads (or reloads) {@code config.yml}. On a reload, a broken file keeps the current config
+     * instead of falling back to the defaults.
+     *
+     * @return true if the file was read without error
+     */
+    public static boolean load() {
         Path configPath = SERVER.getPluginFolder().resolve("config.yml");
 
         if (ServerType.isExtension()) {
@@ -81,10 +87,15 @@ public class ConfigLoader {
             }
 
             GE.setConfig(config);
+            return true;
         } catch (ConfigurateException e) {
-            // todo logging?
-            SERVER.warn(Lang.console("gmne.console.config_load_failed", e.getMessage()));
-            GE.setConfig(new GeyserMCNewExtraConfig());
+            if (GE.getConfig() != null) {
+                SERVER.warn(Lang.console("gmne.console.config_reload_failed", e.getMessage()));
+            } else {
+                SERVER.warn(Lang.console("gmne.console.config_load_failed", e.getMessage()));
+                GE.setConfig(new GeyserMCNewExtraConfig());
+            }
+            return false;
         }
 
     }

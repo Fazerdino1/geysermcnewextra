@@ -22,7 +22,7 @@ public class EmoteChatCommand implements BedrockCommand {
 
     @Override
     public void onJavaExecute(UUID playerUUID, List<String> args, String label) {
-        JavaPreferencesData data = GE.getJavaPreferencesData(playerUUID);
+        JavaPreferencesData data = GE.getOrLoadJavaPreferencesData(playerUUID);
         if (label.equalsIgnoreCase("unmuteemotechat")) {
             data.muteEmoteChat = false;
         } else if (label.equalsIgnoreCase("muteemotechat")) {

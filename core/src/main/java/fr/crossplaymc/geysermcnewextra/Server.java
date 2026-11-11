@@ -35,6 +35,13 @@ public interface Server {
 
     default void sendRawMessage(UUID javaPlayer, String message) {}
 
+    /**
+     * @return whether this Java player has the permission (false when unknown on this platform)
+     */
+    default boolean hasPermission(UUID javaPlayer, String permission) {
+        return false;
+    }
+
     default void sendMessage(UUID javaPlayer, String message) {
 
     }
