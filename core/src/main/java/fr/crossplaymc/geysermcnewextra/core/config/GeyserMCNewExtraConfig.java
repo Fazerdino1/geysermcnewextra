@@ -73,9 +73,12 @@ public final class GeyserMCNewExtraConfig {
             This only works with capes that are available on Java Edition, that are also on
             Bedrock Edition.
             """)
-    private boolean enableBedrockCapesOnJavaWorkaround = true;
+    private boolean enableBedrockCapesOnJavaWorkaround = false;
 
-    @Comment("When the server closes or Geyser reloads, should GeyserMCNewExtra automatically reconnect players to the server.")
+    @Comment("""
+            When the server closes or Geyser reloads, should GeyserMCNewExtra automatically reconnect players to the server.
+            Players are never reconnected after a kick, a ban or a normal disconnect.
+            """)
     private boolean autoReconnect = true;
 
     @Comment(

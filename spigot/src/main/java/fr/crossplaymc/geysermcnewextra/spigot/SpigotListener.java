@@ -1,19 +1,17 @@
 package fr.crossplaymc.geysermcnewextra.spigot;
 
 
-import com.github.retrooper.packetevents.wrapper.play.server.*;
 import fr.crossplaymc.geysermcnewextra.core.ExtrasPlayer;
-import fr.crossplaymc.geysermcnewextra.core.injectors.GeyserHandler;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -57,11 +55,6 @@ public class SpigotListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent event) {
-
-    }
-
-    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (GeyserMCNewExtraSpigot.CORE != null) {
             GeyserMCNewExtraSpigot.CORE.onJavaPlayerJoin(event.getPlayer().getUniqueId());
@@ -73,54 +66,35 @@ public class SpigotListener implements Listener {
         onPlayerLeave(event.getPlayer());
     }
 
-    @EventHandler
+    // A kick cancelled by another plugin is not a departure
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerKick(PlayerKickEvent event) {
         onPlayerLeave(event.getPlayer());
     }
 
-    @EventHandler
+    // ignoreCancelled: a placement refused by a protection plugin must stay refused, and this
+    // handler only ever cancels, it never un-cancels
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerBlockPlace(BlockPlaceEvent ev) {
         Player player = ev.getPlayer();
-        // TODO + update pack for crop sounds
-        /*
-        // Crop Sound Workaround (ported from v1.0)
-
-
-        if (cropTypes.contains(ev.getBlock().getType().name()))
-            player.getWorld().playSound(ev.getBlockPlaced().getLocation(),
-                    "plant.crop", SoundCategory.BLOCKS, 0.85f, ThreadLocalRandom.current().nextBoolean() ? 1.0f : 1.2f);
-
-        for (ExtrasPlayer otherEP : GE.connections.values()) {
-
-            if (otherEP instanceof SpigotExtrasPlayer otherPlayer) {
-                if (player.getWorld().equals(bplayer.player.getWorld()) && 48.0 >= Math.abs(bplayer.player.getLocation().distance(player.getLocation()))) {
-                    stopGrassSounds(bplayer);
-                }
-            }
-        }
-
-
-         */
 
         // Java Only Block Placement (ported from v1.0)
-
         ExtrasPlayer user = ExtrasPlayer.get(player.getUniqueId());
         if (user instanceof SpigotExtrasPlayer extrasPlayer) {
             if (GeyserMCNewExtraSpigot.SPIGOT.getPlatformConfig().isEnableJavaOnlyBlockPlacement()) {
                 Block block = ev.getBlockPlaced();
                 double interactionRange = extrasPlayer.getSession().getPlayerEntity().getBlockInteractionRange();
 
+                boolean refuse;
                 if (block.getType().equals(Material.AIR) || ev.getBlockAgainst().getType().equals(Material.AIR)) {
-                    ev.setCancelled(true);
+                    refuse = true;
                 } else {
                     RayTraceResult blockCast = player.rayTraceBlocks(interactionRange, FluidCollisionMode.ALWAYS);
-
-                    if (blockCast != null) {
-                        ev.setCancelled(!block.equals(blockCast.getHitBlock()));
-                    }
+                    refuse = blockCast != null && !block.equals(blockCast.getHitBlock());
                 }
-                if (ev.isCancelled()) {
-                    block.setType(Material.AIR);
+                if (refuse) {
+                    // Cancelling is enough for the server to restore the block; only resync the client
+                    ev.setCancelled(true);
                     Vector velocity = player.getVelocity().clone();
                     player.teleport(player.getLocation());
                     SERVER.getTickUtil().runIn(2L, () -> {

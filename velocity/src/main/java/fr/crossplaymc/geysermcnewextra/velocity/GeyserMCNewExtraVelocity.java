@@ -93,15 +93,15 @@ public class GeyserMCNewExtraVelocity implements Server {
     @Subscribe
     public void onProxyReload(ProxyReloadEvent ev) {
         if (CORE != null) {
-            CORE.autoReconnectAll();
+            CORE.onServerStop();
         }
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent ev) {
-        GeyserMCNewExtra.runSafely("auto-reconnect", () -> {
+        GeyserMCNewExtra.runSafely("server stop", () -> {
             if (CORE != null) {
-                CORE.autoReconnectAll();
+                CORE.onServerStop();
             }
         });
         if (IsAvailable.packetevents()) {

@@ -10,7 +10,6 @@ import fr.crossplaymc.geysermcnewextra.core.config.ConfigLoader;
 import fr.crossplaymc.geysermcnewextra.core.config.DataFolderMigration;
 import fr.crossplaymc.geysermcnewextra.core.config.GeyserMCNewExtraConfig;
 import fr.crossplaymc.geysermcnewextra.core.locale.Lang;
-import fr.crossplaymc.geysermcnewextra.core.config.GeyserMCNewExtraConfig;
 import fr.crossplaymc.geysermcnewextra.core.injectors.GeyserHandler;
 import fr.crossplaymc.geysermcnewextra.core.parity.bedrock.EmoteUtils;
 import fr.crossplaymc.geysermcnewextra.core.parity.java.blockdisplay.BlockDisplayEntity;
@@ -101,7 +100,6 @@ public class GeyserMCNewExtra implements EventRegistrar {
         geyserApi.eventBus().subscribe(this, GeyserDefineEntitiesEvent.class, this::onDefineEntities);
 
         // ExtrasPlayer handlers
-        geyserApi.eventBus().subscribe(this, SessionLoginEvent.class, this::onSessionLogin);
         geyserApi.eventBus().subscribe(this, SessionJoinEvent.class, this::onSessionJoin);
         geyserApi.eventBus().subscribe(this, SessionDisconnectEvent.class, this::onSessionRemove);
 
@@ -191,10 +189,6 @@ public class GeyserMCNewExtra implements EventRegistrar {
         }
     }
 
-    public void onSessionLogin(SessionLoginEvent ev) {
-
-    }
-
     public void onSessionJoin(SessionJoinEvent ev) {
         SERVER.debug("SessionJoinEvent xuid=" + ev.connection().xuid() + " known=" + connections.containsKey(ev.connection().xuid()));
         ExtrasPlayer player = connections.get(ev.connection().xuid());
@@ -206,30 +200,25 @@ public class GeyserMCNewExtra implements EventRegistrar {
 
     public void onSessionRemove(SessionDisconnectEvent ev) {
         GeyserConnection connection = ev.connection();
+        // Match on the session itself, not the name: when the same player reconnects quickly,
+        // the old session can close after the new one was created and must not remove it.
+        // Never reconnect here: a disconnect can be a kick or a ban, it must be respected.
         for (ExtrasPlayer player : connections.values()) {
             GeyserSession session = player.getSession();
-            if (session.bedrockUsername().equals(connection.bedrockUsername())) {
+            if (session == connection) {
                 // this occurs before bedrock authenticates properly
                 if (session.getAuthData() == null && session.getClientData() == null) {
                     // we clear the players packs here as its possible that the game crashes when trying to load a pack
                     player.getPreferences().getSelectedPacks().clear();
                     player.getPreferences().save();
                 }
-                if (GE.getConfig().isAutoReconnect()) {
-                    player.reconnect();
-                }
-                connections.get(player.getBedrockXUID()).onDisconnect();
-                connections.remove(player.getBedrockXUID());
+                player.onDisconnect();
+                connections.remove(player.getBedrockXUID(), player);
                 return;
             }
         }
-        if (connections.containsKey(ev.connection().xuid())) {
-            connections.get(ev.connection().xuid()).onDisconnect();
-        }
-        if (connections.remove(ev.connection().xuid()) == null) {
-            SERVER.warn(Lang.console("gmne.console.remove_user_failed"));
-        }
-
+        // Not registered (the session closed before its packs were loaded) or already replaced
+        SERVER.debug("SessionDisconnectEvent for an unknown session xuid=" + connection.xuid());
     }
 
     public void onEmoteEvent(ClientEmoteEvent ev) {
@@ -240,37 +229,47 @@ public class GeyserMCNewExtra implements EventRegistrar {
     }
 
     public void onGeyserReload(GeyserPreReloadEvent ignored) {
-        runSafely("auto-reconnect", this::autoReconnectAll);
+        runSafely("server stop", this::onServerStop);
     }
 
     public void onGeyserShutdown(GeyserShutdownEvent ignored) {
-        runSafely("auto-reconnect", this::autoReconnectAll);
+        runSafely("server stop", this::onServerStop);
     }
 
     public void onLoadPacks(SessionLoadResourcePacksEvent ev) {
-        connections.remove(ev.connection().xuid());
-        connections.put(ev.connection().xuid(), SERVER.createPlayer(ev.connection()));
+        ExtrasPlayer player = SERVER.createPlayer(ev.connection());
+        ExtrasPlayer previous = connections.put(ev.connection().xuid(), player);
+        if (previous != null) {
+            // Stop the tick task and boss bar of the session being replaced
+            runSafely("replacing " + ev.connection().xuid(), previous::onDisconnect);
+        }
         SERVER.debug("Created player for xuid=" + ev.connection().xuid() + " javaUuid=" + ev.connection().javaUuid());
-        PackCacheUtils.onPackLoadEvent(connections.get(ev.connection().xuid()), ev);
+        PackCacheUtils.onPackLoadEvent(player, ev);
     }
 
     public JavaPreferencesData getJavaPreferencesData(UUID javaUUID) {
         return javaConnections.get(javaUUID);
     }
 
-    public void autoReconnectAll() {
+    /**
+     * Called when the server, the proxy or Geyser stops or reloads: saves every player's
+     * preferences and waits for them to reach the disk, then reconnects the Bedrock players
+     * if {@code auto-reconnect} is on. This is the only place players are reconnected:
+     * a kick or a disconnect is always respected.
+     */
+    public void onServerStop() {
         // Can run from a shutdown after a failed start, when the config was never loaded
-        if (getConfig() == null || !getConfig().isAutoReconnect()) {
-            return;
-        }
+        boolean reconnect = getConfig() != null && getConfig().isAutoReconnect();
         for (ExtrasPlayer player : connections.values()) {
-            runSafely("reconnecting " + player.getBedrockXUID(), () -> {
-                player.getPreferences().save();
-                player.reconnect();
-            });
+            runSafely("saving " + player.getBedrockXUID(), () -> player.getPreferences().save());
         }
-        // Usually called on shutdown: make sure the preferences reach the disk first
+        // The writer thread is a daemon: pending saves would be lost without this
         PreferencesIO.flush(5, TimeUnit.SECONDS);
+        if (reconnect) {
+            for (ExtrasPlayer player : connections.values()) {
+                runSafely("reconnecting " + player.getBedrockXUID(), player::reconnect);
+            }
+        }
     }
 
     /**

@@ -64,6 +64,18 @@ class ConfigLoaderTest {
     }
 
     @Test
+    void switchesTheCapesWorkaroundOff() throws Exception {
+        CommentedConfigurationNode node = load("enable-bedrock-capes-on-java-workaround: true\nversion: 9\n");
+        ConfigLoader.migrate(node);
+        assertFalse(node.get(GeyserMCNewExtraConfig.class).isEnableBedrockCapesOnJavaWorkaround());
+
+        CommentedConfigurationNode current = load("enable-bedrock-capes-on-java-workaround: true\nversion: 10\n");
+        ConfigLoader.migrate(current);
+        assertTrue(current.get(GeyserMCNewExtraConfig.class).isEnableBedrockCapesOnJavaWorkaround(),
+                "an admin who turned it back on after the migration keeps it");
+    }
+
+    @Test
     void latestConfigIsLeftAlone() throws Exception {
         CommentedConfigurationNode node = load("bedrock-command-delay-ms: 0\nversion: " + ConfigLoader.LATEST_VERSION + "\n");
         assertEquals(ConfigLoader.LATEST_VERSION, ConfigLoader.migrate(node));

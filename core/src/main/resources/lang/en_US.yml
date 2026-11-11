@@ -51,7 +51,6 @@ gmne.console.prefs_default_write_failed: "Could not create the default preferenc
 gmne.console.prefs_load_failed: "Could not load the data of player {0}, using the defaults: {1}"
 gmne.console.prefs_save_failed: "Could not save the data of player {0}: {1}"
 gmne.console.registering_events: "Registering events..."
-gmne.console.remove_user_failed: "Could not remove a disconnected player from the player list."
 gmne.console.server_type: "Server type: {0}"
 gmne.console.settings_screen_unavailable: "GeyserMCNewExtra settings cannot be shown in the Bedrock settings screen on this server ({0}); players will be told to double tap inventory instead."
 gmne.console.skin_bad_image: "Not saving the skin image of player {0}: unexpected size {1}x{2} for {3} bytes"

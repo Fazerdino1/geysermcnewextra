@@ -20,7 +20,7 @@ import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.SERVER;
 
 public class ConfigLoader {
 
-    public static final int LATEST_VERSION = 9;
+    public static final int LATEST_VERSION = 10;
     private static final String HEADER = """
             GeyserMCNewExtra
             If Geyser is detected, all required config changes will be automatically applied.
@@ -36,6 +36,7 @@ public class ConfigLoader {
             .addVersion(7, sixToSeven())
             .addVersion(8, sevenToEight())
             .addVersion(9, eightToNine())
+            .addVersion(10, nineToTen())
 
             .build();
 
@@ -169,6 +170,17 @@ public class ConfigLoader {
                     if ("en_US".equals(value.getString())) {
                         value.raw(GeyserMCNewExtraConfig.DEFAULT_LOCALE);
                     }
+                    return null;
+                })
+                .build();
+    }
+
+    // The Bedrock capes workaround (mannequins) is not safe yet with anti-cheats and PvP: switch it off,
+    // admins can turn it back on once they tested it on their server
+    private static ConfigurationTransformation nineToTen() {
+        return ConfigurationTransformation.builder()
+                .addAction(NodePath.path("enable-bedrock-capes-on-java-workaround"), (path, value) -> {
+                    value.raw(false);
                     return null;
                 })
                 .build();

@@ -61,9 +61,9 @@ public class GeyserMCNewExtraBungee extends Plugin implements Server {
     @Override
     public void onDisable() {
         // CORE is null when the start failed; disabling must still never throw (upstream #47)
-        GeyserMCNewExtra.runSafely("auto-reconnect", () -> {
+        GeyserMCNewExtra.runSafely("server stop", () -> {
             if (CORE != null) {
-                CORE.autoReconnectAll();
+                CORE.onServerStop();
             }
         });
         if (IsAvailable.packetevents()) {

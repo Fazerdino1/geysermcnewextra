@@ -51,7 +51,6 @@ gmne.console.prefs_default_write_failed: "Impossible de créer le fichier de pr�
 gmne.console.prefs_load_failed: "Impossible de charger les données du joueur {0}, réglages par défaut utilisés : {1}"
 gmne.console.prefs_save_failed: "Impossible de sauvegarder les données du joueur {0} : {1}"
 gmne.console.registering_events: "Enregistrement des événements..."
-gmne.console.remove_user_failed: "Impossible de retirer un joueur déconnecté de la liste."
 gmne.console.server_type: "Type de serveur : {0}"
 gmne.console.settings_screen_unavailable: "Les réglages de GeyserMCNewExtra ne peuvent pas apparaître dans les paramètres Bedrock sur ce serveur ({0}) ; les joueurs seront invités à appuyer deux fois sur l'inventaire."
 gmne.console.skin_bad_image: "Image de skin du joueur {0} non sauvegardée : taille inattendue {1}x{2} pour {3} octets"

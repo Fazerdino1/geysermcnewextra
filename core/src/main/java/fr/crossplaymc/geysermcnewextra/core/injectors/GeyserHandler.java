@@ -7,7 +7,6 @@ import fr.crossplaymc.geysermcnewextra.core.injectors.bedrock.*;
 import fr.crossplaymc.geysermcnewextra.core.injectors.java.*;
 import org.cloudburstmc.protocol.bedrock.packet.*;
 import org.geysermc.geyser.registry.Registries;
-import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundDisconnectPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundServerLinksPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
@@ -41,8 +40,6 @@ public class GeyserHandler {
         Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundOpenScreenPacket.class, new JavaOpenScreenInjector());
         // Ticking state
         Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundTickingStatePacket.class, new JavaTickingStateInjector());
-        // Auto reconnect (doesn't work, should look into)
-        Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundDisconnectPacket.class, new JavaDisconnectInjector());
 
         // Tab list
         Registries.JAVA_PACKET_TRANSLATORS.register(ClientboundTabListPacket.class, new JavaTabListInjector());
