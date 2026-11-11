@@ -8,12 +8,16 @@ import fr.crossplaymc.geysermcnewextra.core.protocol.handlers.workarounds.Manneq
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.GE;
 
 // This contains work arounds for Java only clients
 public class ProtocolHandler implements PacketListener {
     static ProtocolHandler PE;
 
-    static Map<UUID, JavaPlayer> connections = new HashMap<>();
+    // Updated from several Netty threads
+    static Map<UUID, JavaPlayer> connections = new ConcurrentHashMap<>();
 
     private static boolean initialized = false;
 
@@ -48,13 +52,27 @@ public class ProtocolHandler implements PacketListener {
     }
 
     public static void add(User user) {
-        if (!javaPlayerExists(user.getUUID())) {
-            connections.put(user.getUUID(), new JavaPlayer(user));
+        UUID uuid = user.getUUID();
+        if (uuid == null || isBedrockPlayer(uuid)) {
+            // Geyser's own connection for a Bedrock player also goes through PacketEvents: the Java-only
+            // workarounds (mannequins...) must not be applied to it, Geyser would show them as real entities
+            return;
+        }
+        connections.computeIfAbsent(uuid, id -> new JavaPlayer(user));
+    }
+
+    private static boolean isBedrockPlayer(UUID uuid) {
+        try {
+            return GE != null && GE.geyserApi != null && GE.geyserApi.isBedrockPlayer(uuid);
+        } catch (RuntimeException e) {
+            return false;
         }
     }
 
     public static void remove(User user) {
-        connections.remove(user.getUUID());
+        if (user.getUUID() != null) {
+            connections.remove(user.getUUID());
+        }
     }
 
     @Override
@@ -69,7 +87,8 @@ public class ProtocolHandler implements PacketListener {
 
     @Override
     public void onPacketSend(PacketSendEvent event) {
-        JavaPlayer player = getJavaPlayer(event.getUser().getUUID());
+        UUID uuid = event.getUser().getUUID();
+        JavaPlayer player = uuid == null ? null : getJavaPlayer(uuid);
 
         // Only handle this when we are sending packets to java players
         // Bedrock players get their packets in core/injectors/
@@ -83,7 +102,8 @@ public class ProtocolHandler implements PacketListener {
 
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
-        JavaPlayer player = getJavaPlayer(event.getUser().getUUID());
+        UUID uuid = event.getUser().getUUID();
+        JavaPlayer player = uuid == null ? null : getJavaPlayer(uuid);
 
         // Only handle this when we are sending packets to java players
         // Bedrock players get their packets in core/injectors/

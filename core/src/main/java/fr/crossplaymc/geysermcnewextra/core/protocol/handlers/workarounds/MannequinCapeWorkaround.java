@@ -22,9 +22,10 @@ import fr.crossplaymc.geysermcnewextra.core.utils.IdUtils;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.GE;
-import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.SERVER;
 
 // This is the Mannequin work around for Capes.
 // Basically we spawn a fake mannequin entity, load a java player's profile
@@ -68,8 +69,6 @@ import static fr.crossplaymc.geysermcnewextra.core.GeyserMCNewExtra.SERVER;
 // towards the mannequin's id with the player's id
 // as otherwise PVP would not work because the mannequin's hitbox
 // intersects with the players.
-// you have never seen jank like this before
-// prepare yourself
 public class MannequinCapeWorkaround implements JavaPacketHandler {
     // mounts that can support the cape workaround because mounting multiple entities at once renders them in the save place
     public static List<EntityType> SINGLE_PLAYER_MOUNTS =
@@ -99,12 +98,13 @@ public class MannequinCapeWorkaround implements JavaPacketHandler {
 
     Map<Integer, UUID> players;
     List<Integer> mannequins;
-    List<Integer> singlePlayerMounts = new ArrayList<>();
+    // Packets are sent from the Netty thread and from the main thread: thread-safe collections
+    List<Integer> singlePlayerMounts = new CopyOnWriteArrayList<>();
 
 
     public MannequinCapeWorkaround() {
-        players = new HashMap<>();
-        mannequins = new ArrayList<>();
+        players = new ConcurrentHashMap<>();
+        mannequins = new CopyOnWriteArrayList<>();
     }
 
 
@@ -154,9 +154,8 @@ public class MannequinCapeWorkaround implements JavaPacketHandler {
                 }
                 if (indexOf16 != -1) {
                     GeyserSession session = (GeyserSession) GE.geyserApi.connectionByUuid(players.get(meta.getEntityId()));
-                    if (session != null) {
-                        UUID capeUUID = CapeLoader.getPlayerCapeUUID(session);
-                        SERVER.log(capeUUID.toString());
+                    UUID capeUUID = session == null ? null : CapeLoader.getPlayerCapeUUID(session);
+                    if (capeUUID != null && CapeLoader.exists(capeUUID)) {
 
                         // if we get to this point we know that the cape
                         // is valid and can be loaded
@@ -422,6 +421,8 @@ public class MannequinCapeWorkaround implements JavaPacketHandler {
             int playerID = Math.abs(wrapper.getEntityId());
             if (players.containsKey(playerID)) {
                 wrapper.setEntityId(playerID);
+                // Without it PacketEvents may forward the original packet: Java players would hit the mannequin
+                event.markForReEncode(true);
             }
         }
     }

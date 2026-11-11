@@ -9,6 +9,7 @@ import com.google.gson.JsonParser;
 import fr.crossplaymc.geysermcnewextra.core.parity.bedrock.EmoteUtils;
 import org.geysermc.geyser.session.GeyserSession;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -96,7 +97,14 @@ public class CapeLoader {
         return idBuff.toString();
     }
 
+    /**
+     * @return the cape to show, or null when the client data is not known yet
+     */
+    @Nullable
     public static UUID getPlayerCapeUUID(GeyserSession session) {
+        if (session.getClientData() == null || session.getClientData().getCapeData() == null) {
+            return null;
+        }
         UUID capeUUID;
 
         // Data UUID's are used for Minecon capes because
@@ -106,7 +114,7 @@ public class CapeLoader {
 
         try {
             capeUUID = UUID.fromString(session.getClientData().getCapeId());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             return dataUUID;
         }
 
@@ -119,8 +127,8 @@ public class CapeLoader {
     }
 
 
-    public static boolean exists(UUID uuid) {
-        return UUID_TO_JAVA_PROFILE.containsKey(uuid);
+    public static boolean exists(@Nullable UUID uuid) {
+        return uuid != null && UUID_TO_JAVA_PROFILE.containsKey(uuid);
     }
 
 }
