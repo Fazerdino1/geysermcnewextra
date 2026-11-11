@@ -14,6 +14,8 @@ public class HTTP {
         try {
             URLConnection cn = url.openConnection();
             cn.setConnectTimeout(5000);
+            // Without it a stalled download blocks the server start forever
+            cn.setReadTimeout(15000);
             cn.setRequestProperty("User-Agent", "GeyserMCNewExtra/GeyserMCNewExtra/" + GE_VERSION);
             cn.connect();
             return cn.getInputStream();

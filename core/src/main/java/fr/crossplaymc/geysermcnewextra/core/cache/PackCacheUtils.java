@@ -15,8 +15,9 @@ import org.geysermc.geyser.api.pack.option.SubpackOption;
 import org.geysermc.geyser.api.pack.UrlPackCodec;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -40,20 +41,23 @@ public class PackCacheUtils {
         SERVER.log(Lang.console("gmne.console.pack_checking"));
         try {
             Files.createDirectories(PACKS_FOLDER);
-            boolean extrasPackNeedsUpdate = checkExtrasPack();
-            if (extrasPackNeedsUpdate) {
-                Cache.saveCacheDates();
-
-                SERVER.log(Lang.console("gmne.console.pack_downloading"));
-                InputStream in = HTTP.request(UpstreamResources.PACK_URL);
-                Files.copy(in, EXTRAS_PACK_FILE, StandardCopyOption.REPLACE_EXISTING);
-                SERVER.log(Lang.console("gmne.console.pack_downloaded"));
+            Version3 latestVersion = checkExtrasPack();
+            if (latestVersion != null) {
+                downloadExtrasPack(latestVersion);
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Error while downloading resources!", e);
+        } catch (IOException | RuntimeException e) {
+            // Offline or GitHub down: keep the cached pack if there is one, never stop the start
+            SERVER.warn(Lang.console("gmne.console.pack_download_failed", e));
         }
         SERVER.log(Lang.console("gmne.console.loading_resources"));
-        RP_EXTRAS_PACK = ResourcePack.create(PackCodec.path(EXTRAS_PACK_FILE));
+        RP_EXTRAS_PACK = null;
+        if (Files.exists(EXTRAS_PACK_FILE)) {
+            try {
+                RP_EXTRAS_PACK = ResourcePack.create(PackCodec.path(EXTRAS_PACK_FILE));
+            } catch (RuntimeException e) {
+                SERVER.warn(Lang.console("gmne.console.pack_unreadable", e));
+            }
+        }
 
         // Geyser's packs folder belongs to the admin: only warn about packs that are now redundant,
         // never delete them (based on h4-hub/GeyserMCNewExtra@a352538, MIT)
@@ -73,26 +77,48 @@ public class PackCacheUtils {
         }
     }
 
-    private static boolean checkExtrasPack() {
-        // Download the pack if it exists
-        if (!EXTRAS_PACK_FILE.toFile().exists()) {
-            return true;
+    /**
+     * @return the version to download, or null when the cached pack is up to date
+     */
+    private static Version3 checkExtrasPack() {
+        boolean missing = !Files.exists(EXTRAS_PACK_FILE);
+        if (!missing && !GE.getConfig().isCheckForUpdates()) {
+            return null;
         }
+        Version3 latestVersion = getPackVersion(UpstreamResources.PACK_MANIFEST_URL);
+        if (missing) {
+            return latestVersion;
+        }
+        Version3 cachedVersion = Version3.fromArray(CACHE_DATES.lastExtrasPackVersion);
+        return latestVersion.isNewer(cachedVersion) ? latestVersion : null;
+    }
 
-        // Otherwise check for updates
-        if (!GE.getConfig().isCheckForUpdates()) {
-            return false;
+    /**
+     * Downloads next to the pack then moves it: an interrupted download never replaces a
+     * working pack, and the version is only remembered once the new pack is in place.
+     */
+    private static void downloadExtrasPack(Version3 version) throws IOException {
+        SERVER.log(Lang.console("gmne.console.pack_downloading"));
+        Path temp = PACKS_FOLDER.resolve("extras-pack.mcpack.tmp");
+        try (InputStream in = HTTP.request(UpstreamResources.PACK_URL)) {
+            Files.copy(in, temp, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException | RuntimeException e) {
+            Files.deleteIfExists(temp);
+            throw e;
         }
-        Version3 oldVersion = Version3.fromArray(CACHE_DATES.lastExtrasPackVersion);
-        Version3 latestExtrasPackVersion = getPackVersion(UpstreamResources.PACK_MANIFEST_URL);
-        CACHE_DATES.lastExtrasPackVersion = latestExtrasPackVersion.asArray();
-        return latestExtrasPackVersion.isNewer(oldVersion);
+        try {
+            Files.move(temp, EXTRAS_PACK_FILE, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        } catch (AtomicMoveNotSupportedException e) {
+            Files.move(temp, EXTRAS_PACK_FILE, StandardCopyOption.REPLACE_EXISTING);
+        }
+        CACHE_DATES.lastExtrasPackVersion = version.asArray();
+        Cache.saveCacheDates();
+        SERVER.log(Lang.console("gmne.console.pack_downloaded"));
     }
 
     private static Version3 getPackVersion(String url) {
-        try {
-            byte[] data = new URL(url).openStream().readAllBytes();
-            JsonNode manifestJson = JSON_MAPPER.readTree(data);
+        try (InputStream in = HTTP.request(url)) {
+            JsonNode manifestJson = JSON_MAPPER.readTree(in.readAllBytes());
             ArrayList<Integer> versionArray = new ArrayList<>();
             for (JsonNode node : manifestJson.get("header").get("version")) {
                 versionArray.add(node.asInt());
@@ -104,6 +130,11 @@ public class PackCacheUtils {
     }
 
     public static void onPackLoadEvent(ExtrasPlayer player, SessionLoadResourcePacksEvent ev) {
+        if (RP_EXTRAS_PACK == null) {
+            // The pack could not be downloaded: the optional packs are still sent
+            registerSelectedPacks(player, ev);
+            return;
+        }
         try {
             UUID extrasPackUuid = RP_EXTRAS_PACK.manifest().header().uuid();
 
@@ -135,9 +166,17 @@ public class PackCacheUtils {
             }
         } catch (Exception ignored) {
         }
+        registerSelectedPacks(player, ev);
+    }
+
+    private static void registerSelectedPacks(ExtrasPlayer player, SessionLoadResourcePacksEvent ev) {
         List<UUID> packsToLoad = player.getPreferences().getSelectedPacks();
         for (UUID pack : packsToLoad) {
             ResourcePack rp = PackLoader.PACKS.get(pack);
+            if (rp == null) {
+                // Pack removed from the packs folder since the player selected it
+                continue;
+            }
             try {
                 if (ev.resourcePacks().contains(rp)) {
                     continue;

@@ -46,6 +46,7 @@ gmne.console.pack_download_failed: "Impossible de télécharger le pack de resso
 gmne.console.pack_downloaded: "Pack de ressources téléchargé !"
 gmne.console.pack_downloading: "Téléchargement du pack de ressources..."
 gmne.console.pack_priority_invalid: "La priorité du pack de ressources {0} est hors limites (-100 à 100) ; 100 est utilisé."
+gmne.console.pack_unreadable: "Le pack de ressources en cache est illisible, il sera retéléchargé au prochain démarrage : {0}"
 gmne.console.pack_via_cdn: "Pack de ressources détecté via un CDN (UrlPackCodec), enregistrement local ignoré."
 gmne.console.packetevents_installed: "PacketEvents installé : {0}"
 gmne.console.packetevents_missing: "Certaines fonctionnalités (capes Bedrock visibles par les joueurs Java) nécessitent PacketEvents : https://modrinth.com/plugin/packetevents"

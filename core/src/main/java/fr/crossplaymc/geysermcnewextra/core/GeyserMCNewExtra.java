@@ -87,9 +87,10 @@ public class GeyserMCNewExtra implements EventRegistrar {
             GeyserHandler.register();
 
             SERVER.log(Lang.console("gmne.console.initializing_cache"));
-            Cache.initialize();
+            // Independent steps: an offline cache (pack, credits) must not leave the emotes unloaded
+            runSafely("cache", Cache::initialize);
             SERVER.log(Lang.console("gmne.console.loading_emotes"));
-            EmoteUtils.initialize();
+            runSafely("emotes", EmoteUtils::initialize);
         }
 
         PreferencesData.init();
@@ -138,9 +139,10 @@ public class GeyserMCNewExtra implements EventRegistrar {
         if (!ServerType.isExtension()) {
             GeyserHandler.register();
             SERVER.log(Lang.console("gmne.console.initializing_cache"));
-            Cache.initialize();
+            // Independent steps: an offline cache (pack, credits) must not leave the emotes unloaded
+            runSafely("cache", Cache::initialize);
             SERVER.log(Lang.console("gmne.console.loading_emotes"));
-            EmoteUtils.initialize();
+            runSafely("emotes", EmoteUtils::initialize);
             InitializeLogger.end();
         }
     }
